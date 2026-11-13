@@ -61,6 +61,8 @@ def _call_paced(model: str, prompt: str, attempts: int = 4) -> str:
             wait = re.search(r"try again in (?:(\d+)m)?([\d.]+)s", str(error))
             if "HTTP 429" not in str(error) or not wait or attempt == attempts - 1:
                 raise
+            if "per day" in str(error):  # daily cap: waiting won't help soon, use the next model
+                raise
             time.sleep(int(wait.group(1) or 0) * 60 + float(wait.group(2)) + 1)
     raise RuntimeError("unreachable")
 

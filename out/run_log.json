@@ -1,9 +1,9 @@
 {
-  "seconds": 1330.6,
+  "seconds": 29.0,
   "questions": [
     {
       "question_id": "Q01",
-      "seconds": 17.2,
+      "seconds": 1.4,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -40,7 +40,7 @@
     },
     {
       "question_id": "Q02",
-      "seconds": 9.4,
+      "seconds": 0.6,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -68,7 +68,7 @@
     },
     {
       "question_id": "Q03",
-      "seconds": 73.9,
+      "seconds": 0.6,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -105,7 +105,7 @@
     },
     {
       "question_id": "Q04",
-      "seconds": 41.0,
+      "seconds": 0.6,
       "citations_valid": "2/2",
       "trace": [
         {
@@ -133,7 +133,7 @@
     },
     {
       "question_id": "Q05",
-      "seconds": 40.8,
+      "seconds": 0.6,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -161,7 +161,7 @@
     },
     {
       "question_id": "Q06",
-      "seconds": 75.1,
+      "seconds": 0.6,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -198,7 +198,7 @@
     },
     {
       "question_id": "Q07",
-      "seconds": 3.0,
+      "seconds": 0.6,
       "citations_valid": "2/2",
       "trace": [
         {
@@ -226,7 +226,7 @@
     },
     {
       "question_id": "Q08",
-      "seconds": 165.0,
+      "seconds": 6.3,
       "citations_valid": "2/2",
       "trace": [
         {
@@ -284,7 +284,7 @@
     },
     {
       "question_id": "Q09",
-      "seconds": 46.0,
+      "seconds": 0.6,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -312,7 +312,7 @@
     },
     {
       "question_id": "Q10",
-      "seconds": 75.0,
+      "seconds": 1.4,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -349,7 +349,7 @@
     },
     {
       "question_id": "Q11",
-      "seconds": 79.0,
+      "seconds": 2.4,
       "citations_valid": "2/2",
       "trace": [
         {
@@ -387,7 +387,7 @@
     },
     {
       "question_id": "Q12",
-      "seconds": 2.7,
+      "seconds": 1.4,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -415,7 +415,7 @@
     },
     {
       "question_id": "Q13",
-      "seconds": 27.0,
+      "seconds": 0.6,
       "citations_valid": "2/2",
       "trace": [
         {
@@ -443,7 +443,7 @@
     },
     {
       "question_id": "Q14",
-      "seconds": 40.0,
+      "seconds": 0.6,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -471,7 +471,7 @@
     },
     {
       "question_id": "Q15",
-      "seconds": 75.8,
+      "seconds": 1.3,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -507,7 +507,7 @@
     },
     {
       "question_id": "Q16",
-      "seconds": 77.9,
+      "seconds": 0.7,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -545,7 +545,7 @@
     },
     {
       "question_id": "Q17",
-      "seconds": 44.5,
+      "seconds": 0.6,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -582,7 +582,7 @@
     },
     {
       "question_id": "Q18",
-      "seconds": 47.8,
+      "seconds": 0.7,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -610,7 +610,7 @@
     },
     {
       "question_id": "Q19",
-      "seconds": 33.1,
+      "seconds": 1.4,
       "citations_valid": "2/2",
       "trace": [
         {
@@ -638,7 +638,7 @@
     },
     {
       "question_id": "Q20",
-      "seconds": 85.9,
+      "seconds": 0.6,
       "citations_valid": "2/2",
       "trace": [
         {
@@ -676,7 +676,7 @@
     },
     {
       "question_id": "Q21",
-      "seconds": 40.5,
+      "seconds": 1.3,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -704,7 +704,7 @@
     },
     {
       "question_id": "Q22",
-      "seconds": 31.6,
+      "seconds": 1.4,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -732,7 +732,7 @@
     },
     {
       "question_id": "Q23",
-      "seconds": 46.7,
+      "seconds": 0.7,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -769,7 +769,7 @@
     },
     {
       "question_id": "Q24",
-      "seconds": 40.7,
+      "seconds": 1.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -798,7 +798,7 @@
     },
     {
       "question_id": "Q25",
-      "seconds": 80.1,
+      "seconds": 0.6,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -842,203 +842,203 @@
   "model_calls": [
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 3.23,
-      "cached": false
+      "seconds": 0.02,
+      "cached": true
     },
     {
       "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 13.29,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 8.08,
-      "cached": false
+      "seconds": 0.02,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 35.23,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 37.89,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 40.31,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 39.97,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 37.4,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 36.18,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 2.15,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 40.24,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 37.44,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 39.04,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 42.37,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 45.17,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 31.41,
-      "cached": false
+      "seconds": 0.02,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 42.08,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 37.19,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 36.96,
-      "cached": false
+      "seconds": 0.02,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 1.95,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 26.31,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 39.02,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 34.9,
-      "cached": false
+      "seconds": 0.02,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 39.5,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 38.89,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 37.65,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 2.46,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 41.32,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 47.11,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 31.79,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 40.32,
-      "cached": false
+      "seconds": 0.02,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 44.73,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 39.68,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 30.11,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 2.81,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 42.94,
-      "cached": false
+      "seconds": 0.02,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 39.88,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 42.26,
-      "cached": false
+      "seconds": 0.02,
+      "cached": true
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 37.14,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     },
     {
       "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 30.46,
-      "cached": false
+      "seconds": 0.01,
+      "cached": true
     }
   ]
 }
