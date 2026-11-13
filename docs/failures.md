@@ -50,6 +50,10 @@ the solar cells were kept and also dropped. The keyword scorer marked all three 
 it is right. The automatic score needs a hand check next to it, which is why both are reported.
 
 ### F-007: Missed a change between meetings (E04, qwen3:4b)
-Soft rubber was chosen in meeting c and described as hard rubber in d. The answer said "rubber" for both.
-**Cause:** the two ledger events have different topic names, so the "replaced by" rule never linked
-them, and the model didn't notice the difference on its own.
+Meeting c debated soft rubber (C, D) against hard rubber (B), and the final meeting called it hard
+rubber. The answer said "rubber" for both meetings.
+**Cause, checked in the ledger:** the soft/hard debate was extracted only as proposals, never as a
+decision, and the final meeting's "it's hard rubber" was not extracted as an event at all. So the
+"replaced by" rule had nothing to link. This is an extraction gap, not a ranking problem.
+**Also:** writing this up showed our own gold answer was too sure that c "chose soft rubber". It was
+rewritten to say the two versions were debated. The question changed with it, so this miss was found by re-reading the transcript.

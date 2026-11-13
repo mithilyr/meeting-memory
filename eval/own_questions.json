@@ -35,8 +35,8 @@
     },
     {
       "id": "E04", "team": "TS3005",
-      "question": "What case material did Team TS3005 choose in their third meeting, and how was the material described in their final meeting?",
-      "gold_answer": "In the third meeting they chose soft rubber (younger people like soft, spongy materials, older people like wood). In the final meeting it was described as hard rubber, not very spongy, with the idea of printing a wood-like look on it.",
+      "question": "What case material did Team TS3005 settle on in their third meeting, which two versions of it were debated, and how was it described in their final meeting?",
+      "gold_answer": "In the third meeting they settled on rubber (younger people like soft, spongy materials, older people like wood) and debated soft rubber (Speakers C and D) against hard rubber (Speaker B: it bounces back when dropped). In the final meeting it was described as hard rubber, not very spongy, with the idea of printing a wood-like look on it.",
       "must_include": [["soft rubber"], ["hard rubber"]],
       "gold_citations": [
         {"meeting_id": "TS3005c", "quote": "real hard rubber, or soft rubber. Or something something between that."},
