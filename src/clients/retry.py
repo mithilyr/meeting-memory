@@ -52,7 +52,7 @@ DAILY_QUOTA_SIGNALS = (
 )
 
 _RETRY_AFTER_RE = re.compile(
-    r"(?:retry(?:delay|_delay)?[\"':\s]*|retry in\s*)(\d+(?:\.\d+)?)\s*s", re.I
+    r"(?:retry(?:delay|_delay)?[\"':\s]*|retry in\s*|try again in\s*)(\d+(?:\.\d+)?)\s*s", re.I
 )
 
 

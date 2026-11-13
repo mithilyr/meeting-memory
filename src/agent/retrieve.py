@@ -102,16 +102,24 @@ def gather(conn: sqlite3.Connection, team: str, queries: list[str],
     return found
 
 
-def render_turns(turns: dict[str, sqlite3.Row], limit: int = 70) -> str:
-    ordered = sorted(turns.values(), key=lambda t: (t["letter"], t["idx"]))[:limit]
-    return "\n".join(f"[{t['turn_id']}] Speaker {t['speaker']}: {t['text']}" for t in ordered)
+#: Prompt budget, in characters (about 3.8 characters per token). Groq's free tier caps a request
+#: at 8,000 tokens per minute and OpenRouter returned an empty reply on a 55K-character prompt, so
+#: a question's prompt is held near 22K characters (about 6K tokens): ledger 11K, transcript turns 8K.
+#: At company scale a project's ledger grows without limit; these caps keep a question's cost flat.
+LEDGER_BUDGET = 11_000
+TURNS_BUDGET = 8_000
 
 
-#: Ledger size sent to the model, in characters (about 10K tokens). A free model returned an
-#: empty reply on a 55K-character prompt (ES2014, 268 events), so bigger ledgers are filtered.
-#: At company scale a project's ledger grows without limit, so this filter is what keeps a
-#: question's cost flat.
-LEDGER_BUDGET = 40_000
+def render_turns(turns: dict[str, sqlite3.Row], budget: int = TURNS_BUDGET) -> str:
+    """Turns in meeting order; when over budget, the best-ranked ones are kept."""
+    kept, size = [], 0
+    for t in turns.values():  # insertion order = search rank order (gather keeps the first hit)
+        line = f"[{t['turn_id']}] Speaker {t['speaker']}: {t['text'][:600]}"
+        if size + len(line) > budget:
+            continue
+        kept.append((t["letter"], t["idx"], line))
+        size += len(line) + 1
+    return "\n".join(line for _, _, line in sorted(kept))
 
 
 def _words(text: str) -> set[str]:

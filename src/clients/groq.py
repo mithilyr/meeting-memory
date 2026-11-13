@@ -18,7 +18,9 @@ from src.clients.retry import with_retry
 
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
 MODELS_URL = "https://api.groq.com/openai/v1/models"
-DEFAULT_MODELS = "openai/gpt-oss-120b,llama-3.3-70b-versatile"
+DEFAULT_MODELS = "openai/gpt-oss-120b,qwen/qwen3.8-27b"  # checked live 2026-11-13
+#: Groq sits behind Cloudflare, which rejects Python's default "Python-urllib" agent (error 1010).
+USER_AGENT = "meeting-memory/1.0"
 
 
 def models() -> list[str]:
@@ -36,7 +38,8 @@ def _call(model: str, prompt: str) -> str:
     body = {"model": model, "messages": [{"role": "user", "content": prompt}], "temperature": 0}
     request = urllib.request.Request(
         API_URL, data=json.dumps(body).encode("utf-8"), method="POST",
-        headers={"Authorization": f"Bearer {_key()}", "Content-Type": "application/json"},
+        headers={"Authorization": f"Bearer {_key()}", "Content-Type": "application/json",
+                 "User-Agent": USER_AGENT},
     )
     try:
         with urllib.request.urlopen(request, timeout=120) as response:
@@ -63,7 +66,7 @@ if __name__ == "__main__":
     from dotenv import load_dotenv
 
     load_dotenv()
-    request = urllib.request.Request(MODELS_URL, headers={"Authorization": f"Bearer {_key()}"})
+    request = urllib.request.Request(MODELS_URL, headers={"Authorization": f"Bearer {_key()}", "User-Agent": USER_AGENT})
     live = {m["id"] for m in json.load(urllib.request.urlopen(request, timeout=30))["data"]}
     for m in models():
         print(("OK      " if m in live else "MISSING ") + m)

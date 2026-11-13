@@ -55,9 +55,29 @@ def group_events(events: list[dict]) -> dict[str, list[dict]]:
             groups["changed"].append(e | {"replaced_by": by_id.get(e["superseded_by"], {}).get("summary")})
         elif e["type"] == "action_item" and e["status"] == "open":
             groups["actions"].append(e)
-        elif e["type"] in ("objection", "proposal") and e["status"] == "open":
-            groups["disagreements"].append(e)
+        elif e["type"] == "objection" and e["status"] == "open":
+            groups["disagreements"].append(e)  # an open proposal is an idea, not a disagreement
     return groups
+
+
+#: Characters of grouped facts sent to the model (same reason as retrieve.LEDGER_BUDGET: Groq's
+#: free tier caps a request at 8K tokens). Over budget, each section keeps its most recent events,
+#: since the brief is about where the team stands now.
+GROUPS_BUDGET = 13_000
+
+
+def fit_budget(groups: dict[str, list[dict]]) -> dict[str, list[dict]]:
+    per_section = GROUPS_BUDGET // len(groups)
+    fitted = {}
+    for key, events in groups.items():
+        kept, size = [], 0
+        for e in reversed(events):  # newest first
+            size += len(_line(e)) + 1
+            if size > per_section:
+                break
+            kept.append(e)
+        fitted[key] = list(reversed(kept))
+    return fitted
 
 
 def _line(e: dict) -> str:
@@ -75,7 +95,7 @@ def write_brief(team: str, *, conn: sqlite3.Connection | None = None, upto_lette
     next_letter = chr(ord(upto_letter) + 1)
     events = ledger.load(conn, team, upto_letter=upto_letter)
     by_id = {e["event_id"]: e for e in events}
-    groups = group_events(events)
+    groups = fit_budget(group_events(events))
     groups_text = "\n\n".join(
         f"{title.upper()} ({key}):\n" + ("\n".join(_line(e) for e in groups[key]) or "(none found)")
         for key, title in SECTIONS
