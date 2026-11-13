@@ -35,10 +35,15 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
 12. "What is current" (supersession) is decided by code from meeting order, not by the model.
 13. The agent loops: retrieve, read, check timeline, answer, verify. It is not a single call.
 
-### Cost: $0 until the user says otherwise
-14. Use local Ollama models (GPU: RTX 3060 6GB) and free tiers only.
-15. Every LLM response is cached on disk by a prompt hash. Re-runs must cost nothing.
-16. Record token counts and wall time per stage, for the "cost of 1,000 meetings" estimate.
+### Cost: $0 build, low-cost production proposal (D-007)
+14. Build-time extraction runs through Claude Code (subscription, no API spend), using the SAME
+    prompt and JSON schema the production extractor sends to the API. Outputs land in the same
+    cache and are validated by code (schema, turn ids, quotes). One flag switches to the API backend.
+15. The answering agent is code that calls a pluggable LLM backend, with at most 1 to 2 model calls
+    per question. Retrieval, timelines and verification are code, so free tiers are enough.
+16. Production proposal: Claude Haiku 5.5 via the Batch API for extraction. Pick the answering model by eval score.
+17. Every LLM response is cached on disk by a prompt hash. Re-runs must cost nothing.
+18. Record token counts and wall time per stage, for the "cost of 1,000 meetings" estimate.
 
 ### Deliverables the PDF asks for (track progress here)
 - [ ] Code + README with run instructions
@@ -50,10 +55,10 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
 - [ ] 3 to 5 minute walkthrough video
 
 ### Record keeping (for the video and write-up)
-17. Every design decision gets an entry in `docs/decisions.md` (D-NNN: decision, why, alternatives rejected).
-18. Every work session appends to `docs/build-log.md`: date, what changed, what was measured.
-19. Every wrong answer found gets an entry in `docs/failures.md`: question, what we said, why it failed.
-20. Commit after each working step, with a message saying what now works.
+19. Every design decision gets an entry in `docs/decisions.md` (D-NNN: decision, why, alternatives rejected).
+20. Every work session appends to `docs/build-log.md`: date, what changed, what was measured.
+21. Every wrong answer found gets an entry in `docs/failures.md`: question, what we said, why it failed.
+22. Commit after each working step, with a message saying what now works.
 
 ## DO NOT
 
@@ -70,6 +75,8 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
    justifies them. Stdlib + numpy + sqlite3 is the default.
 8. Do not edit the data folder. It is read-only input.
 9. Do not commit `.env`, API keys or `.cache/`.
+10. Claude Code (the coding assistant) must not write `answers.json`, the brief, or any answer text.
+    It may only fill extraction jobs that the pipeline generated (rule 14). The agent writes the answers.
 
 ## Model vs code line (summary, details in docs/decisions.md)
 

@@ -9,3 +9,5 @@ Append one entry per session: what changed, what was measured. For the video and
 - Audited the CodeFest ashen-assistant for reuse (see D-005).
 - Set the $0 budget: local Ollama qwen3:8b on an RTX 3060 6GB (D-002).
 - Scaffolded the repo: CLAUDE.md (must/don't rules), parser, quote verifier, tests, decision log.
+- Benchmarked local models (D-007): qwen3:8b 120 s/chunk (spills to CPU), qwen3:4b 28 s/chunk but invents turn ids.
+- Decision: build-time extraction via Claude Code, production proposal Haiku 5.5 Batch (~$0.75 per 1,000 meetings).
