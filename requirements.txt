@@ -1,0 +1,4 @@
+# Stdlib does HTTP (urllib) and storage (sqlite3 + FTS5). See docs/decisions.md D-006.
+numpy==2.4.6            # vector search: one matrix multiply
+python-dotenv==1.0.1    # .env loading
+pytest==8.3.3
