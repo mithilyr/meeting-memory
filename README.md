@@ -35,6 +35,7 @@ store from it re-runs only code (parse, index, validate, statuses) plus Voyage e
 python -m src.memory.store ingest
 python -m src.memory.store embed
 python -m src.ingest.extract import-all
+python -m src.memory.names                                # project names for the picker (35 free model calls)
 ```
 
 ### Use it
@@ -50,7 +51,7 @@ python -m pytest -q
 ### Rebuild the memory from the transcripts
 ```
 python -m src.memory.store ingest     # parse + full-text index; unchanged files are skipped (1.6 s for 138)
-python -m src.memory.store embed      # local embeddings for new chunks
+python -m src.memory.store embed      # Voyage embeddings for new chunks
 python -m src.ingest.extract api --team ES2002     # extract a team with Claude Haiku 5.5 (needs ANTHROPIC_API_KEY)
 ```
 
