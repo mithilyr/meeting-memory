@@ -88,14 +88,14 @@ EVENT TYPES
 
 FIELDS
 - id         "E1", "E2", ... in order
-- topic      short lowercase snake_case key for the SUBJECT, e.g. case_material, energy_source,
-             selling_price, target_age_group, lcd_screen, speech_recognition, budget_total.
+- topic      short lowercase snake_case key for the SUBJECT, e.g. supplier_choice, launch_date,
+             unit_price, target_customers, budget_total, office_location.
              If the subject already appears in LEDGER SO FAR, reuse that exact topic key.
 - summary    one plain sentence with the specifics (what option, which figure, why).
-             Write who did what by speaker letter, e.g. "Speaker C proposed rubber instead of titanium".
+             Write who did what by speaker letter, e.g. "Speaker C proposed supplier X instead of Y".
 - speaker    letter of the person who said it
 - owner      action_item only: letter of who will do it; else null
-- value      number only: the figure, e.g. "12.5 Euro", "25 Euro selling price"; else null
+- value      number only: the figure with its unit, e.g. "40 USD unit price", "15%"; else null
 - turn       the turn number where the evidence is
 - quote      at least 6 consecutive words copied EXACTLY from that one turn, including "um", "uh",
              repeated words and punctuation. Never paraphrase, never join two turns.
