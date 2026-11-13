@@ -1,0 +1,24 @@
+{
+  "speakers": [
+    {"letter": "A", "name": "Fabien Cardinaux", "role": "project manager", "turn": 1},
+    {"letter": "B", "name": "Petre", "role": "Technical Designer", "turn": 94},
+    {"letter": "C", "name": "Hamed Getabdar", "role": "Interface Designer", "turn": 9},
+    {"letter": "D", "name": "Bob Morris", "role": "Marketing Expert", "turn": 7}
+  ],
+  "events": [
+    {"id": "E1", "type": "decision", "topic": "project_goal", "summary": "Speaker A set the goal: a remote control that is new and original, trendy and user friendly.", "speaker": "A", "owner": null, "value": null, "turn": 11, "quote": "it should be, of course, new and original, and um it should be trendy, and user friendly", "refers_to": null},
+    {"id": "E2", "type": "number", "topic": "selling_price", "summary": "Speaker A said the remote will be sold for 25 EUR.", "speaker": "A", "owner": null, "value": "25 EUR", "turn": 50, "quote": "we want to sell uh this remote control for twenty five Euro Euro", "refers_to": null},
+    {"id": "E3", "type": "number", "topic": "profit_target", "summary": "Speaker A gave the expected profit as around 50000000 EUR.", "speaker": "A", "owner": null, "value": "50000000 EUR", "turn": 50, "quote": "our expected profit will be around fifty million Euro", "refers_to": null},
+    {"id": "E4", "type": "number", "topic": "unit_production_cost", "summary": "Speaker A set the maximum production cost at 12.50 EUR per unit.", "speaker": "A", "owner": null, "value": "12.50 EUR maximum", "turn": 50, "quote": "a production cost of maximum uh twelve point fifty Euro", "refers_to": null},
+    {"id": "E5", "type": "decision", "topic": "target_market", "summary": "Speaker A decided to target a worldwide market, not only Switzerland.", "speaker": "A", "owner": null, "value": null, "turn": 50, "quote": "we are trying to to have a market all around the world", "refers_to": null},
+    {"id": "E6", "type": "proposal", "topic": "button_count", "summary": "Speaker D said remotes have too many small buttons, when people use only four or six, so the remote should have fewer buttons.", "speaker": "D", "owner": null, "value": null, "turn": 54, "quote": "on a T_V_ remote you only ever use, mostly, you know, f four or f six buttons", "refers_to": null},
+    {"id": "E7", "type": "proposal", "topic": "backlight", "summary": "Speaker B proposed a backlight for use in the dark, possibly switched on by the room light level.", "speaker": "B", "owner": null, "value": null, "turn": 58, "quote": "it's probably worth to to have something like uh back light", "refers_to": null},
+    {"id": "E8", "type": "proposal", "topic": "volume_control", "summary": "Speaker B proposed a potentiometer or slider for volume instead of two discrete buttons.", "speaker": "B", "owner": null, "value": null, "turn": 60, "quote": "But I prefer like a potential-meter or something like", "refers_to": null},
+    {"id": "E9", "type": "objection", "topic": "volume_control", "summary": "Speaker A objected that a slider could move by accident, so the volume could jump up quickly.", "speaker": "A", "owner": null, "value": null, "turn": 71, "quote": "Are you not afraid that if you take your remote control you can move the slide", "refers_to": "E8"},
+    {"id": "E10", "type": "objection", "topic": "volume_control", "summary": "Speaker A objected that a loud volume on a slider could surprise the user when picking the remote up from the table.", "speaker": "A", "owner": null, "value": null, "turn": 74, "quote": "you take it and you push the button and everything is very loud", "refers_to": "E8"},
+    {"id": "E11", "type": "proposal", "topic": "signal_type", "summary": "Speaker C proposed radio waves instead of infra-red, since infra-red must be aimed and needs no obstacles.", "speaker": "C", "owner": null, "value": null, "turn": 81, "quote": "I prefer um remote control working with radio waves", "refers_to": null},
+    {"id": "E12", "type": "action_item", "topic": "ui_design", "summary": "Speaker A assigned Speaker C to work on the remote design and start new ideas.", "speaker": "A", "owner": "C", "value": null, "turn": 88, "quote": "the interface interface developer will work on the on the design of the remote control", "refers_to": null},
+    {"id": "E13", "type": "action_item", "topic": "technical_functions", "summary": "Speaker A committed Speaker C to work on the technical functions of the remote.", "speaker": "A", "owner": "C", "value": null, "turn": 105, "quote": "you are going to work on the technical functions of the remote control", "refers_to": null},
+    {"id": "E14", "type": "action_item", "topic": "user_requirements", "summary": "Speaker A committed Speaker D, the marketing expert, to find the user requirements for the remote.", "speaker": "A", "owner": "D", "value": null, "turn": 108, "quote": "you are going to try to to find the user requirements f uh for the remote control", "refers_to": null}
+  ]
+}

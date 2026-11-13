@@ -13,14 +13,16 @@ All three use the same pipeline and code. Only the model behind each step change
 | **Pull events out of meetings** | Claude Sonnet 5.5, Batch API | Claude Haiku 5.5, Batch API | Claude Code fills extraction jobs (subscription, no API spend) |
 | **Answer questions** | Sonnet 5.5, agent loop with several searches | Haiku 5.5. Hard questions escalate to Sonnet 5.5 | Free-tier API model, with a local fallback model |
 | **Search** | Postgres + pgvector + full-text | SQLite or Postgres full-text + small embeddings | SQLite full-text (FTS5) + local embeddings via Ollama |
-| **Cost to ingest 1,000 meetings** | ~$15 batched (~$30 standard) | **~$0.75 batched (~$1.50 standard)** | $0 |
+| **Cost to ingest 1,000 meetings** | ~$32 batched (~$64 standard) | **~$1.60 batched (~$3.20 standard)** | $0 |
 | **Cost per question** | ~$0.10 to $0.15 | ~$0.002 to $0.01 | $0 |
 | **When to choose it** | Legal or board-level accuracy matters | Daily use by a whole company | Demo and evaluation |
 
-How the 1,000-meeting figure is worked out: the corpus averages ~4,900 words (~6,400 tokens) per
-meeting. Adding prompt instructions gives ~7.5M input tokens; extracted events add ~1.5M output
-tokens. List prices (per million tokens): Haiku 5.5 $0.10 in / $0.50 out, Sonnet 5.5 $2 / $10,
-with 50% off for batch. Recheck the prices before quoting them.
+How the 1,000-meeting figure is worked out, from the real run (D-020): the 138 extraction prompts
+came to 5.87M characters (about 1.47M tokens, including instructions and each team's ledger so
+far) and the outputs to 2.38M characters (about 0.59M tokens). That is about 10.6K input and 4.3K
+output tokens per meeting, so 10.6M in and 4.3M out per 1,000 meetings. List prices per million
+tokens: Haiku 5.5 $0.10 in / $0.50 out, Sonnet 5.5 $2 / $10, with 50% off for batch. Output is
+two thirds of the bill. Token counts are estimated at 4 characters per token; recheck prices before quoting them.
 
 **Demo day:** Catalist runs new questions against the corpus we already extracted. So only the
 answering path has to work live. Extraction does not run during the demo.

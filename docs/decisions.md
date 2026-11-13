@@ -141,3 +141,16 @@ User instruction. Extraction already ran on Haiku. The plan's session limit was 
 ## D-019: All prose checked with the ai-writing-signs catalogue (2026-11-13)
 README, docs, CLAUDE.md and the page text were scanned and rewritten. The fixes were bold-label
 lists, "X, not Y" constructions, and two claims about features that do not exist yet (now marked "planned").
+
+## D-020: Measured extraction run; cost estimate corrected (2026-11-13)
+**Measured on all 138 meetings:** 7,239 events written by the model, 7,199 stored, 40 dropped by
+the validator (0.6%) because their quote was not in the cited turn. Prompts totalled about 1.47M
+tokens and outputs about 0.59M tokens (4 characters per token).
+**Correction:** D-007 guessed $0.75 per 1,000 meetings on Haiku batch. The real figure is about
+$1.60, because the JSON output is larger than guessed (about 4.3K tokens per meeting) and output
+tokens cost 5x input. Tier A (Sonnet 5.5) is about $32 batched.
+**Time:** 7 Haiku subagents took about 3 hours of wall time, including a 30-minute stop at the
+plan's session limit. Through the API, teams run in parallel and a team's meetings run in order,
+so 1,000 meetings is 4 rounds (a, b, c, d). That's 4 Message Batches, each usually done in under an hour.
+**Ledger shape:** 3,040 proposals, 1,350 objections, 1,045 decisions, 775 numbers, 769 report-backs, 220 actions.
+Only 15 of 220 actions are matched to a report-back, so the "reported" rule is too strict (see failures.md).

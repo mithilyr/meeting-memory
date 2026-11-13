@@ -1,0 +1,20 @@
+{
+  "speakers": [
+    {"speaker": "A", "role": "project manager", "name": "Ada Longmund", "turn": 4},
+    {"speaker": "B", "role": "user interface design", "name": null, "turn": 41},
+    {"speaker": "C", "role": "Industrial Designer", "name": null, "turn": 45},
+    {"speaker": "D", "role": "Marketing Expert", "name": null, "turn": 29}
+  ],
+  "events": [
+    {"id": "E1", "type": "decision", "topic": "project_scope", "summary": "Speaker A stated the remote control has to be original, trendy and user-friendly.", "speaker": "A", "owner": null, "value": null, "turn": 4, "quote": "the remote control has to be original, trendy and um user-friendly", "refers_to": null},
+    {"id": "E2", "type": "decision", "topic": "work_method", "summary": "Speaker A set the method: individual work plus meetings in functional, conceptual and detailed design.", "speaker": "A", "owner": null, "value": null, "turn": 4, "quote": "the project method is the following", "refers_to": null},
+    {"id": "E3", "type": "number", "topic": "unit_price", "summary": "Speaker A said the selling price will be 25 Euros, which the group found reasonable.", "speaker": "A", "owner": null, "value": "25 EUR unit price", "turn": 12, "quote": "the selling price of the product will be twenty five Euros", "refers_to": null},
+    {"id": "E4", "type": "number", "topic": "production_cost", "summary": "Speaker A said the product cost must not be more than 12.50 Euros.", "speaker": "A", "owner": null, "value": "12.50 EUR maximum production cost", "turn": 18, "quote": "the product costs will be not more than twelve Euros and fifty centimes", "refers_to": null},
+    {"id": "E5", "type": "decision", "topic": "market_scope", "summary": "Speaker A decided the remote is an international product, to be sold worldwide.", "speaker": "A", "owner": null, "value": null, "turn": 18, "quote": "as we want to sell it in the entire world", "refers_to": null},
+    {"id": "E6", "type": "proposal", "topic": "originality", "summary": "Speaker A proposed creating something new that people would want to buy.", "speaker": "A", "owner": null, "value": null, "turn": 18, "quote": "try to create something new and people would like to to buy", "refers_to": null},
+    {"id": "E7", "type": "action_item", "topic": "trend_research", "summary": "Speaker D committed to give the group trends on what should be done and what users would like to have.", "speaker": "D", "owner": "D", "value": null, "turn": 80, "quote": "I'm trying to give you some trends about what should be done", "refers_to": null},
+    {"id": "E8", "type": "proposal", "topic": "market_scope", "summary": "Speaker A proposed the remote be international and not too expensive, with no very specific design, like keyboard layouts.", "speaker": "A", "owner": null, "value": null, "turn": 83, "quote": "really the remote control to be international. And not too expensive", "refers_to": "E5"},
+    {"id": "E9", "type": "number", "topic": "production_cost", "summary": "Speaker A repeated the product cost limit, saying it must not exceed 12.50 Euros.", "speaker": "A", "owner": null, "value": "12.50 EUR maximum production cost", "turn": 92, "quote": "the product cost won't be maxim more than twelve dot fifty Euros", "refers_to": "E4"},
+    {"id": "E10", "type": "proposal", "topic": "functions_scope", "summary": "Speaker A proposed new functionalities that do not exist in current remote controls, to make people want to buy it.", "speaker": "A", "owner": null, "value": null, "turn": 97, "quote": "with maybe new functionalities that don't exist in the mm existing remote controls now", "refers_to": null}
+  ]
+}

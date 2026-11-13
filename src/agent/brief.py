@@ -32,6 +32,9 @@ Below are the facts, already grouped by code. Each line starts with a ledger eve
 For each section, write 3 to 7 short points in plain English. Merge related events into one point.
 Name people by speaker letter and role (roles are under SPEAKERS). Mention the meeting where it matters.
 Every point must list the event ids it is based on (1 to 2 ids). Use only ids from the lines below.
+Under "changed", include only real changes, where a different option replaced an earlier one (show
+both). A decision that was only restated or confirmed is not a change: put it under "decided" or leave it out.
+Under "disagreements", include only points where people still disagree; skip settled ones.
 
 Reply with JSON only:
 {{"decided": [{{"text": "...", "events": ["id", ...]}}], "changed": [...], "actions": [...], "disagreements": [...]}}

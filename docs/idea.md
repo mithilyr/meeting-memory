@@ -35,7 +35,7 @@ changed, open actions and owners, and disagreements still open. Each point is ci
 meetings that have already happened. Nobody has to request it.
 
 ### 5. Cost grows only with new meetings
-Each meeting is read by a model **once**, when it arrives (about $0.00075 per meeting on Haiku 5.5 batch).
+Each meeting is read by a model **once**, when it arrives (about $0.0016 per meeting on Haiku 5.5 batch).
 After that, a question searches only the team or project it is about, so it costs the same at
 10 meetings or 10,000. Old meetings are never re-processed unless we choose to improve the extractor.
 
@@ -59,6 +59,6 @@ After that, a question searches only the team or project it is about, so it cost
 ## Three price points, one system
 | | Best quality | **Recommended** | Free demo (this build) |
 |---|---|---|---|
-| Per 1,000 meetings ingested | ~$15 | **~$0.75** | $0 |
+| Per 1,000 meetings ingested | ~$32 | **~$1.60** | $0 |
 | Per question | ~$0.10 | **under $0.01** | $0 |
 Details: `docs/architecture.md`.

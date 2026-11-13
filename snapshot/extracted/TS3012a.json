@@ -1,0 +1,16 @@
+{"speakers": [
+ {"speaker": "A", "role": "Project Manager", "name": "Mark", "turn": 0},
+ {"speaker": "D", "role": "Marketing Expert", "name": "Dirk Meinfeld", "turn": 4},
+ {"speaker": "B", "role": "User Interface Designer", "name": "Nick Broer", "turn": 6},
+ {"speaker": "C", "role": "Industrial Designer", "name": "Xavier Juergens", "turn": 8}
+],
+"events": [
+ {"id": "E1", "type": "decision", "topic": "project_goal", "summary": "Speaker A (project manager) set the goal: a TV remote control that is original, trendy and user-friendly, putting fashion into electronics.", "speaker": "A", "owner": null, "value": null, "turn": 12, "quote": "we need design a remote control for television set, so, which has to be original, trendy and user-friendly", "refers_to": null},
+ {"id": "E2", "type": "report_back", "topic": "remote_scope", "summary": "Speaker B asked whether it should be a multi-device remote; Speaker A answered the project is for a TV remote control only.", "speaker": "A", "owner": null, "value": null, "turn": 93, "quote": "The project I got was just for a T_V_ remote control.", "refers_to": null},
+ {"id": "E3", "type": "proposal", "topic": "familiar_design", "summary": "Speaker B proposed sticking to what people are familiar with rather than revolutionary changes; Speaker A summarised it as a very intuitive design.", "speaker": "B", "owner": null, "value": null, "turn": 94, "quote": "thing to keep in mind is that we need to stick to what people are familiar with", "refers_to": null},
+ {"id": "E4", "type": "proposal", "topic": "accessibility", "summary": "Speaker B raised whether disabled people should be able to use it; Speaker A wanted almost everyone to use it but said fully disabled users may be a problem.", "speaker": "B", "owner": null, "value": null, "turn": 99, "quote": "Do we want people who are disabled in any way to uh, yeah, to be able to use it as well?", "refers_to": null},
+ {"id": "E5", "type": "proposal", "topic": "case_material", "summary": "Speaker C (industrial designer) said the remote should be made of a light material.", "speaker": "C", "owner": null, "value": null, "turn": 101, "quote": "the material it is made of, it should be something light", "refers_to": null},
+ {"id": "E6", "type": "number", "topic": "selling_price", "summary": "Speaker A set the selling price at 25 Euros.", "speaker": "A", "owner": null, "value": "25 Euro selling price", "turn": 104, "quote": "Selling price, twenty five Euros. That's for you.", "refers_to": null},
+ {"id": "E7", "type": "number", "topic": "production_cost", "summary": "Speaker A set the production cost target at about 12.5 Euros.", "speaker": "A", "owner": null, "value": "12.5 Euro production cost", "turn": 104, "quote": "The production price, twelve and a half Euros, approximately.", "refers_to": null},
+ {"id": "E8", "type": "objection", "topic": "production_cost", "summary": "Speaker B said the 12.5 Euro budget is not much to work with.", "speaker": "B", "owner": null, "value": null, "turn": 107, "quote": "Okay, well that's not that much to work with.", "refers_to": "E7"}
+]}
