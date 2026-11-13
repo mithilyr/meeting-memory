@@ -46,13 +46,13 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
 18. Record token counts and wall time per stage, for the "cost of 1,000 meetings" estimate.
 
 ### Deliverables the PDF asks for (track progress here)
-- [ ] Code + README with run instructions
-- [ ] `out/answers.json` produced by the agent, not by hand
-- [ ] 10+ own questions with hand-checked answers in `eval/own_questions.json`, scored by the agent
-- [ ] 3 questions the agent got wrong, with reasons (`docs/failures.md`)
-- [ ] Cost and time to ingest 1,000 meetings
-- [ ] One-page write-up: architecture, model-vs-code line, tools, where they broke, production needs
-- [ ] 3 to 5 minute walkthrough video
+- [x] Code + README with run instructions
+- [x] `out/answers.json` produced by the agent, not by hand
+- [x] 10+ own questions with hand-checked answers in `eval/own_questions.json`, scored by the agent
+- [x] 3 questions the agent got wrong, with reasons (`docs/failures.md`)
+- [x] Cost and time to ingest 1,000 meetings
+- [x] One-page write-up: architecture, model-vs-code line, tools, where they broke, production needs
+- [ ] 3 to 5 minute walkthrough video (after the build, user's call)
 
 ### Record keeping (for the video and write-up)
 19. Every design decision gets an entry in `docs/decisions.md` (D-NNN: decision, why, alternatives rejected).
