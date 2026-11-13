@@ -305,6 +305,9 @@ def main(argv: list[str] | None = None) -> int:
     p_imp = sub.add_parser("import", help="validate and store a filled job")
     p_imp.add_argument("meeting_id")
     sub.add_parser("status", help="extraction progress per team")
+    p_all = sub.add_parser("import-all", help="re-import saved extractions, in meeting order (rebuild)")
+    p_all.add_argument("--from", dest="source", default="snapshot/extracted",
+                       help="folder of <meeting>.json files (default: the committed snapshot)")
     p_api = sub.add_parser("api", help="extract a team through the Claude API (production path)")
     p_api.add_argument("--team", required=True)
     p_api.add_argument("--model", default="claude-haiku-5-5")
@@ -336,6 +339,20 @@ def main(argv: list[str] | None = None) -> int:
         for r in rows:
             print(f"{r['team']}: {r['done'] or 0}/{r['n']}")
         print(f"events: {conn.execute('SELECT COUNT(*) FROM events').fetchone()[0]}")
+    elif args.command == "import-all":
+        source = Path(args.source)
+        stored = 0
+        for row in conn.execute("SELECT meeting_id FROM meetings ORDER BY team, letter").fetchall():
+            saved = source / f"{row[0]}.json"
+            if not saved.is_file():
+                continue
+            target = output_path(row[0])
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if saved.resolve() != target.resolve():
+                target.write_bytes(saved.read_bytes())
+            count, _ = import_output(conn, row[0])
+            stored += count
+        print(f"imported {stored} events")
     elif args.command == "api":
         run_api(conn, args.team, args.model)
     return 0
