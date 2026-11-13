@@ -1,0 +1,112 @@
+{
+  "note": "Written by reading the transcripts (2026-11-13). Teams chosen from the 10 teams NOT in questions.json, so the agent was never tuned on them. Each gold answer was checked against the quoted turns; gold quotes are verified by eval/run_eval.py before scoring. must_include: every group must match (any alternative in a group, case-insensitive) for the answer to count as correct.",
+  "questions": [
+    {
+      "id": "E01", "team": "ES2005",
+      "question": "Team ES2005's first costing of their final design came out over budget. What was the first figure, what was found to fix it, and what did the cost come to?",
+      "gold_answer": "Speaker C's spreadsheet first gave 14.6 Euros against the 12.50 Euro target. A curved case part had been entered twice; with one, the cost dropped to 11.60 Euros, under budget, though still not enough to add the scroll wheel.",
+      "must_include": [["14.6", "fourteen point six"], ["11.6", "eleven euros sixty", "11,60"]],
+      "gold_citations": [
+        {"meeting_id": "ES2005d", "quote": "minus the extra scroll buttons, uh it's gonna cost us fourteen point six Euros"},
+        {"meeting_id": "ES2005d", "quote": "It's meant to be one, yeah, I don't know why I put two in there"},
+        {"meeting_id": "ES2005a", "quote": "remember we're trying to make it for twelve Euros fifty"}
+      ]
+    },
+    {
+      "id": "E02", "team": "ES2005",
+      "question": "Team ES2005 nearly scratched speech recognition. What did their vote decide, and did the final design have speech recognition and a screen?",
+      "gold_answer": "Speaker C first suggested scratching speech recognition, but the vote went for speech recognition with limited buttons and an organic design; nobody wanted the TFT screen. The final design kept speech technology but had no screen.",
+      "must_include": [["speech"], ["vote", "voted"], ["screen", "tft", "lcd"]],
+      "gold_citations": [
+        {"meeting_id": "ES2005b", "quote": "Who wants T_F_T_? No-one does. Excellent, so we'll go with speech recognition, yeah?"},
+        {"meeting_id": "ES2005d", "quote": "it its' got the latest trends in speech technology, but it's missing the screen"}
+      ]
+    },
+    {
+      "id": "E03", "team": "TS3005",
+      "question": "Team TS3005 discussed an LCD screen in their second meeting despite cost worries. What interface did they settle on, and what did the final remote include?",
+      "gold_answer": "By the third meeting they had decided on no buttons, only an LCD screen (Speaker B, the User Interface Designer, designed it). The final remote had the LCD screen plus a microphone for speech recognition.",
+      "must_include": [["lcd", "l_c_d_"], ["microphone", "speech"]],
+      "gold_citations": [
+        {"meeting_id": "TS3005c", "quote": "we uh determined that will not be no buttons, but only an L_C_D_ screen"},
+        {"meeting_id": "TS3005d", "quote": "I think it is, because it has an L_C_D_ screen, a mi microphone."},
+        {"meeting_id": "TS3005b", "quote": "Because L_C_D_ screens are very expensive."}
+      ]
+    },
+    {
+      "id": "E04", "team": "TS3005",
+      "question": "What case material did Team TS3005 choose in their third meeting, and how was the material described in their final meeting?",
+      "gold_answer": "In the third meeting they chose soft rubber (younger people like soft, spongy materials, older people like wood). In the final meeting it was described as hard rubber, not very spongy, with the idea of printing a wood-like look on it.",
+      "must_include": [["soft rubber"], ["hard rubber"]],
+      "gold_citations": [
+        {"meeting_id": "TS3005c", "quote": "real hard rubber, or soft rubber. Or something something between that."},
+        {"meeting_id": "TS3005c", "quote": "Yeah soft rubber which you can you can feel in it."},
+        {"meeting_id": "TS3005d", "quote": "Oh but not it's not very spongy, because it's hard rubber."}
+      ]
+    },
+    {
+      "id": "E05", "team": "TS3008",
+      "question": "In Team TS3008, who pushed back on adding an LCD display, what was the objection, and did the final design have one?",
+      "gold_answer": "Speaker A objected that an LCD did not fit the sturdy, throwable plastic-and-soft-rubber design they were after (Speaker D agreed it is fragile), while Speaker B argued it was up to the market if it was trendy. The final design had no LCD.",
+      "must_include": [["speaker a"], ["fragile", "sturdy", "throw", "coherent", "concept", "solid", "rubber"], ["no lcd", "not lcd", "no l_c_d_", "without", "dropped", "not include", "rejected", "not have", "did not", "didn't"]],
+      "gold_citations": [
+        {"meeting_id": "TS3008c", "quote": "I don't think it it's coherent with the design we're after."},
+        {"meeting_id": "TS3008c", "quote": "it's a good idea to use these plastic materials with soft rubber stuff on it"},
+        {"meeting_id": "TS3008d", "quote": "No. I think uh the uh normal uh simple chip will be okay."}
+      ]
+    },
+    {
+      "id": "E06", "team": "IS1000",
+      "question": "Team IS1000 costed two designs in their final meeting. What did the advanced design cost, how much of that was speech recognition, and how did that compare with the budget?",
+      "gold_answer": "The basic design cost about 8 Euros and the advanced one 16 Euros, of which speech recognition was about 3 Euros; without it the advanced design was 13 Euros, still above the 12.50 Euro production budget.",
+      "must_include": [["16", "sixteen"], ["13", "thirteen", "3 euro", "three euro"]],
+      "gold_citations": [
+        {"meeting_id": "IS1000d", "quote": "So that takes it down to thirteen Euros without the speech recognition."},
+        {"meeting_id": "IS1000a", "quote": "the product uh production cost must be maximal uh twelve uh twelve Euro and fifty cents"}
+      ]
+    },
+    {
+      "id": "E07", "team": "IS1004",
+      "question": "Team IS1004's industrial designer planned solar cells plus rechargeable batteries. Who questioned the solar cells, why, and were they kept?",
+      "gold_answer": "Speaker B (User Interface Designer) said solar cells were no longer necessary with a recharging base station. The team decided against them; the final costing excluded solar cells.",
+      "must_include": [["speaker b"], ["base station", "recharg", "docking"], ["dropped", "against", "removed", "not kept", "no solar", "said no", "excluded", "were not", "decided against", "not included"]],
+      "gold_citations": [
+        {"meeting_id": "IS1004d", "quote": "I don't really know if the solar cells are actually necessary any more if you have a recharging base station."},
+        {"meeting_id": "IS1004d", "quote": "Solar cells, yeah yeah yeah yeah yeah, we said no to that."}
+      ]
+    },
+    {
+      "id": "E08", "team": "IS1004",
+      "question": "Which two advanced features did Team IS1004 drop across their meetings, and which feature did their industrial designer call the most important in the final design?",
+      "gold_answer": "They dropped speech recognition (decided by the second meeting) and the LCD screen (dropped in the third). In the final meeting Speaker C called the locator the most important feature, with the scroll buttons.",
+      "must_include": [["speech"], ["lcd", "l_c_d_"], ["locator", "locat"]],
+      "gold_citations": [
+        {"meeting_id": "IS1004c", "quote": "We decided not to go for speech recognition technologies because of some reasons"},
+        {"meeting_id": "IS1004c", "quote": "So i it looks like we're going completely to forget about the L_C_D_ thing."},
+        {"meeting_id": "IS1004d", "quote": "For a T_V_ the most important feature which I felt was the locator which is a cool feature."}
+      ]
+    },
+    {
+      "id": "E09", "team": "ES2015",
+      "question": "What energy source did Team ES2015 end up with, who proposed it, and what was the case made of?",
+      "gold_answer": "Kinetic energy, proposed by Speaker B (Industrial Designer) in the third meeting and still in the final design. The remote is hard plastic with a rubber casing or coating, chosen for comfort and anti-RSI.",
+      "must_include": [["kinetic"], ["speaker b"], ["rubber"]],
+      "gold_citations": [
+        {"meeting_id": "ES2015c", "quote": "My personal preferences? I think we could go for the kinetic energy source."},
+        {"meeting_id": "ES2015c", "quote": "So the actual remote would be hard plastic and the casings rubber."},
+        {"meeting_id": "ES2015d", "quote": "So I know we have the kinetic energy which is very innovative."}
+      ]
+    },
+    {
+      "id": "E10", "team": "ES2013",
+      "question": "Team ES2013 was drawn to titanium for the case. Who favoured it, and what case materials were on the table by the final meeting?",
+      "gold_answer": "Speakers B and C both said they were thinking titanium (C was influenced by iPods: minimalist and shiny). By the final meeting the case was either spongy rubber or hard plastic, with B still liking a plastic and rubber combination depending on cost.",
+      "must_include": [["titanium"], ["rubber"], ["plastic"]],
+      "gold_citations": [
+        {"meeting_id": "ES2013c", "quote": "I was thinking titanium, I was thinking it's just I have been influenced by pictures of iPods"},
+        {"meeting_id": "ES2013d", "quote": "The the case can be either um spongy rubber or hard plastic."},
+        {"meeting_id": "ES2013d", "quote": "I still quite like the idea of combining plastic and rubber myself, but it depends on the cost"}
+      ]
+    }
+  ]
+}

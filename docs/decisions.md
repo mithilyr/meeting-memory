@@ -86,3 +86,34 @@ few hundred extra tokens per meeting. (2) questions.json lists "commitments and 
 followed up" as something the memory must hold, and open actions are a required part of the brief.
 **Trade-off:** A team's meetings must be extracted one after another (a, then b, then c). Teams
 still run in parallel, so throughput at scale is unaffected.
+
+## D-010: Build-time extraction by Claude Haiku 5.5 subagents (2026-11-13)
+**Decision:** 7 background Claude Code subagents on Haiku, 5 teams each, each looping
+`next` → read job → write JSON → `import` (code validates; >25% failed quotes = rejected, redo).
+**Why:** Haiku 5.5 is the model we recommend for production (tier B), so the build measures what
+Catalist would actually get. It is also the cheapest on the user's plan. If quality is poor on the
+eval, the worst teams get re-extracted with a stronger model, and that goes in failures.md.
+**Guardrails:** subagents may not open questions.json, eval/, docs/ or the data folder (no tuning to
+the graded questions). The prompt's examples were made domain-neutral (D-007 note, commit "Neutral prompt examples").
+
+## D-011: Citations by ledger event id (2026-11-13)
+**Decision:** The answer model may cite `{"event": "TS3012b-E04"}` instead of copying a quote. Code
+swaps in that event's quote, which was verified word for word at ingest.
+**Why:** Copying 6+ exact words of disfluent speech is where models fail most. Event citations
+can't fail. Free-text quotes are still allowed and are snapped or dropped by code.
+
+## D-012: Own eval set uses only teams NOT in questions.json (2026-11-13)
+**Decision:** 10 questions on ES2005, TS3005, TS3008, IS1000, IS1004, ES2015 and ES2013, written by
+reading the transcripts. Gold quotes are verified by code before scoring. Correctness is keyword
+groups matched by code, not a model judge.
+**Why:** It shows the agent works on teams it was never pointed at, and the scoring is repeatable.
+
+## D-013: Free answer models: OpenRouter rotation → local qwen3:4b (2026-11-13)
+**Checked live 2026-11-13:** OpenRouter free models answered in 1.5 to 5 s. The Gemini key copied
+from CodeFest returns 401 (revoked), so Gemini is not used. qwen3:4b stays as the safety net so a
+rate limit can't stop a live demo.
+
+## D-014: Demo UI: one HTML page served by Python's http.server (2026-11-13)
+Ask (answer + verified quotes + "show in transcript" + agent trace), Timeline (ledger by meeting
+with current/superseded/open), Brief. Styling follows catalist.media (Anton/Archivo, #F8C020,
+#24408E, square corners). No framework, no build step.

@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meeting Memory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  /* Palette and type follow catalist.media: Anton display, Archivo body, yellow + navy, square corners. */
+  :root {
+    --paper: #F2EFE9; --ink: #0B0B0C; --text: #3D3D40; --muted: #77746E; --line: #D9D4CA;
+    --yellow: #F8C020; --navy: #24408E; --white: #FFFFFF; --red: #B3261E;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--text); font: 17px/1.55 Archivo, -apple-system, "Segoe UI", sans-serif; }
+  .display { font-family: Anton, Archivo, sans-serif; text-transform: uppercase; letter-spacing: .5px; color: var(--ink); font-weight: 400; }
+  header { background: var(--ink); color: var(--white); }
+  .bar { max-width: 1180px; margin: 0 auto; padding: 18px 20px; display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; }
+  .logo { font-family: Anton, sans-serif; font-size: 30px; color: var(--yellow); letter-spacing: 1px; }
+  .tag { color: #CFCAC0; font-size: 14px; }
+  nav { max-width: 1180px; margin: 0 auto; padding: 0 20px; display: flex; gap: 4px; }
+  nav button { font: 15px Anton, sans-serif; letter-spacing: 1px; text-transform: uppercase; background: none; color: #CFCAC0;
+               border: 0; padding: 10px 16px 12px; cursor: pointer; border-bottom: 4px solid transparent; }
+  nav button.on { color: var(--white); border-bottom-color: var(--yellow); }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
+  section[hidden] { display: none; }
+  h2 { font-size: 42px; margin: 0 0 6px; line-height: 1.05; }
+  .lede { margin: 0 0 22px; color: var(--muted); max-width: 720px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; }
+  textarea, select, input { font: inherit; color: var(--ink); background: var(--white); border: 2px solid var(--ink); border-radius: 0; padding: 10px 12px; }
+  textarea { width: 100%; min-height: 84px; resize: vertical; }
+  .btn { font: 18px Anton, sans-serif; letter-spacing: 1px; text-transform: uppercase; background: var(--yellow); color: var(--ink);
+         border: 2px solid var(--ink); padding: 10px 22px; cursor: pointer; box-shadow: 4px 4px 0 var(--ink); transition: transform .08s, box-shadow .08s; }
+  .btn:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 var(--ink); }
+  .btn:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--ink); }
+  .btn:disabled { opacity: .5; cursor: wait; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+  .chip { font-size: 13px; border: 1px solid var(--ink); background: transparent; padding: 4px 10px; cursor: pointer; color: var(--ink); }
+  .chip:hover { background: var(--yellow); }
+  .card { background: var(--white); border: 2px solid var(--ink); padding: 22px; margin-top: 24px; }
+  .answer { font-size: 21px; line-height: 1.5; color: var(--ink); margin: 0 0 18px; }
+  .kicker { font: 13px Anton, sans-serif; letter-spacing: 1.2px; text-transform: uppercase; color: var(--navy); margin: 0 0 8px; }
+  .cite { border-left: 6px solid var(--yellow); padding: 8px 12px; margin: 10px 0; background: #FBFAF7; display: flex; gap: 12px; align-items: flex-start; }
+  .cite q { font-style: italic; flex: 1; }
+  .badge { font: 12px Anton, sans-serif; letter-spacing: 1px; background: var(--navy); color: var(--white); padding: 3px 8px; white-space: nowrap; }
+  .link { background: none; border: 0; color: var(--navy); text-decoration: underline; cursor: pointer; font: inherit; font-size: 14px; padding: 0; white-space: nowrap; }
+  .trace { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; }
+  .step { border: 1px solid var(--line); padding: 3px 8px; background: var(--paper); }
+  .step b { color: var(--ink); }
+  .muted { color: var(--muted); font-size: 14px; }
+  /* timeline */
+  .cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 20px; }
+  .col h3 { font-size: 22px; margin: 0 0 8px; padding-bottom: 6px; border-bottom: 4px solid var(--ink); }
+  .ev { background: var(--white); border: 1px solid var(--ink); padding: 10px; margin-bottom: 10px; font-size: 14px; line-height: 1.4; cursor: pointer; }
+  .ev:hover { box-shadow: 3px 3px 0 var(--ink); }
+  .ev .meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .t { font: 11px Anton, sans-serif; letter-spacing: 1px; text-transform: uppercase; padding: 2px 6px; border: 1px solid var(--ink); }
+  .s-current { background: var(--navy); color: var(--white); border-color: var(--navy); }
+  .s-open { background: var(--yellow); }
+  .s-superseded { background: var(--line); color: var(--muted); border-color: var(--line); }
+  .ev.superseded .sum { text-decoration: line-through; color: var(--muted); }
+  .topic { color: var(--navy); font-weight: 600; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .filters .chip.on { background: var(--ink); color: var(--white); }
+  .roles { font-size: 14px; margin-top: 10px; }
+  /* brief */
+  .brief h4 { font: 22px Anton, sans-serif; text-transform: uppercase; color: var(--ink); margin: 22px 0 8px; padding-top: 12px; border-top: 4px solid var(--ink); }
+  .brief h4:first-of-type { border-top: 0; padding-top: 0; }
+  .brief li { margin: 0 0 12px; }
+  .brief .src { display: block; font-size: 13px; color: var(--muted); font-style: italic; margin-top: 2px; }
+  /* transcript drawer */
+  #drawer { position: fixed; top: 0; right: 0; height: 100%; width: min(520px, 100%); background: var(--paper); border-left: 3px solid var(--ink);
+            transform: translateX(100%); transition: transform .2s ease-out; overflow-y: auto; padding: 22px; z-index: 10; }
+  #drawer.open { transform: none; }
+  .turn { padding: 8px 10px; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .turn.focus { background: var(--yellow); }
+  .turn b { color: var(--ink); }
+  .spin { display: inline-block; width: 14px; height: 14px; border: 3px solid var(--ink); border-right-color: transparent; border-radius: 50%; animation: r .7s linear infinite; vertical-align: -2px; }
+  @keyframes r { to { transform: rotate(360deg); } }
+  footer { max-width: 1180px; margin: 0 auto; padding: 0 20px 30px; font-size: 13px; color: var(--muted); }
+  @media (max-width: 800px) { .cols { grid-template-columns: 1fr; } h2 { font-size: 32px; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar"><span class="logo">MEETING MEMORY</span><span class="tag">Decisions, commitments and disagreements, with the exact words that prove them.</span></div>
+  <nav>
+    <button data-tab="ask" class="on">Ask</button>
+    <button data-tab="timeline">Timeline</button>
+    <button data-tab="brief">Brief</button>
+  </nav>
+</header>
+
+<main>
+  <section id="ask">
+    <h2 class="display">Ask the meetings</h2>
+    <p class="lede">Ask in plain English and name the team. Every answer is checked against the transcript word for word before you see it.</p>
+    <textarea id="q" placeholder="e.g. What energy source did Team ES2015 end up with, and who proposed it?"></textarea>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" id="askBtn">Ask</button>
+      <label class="muted" style="align-self:center"><input type="checkbox" id="local"> local model only</label>
+    </div>
+    <div class="chips" id="examples"></div>
+    <div id="result"></div>
+  </section>
+
+  <section id="timeline" hidden>
+    <h2 class="display">Team timeline</h2>
+    <p class="lede">Everything the memory holds for one team, meeting by meeting. What is current and what was replaced is worked out by rule, not by the model.</p>
+    <div class="row"><select id="tlTeam"></select></div>
+    <div class="filters" id="tlFilters"></div>
+    <div class="roles muted" id="tlRoles"></div>
+    <div class="cols" id="tlCols"></div>
+  </section>
+
+  <section id="brief" hidden>
+    <h2 class="display">Pre-meeting brief</h2>
+    <p class="lede">Built only from meetings that have already happened. Every point carries its source.</p>
+    <div class="row">
+      <select id="brTeam"></select>
+      <select id="brUpto"><option value="">before the last meeting</option><option value="a">after meeting a</option><option value="b">after meeting b</option><option value="c">after meeting c</option></select>
+      <button class="btn" id="brBtn">Write brief</button>
+    </div>
+    <div id="brOut"></div>
+  </section>
+</main>
+
+<aside id="drawer">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <span class="display" style="font-size:24px" id="drTitle">Transcript</span>
+    <button class="link" id="drClose">Close</button>
+  </div>
+  <div id="drBody"></div>
+</aside>
+
+<footer>Local demo. Data: AMI Meeting Corpus, University of Edinburgh and partners, CC BY 4.0.</footer>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const api = async (path, body) => {
+  const r = await fetch(path, body ? {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)} : {});
+  const data = await r.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+};
+
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll("main section").forEach(s => s.hidden = s.id !== b.dataset.tab);
+  if (b.dataset.tab === "timeline" && !$("#tlCols").innerHTML) loadTimeline();
+});
+
+const EXAMPLES = [
+  "What energy source did Team ES2015 end up with, and who proposed it?",
+  "Team IS1004 planned solar cells. Who questioned them, and were they kept?",
+  "In Team TS3008, who pushed back on an LCD display and why?",
+];
+$("#examples").innerHTML = EXAMPLES.map(e => `<button class="chip">${esc(e)}</button>`).join("");
+$("#examples").onclick = e => { if (e.target.matches(".chip")) { $("#q").value = e.target.textContent; ask(); } };
+
+async function ask() {
+  const question = $("#q").value.trim();
+  if (!question) return;
+  $("#askBtn").disabled = true;
+  $("#result").innerHTML = `<div class="card"><span class="spin"></span> &nbsp;Searching the team's meetings…</div>`;
+  try {
+    const r = await api("/api/ask", {question, local: $("#local").checked});
+    const cites = r.citations.map(c => `
+      <div class="cite"><span class="badge">${esc(c.meeting_id)}</span><q>${esc(c.quote)}</q>
+      <button class="link" data-m="${esc(c.meeting_id)}" data-q="${esc(c.quote)}">show in transcript</button></div>`).join("")
+      || `<p class="muted">No citation could be verified.</p>`;
+    const steps = (r.trace || []).map(s => {
+      const bits = Object.entries(s).filter(([k]) => k !== "step" && k !== "problems")
+        .map(([k, v]) => `${k}: ${esc(Array.isArray(v) ? v.join(", ") : v)}`).join(" · ");
+      return `<span class="step"><b>${esc(s.step)}</b> ${bits}</span>`;
+    }).join("");
+    $("#result").innerHTML = `<div class="card"><p class="kicker">Answer</p><p class="answer">${esc(r.answer)}</p>
+      <p class="kicker">Evidence (checked word for word)</p>${cites}
+      <div class="trace"><span class="step"><b>${esc(r.seconds)}s</b></span>${steps}</div></div>`;
+  } catch (err) {
+    $("#result").innerHTML = `<div class="card" style="border-color:var(--red)">Error: ${esc(err.message)}</div>`;
+  }
+  $("#askBtn").disabled = false;
+}
+$("#askBtn").onclick = ask;
+$("#q").onkeydown = e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) ask(); };
+
+async function showTurns(meeting, idx, quote) {
+  $("#drawer").classList.add("open");
+  $("#drTitle").textContent = meeting;
+  $("#drBody").innerHTML = `<span class="spin"></span>`;
+  const qs = new URLSearchParams({meeting, idx: idx ?? -1, quote: quote || ""});
+  const r = await api(`/api/turns?${qs}`);
+  $("#drBody").innerHTML = r.turns.map(t => `<div class="turn ${t.idx === r.focus ? "focus" : ""}">
+    <b>Speaker ${esc(t.speaker)}</b> <span class="muted">#${t.idx}</span><br>${esc(t.text)}</div>`).join("");
+}
+document.body.addEventListener("click", e => {
+  const b = e.target.closest("[data-m]");
+  if (b) showTurns(b.dataset.m, b.dataset.i, b.dataset.q);
+});
+$("#drClose").onclick = () => $("#drawer").classList.remove("open");
+
+let TEAMS = [];
+let LEDGER = null, FILTER = "all";
+async function loadTeams() {
+  TEAMS = await api("/api/teams");
+  const opts = TEAMS.map(t => `<option value="${t.team}">${t.team} (${t.extracted}/${t.meetings} meetings in memory)</option>`).join("");
+  $("#tlTeam").innerHTML = opts; $("#brTeam").innerHTML = opts;
+  $("#brTeam").value = "TS3012";
+}
+async function loadTimeline() {
+  LEDGER = await api(`/api/ledger?team=${$("#tlTeam").value}`);
+  const types = ["all", "decision", "number", "proposal", "objection", "action_item", "report_back"];
+  $("#tlFilters").innerHTML = types.map(t => `<button class="chip ${t === FILTER ? "on" : ""}" data-f="${t}">${t.replace("_", " ")}</button>`).join("");
+  $("#tlRoles").textContent = Object.entries(LEDGER.roles).map(([s, r]) => `Speaker ${s}: ${r}`).join("  ·  ");
+  renderTimeline();
+}
+function renderTimeline() {
+  $("#tlCols").innerHTML = LEDGER.letters.map(L => {
+    const evs = LEDGER.events.filter(e => e.letter === L && (FILTER === "all" || e.type === FILTER));
+    return `<div class="col"><h3 class="display">Meeting ${L}</h3>${evs.map(e => `
+      <div class="ev ${e.status || ""}" data-m="${e.meeting_id}" data-i="${e.turn_idx}">
+        <div class="meta"><span class="t">${e.type.replace("_", " ")}</span>${e.status ? `<span class="t s-${e.status}">${e.status}</span>` : ""}</div>
+        <div><span class="topic">${esc(e.topic.replaceAll("_", " "))}</span> · <span class="sum">${esc(e.summary)}</span></div>
+      </div>`).join("") || `<p class="muted">Nothing extracted yet.</p>`}</div>`;
+  }).join("");
+}
+$("#tlTeam").onchange = loadTimeline;
+$("#tlFilters").onclick = e => { if (e.target.dataset.f) { FILTER = e.target.dataset.f; loadTimeline(); } };
+
+$("#brBtn").onclick = async () => {
+  $("#brBtn").disabled = true;
+  $("#brOut").innerHTML = `<div class="card"><span class="spin"></span> &nbsp;Grouping the ledger and writing…</div>`;
+  try {
+    const r = await api("/api/brief", {team: $("#brTeam").value, upto: $("#brUpto").value});
+    let html = "", inList = false;
+    for (const line of r.brief.split("\n")) {
+      if (!line.trim()) continue;
+      if (line.startsWith("- ")) {
+        const m = line.match(/^- (.*?)\s*\[(.*)\]$/);
+        const text = m ? m[1] : line.slice(2), src = m ? m[2] : "";
+        if (!inList) { html += "<ul>"; inList = true; }
+        html += `<li>${esc(text)}${src ? `<span class="src">${esc(src)}</span>` : ""}</li>`;
+      } else {
+        if (inList) { html += "</ul>"; inList = false; }
+        html += line === line.toUpperCase() ? `<h4>${esc(line)}</h4>` : `<p class="kicker">${esc(line)}</p>`;
+      }
+    }
+    if (inList) html += "</ul>";
+    $("#brOut").innerHTML = `<div class="card brief">${html}<p class="muted">Model: ${esc(r.model)}</p></div>`;
+  } catch (err) {
+    $("#brOut").innerHTML = `<div class="card" style="border-color:var(--red)">Error: ${esc(err.message)}</div>`;
+  }
+  $("#brBtn").disabled = false;
+};
+
+loadTeams();
+</script>
+</body>
+</html>
