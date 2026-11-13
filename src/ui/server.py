@@ -6,6 +6,8 @@ Endpoints (JSON):
   GET  /api/teams                      team ids with meeting count and extraction progress
   GET  /api/ledger?team=TS3012         the team's events with statuses, grouped by meeting
   GET  /api/turns?meeting=X&idx=N      the turn and its neighbours, for "show in transcript"
+  GET  /api/transcript?meeting=X       every turn of the meeting, for "whole meeting"
+  GET  /api/raw?meeting=X              the original .txt file, unchanged, as a download
   GET  /api/health                     which model backends this machine can use
   POST /api/ask     {"question", "team"} the question agent (answer.py)
   POST /api/brief   {"team", "upto"}     the brief writer (brief.py)
@@ -26,7 +28,7 @@ from urllib.parse import parse_qs, urlparse
 from src.agent.answer import answer
 from src.agent.brief import write_brief
 from src.ingest.parse import MEETING_ID, TURN_HEADER
-from src.memory import ledger
+from src.memory import ledger, names
 from src.memory.refresh import refresh
 from src.memory.store import connect
 from src.settings import get_settings
@@ -47,7 +49,9 @@ def teams() -> list[dict]:
     rows = db().execute(
         "SELECT team, COUNT(*) n, SUM(extracted_hash = content_hash) done FROM meetings GROUP BY team ORDER BY team"
     ).fetchall()
-    return [{"team": r["team"], "meetings": r["n"], "extracted": r["done"] or 0} for r in rows]
+    named = names.names(db())
+    return [{"team": r["team"], "name": named.get(r["team"]), "meetings": r["n"], "extracted": r["done"] or 0}
+            for r in rows]
 
 
 def team_ledger(team: str) -> dict:
@@ -73,6 +77,22 @@ def turns_around(meeting_id: str, idx: int, quote: str | None = None) -> dict:
     rows = db().execute("SELECT idx, speaker, text FROM turns WHERE meeting_id = ? AND idx BETWEEN ? AND ? ORDER BY idx",
                         (meeting_id, idx - 4, idx + 4)).fetchall()
     return {"meeting_id": meeting_id, "focus": idx, "turns": [dict(r) for r in rows]}
+
+
+def transcript(meeting_id: str) -> dict:
+    rows = db().execute("SELECT idx, speaker, text FROM turns WHERE meeting_id = ? ORDER BY idx", (meeting_id,)).fetchall()
+    return {"meeting_id": meeting_id, "turns": [dict(r) for r in rows]}
+
+
+def raw_file(meeting_id: str) -> Path:
+    """The original transcript as it arrived. The id is checked first, so no other path can be read."""
+    if not MEETING_ID.match(meeting_id):
+        raise ValueError("not a meeting id")
+    settings = get_settings()
+    for folder in (settings.transcripts_dir, settings.inbox_dir):
+        if (folder / f"{meeting_id}.txt").is_file():
+            return folder / f"{meeting_id}.txt"
+    raise FileNotFoundError(f"{meeting_id}.txt not found")
 
 
 def health() -> dict:
@@ -125,6 +145,17 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(team_ledger(q["team"]))
             elif url.path == "/api/turns":
                 self._json(turns_around(q["meeting"], int(q.get("idx", -1)), q.get("quote")))
+            elif url.path == "/api/transcript":
+                self._json(transcript(q["meeting"]))
+            elif url.path == "/api/raw":
+                path = raw_file(q["meeting"])
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Content-Disposition", f'attachment; filename="{path.name}"')
+                body = path.read_bytes()
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
             else:
                 self._json({"error": "not found"}, 404)
         except Exception as error:  # noqa: BLE001 - a demo page must report, not crash

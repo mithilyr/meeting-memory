@@ -8,6 +8,7 @@
                         Backend: Claude Haiku 5.5 if ANTHROPIC_API_KEY is set (tier B), otherwise
                         the free OpenRouter models.
   4. Validate (code)    same validator as always; a rejected meeting is reported and left pending
+  5. Name (model)       readable project names, rewritten only for teams whose decisions changed
 
 Run it from the UI's Refresh button, a scheduled task, or a folder watcher.
 """
@@ -21,6 +22,7 @@ import time
 
 from src.clients.llm import complete, parse_json
 from src.ingest import extract
+from src.memory import names
 from src.memory.store import connect, embed_missing, ingest
 
 
@@ -61,6 +63,7 @@ def refresh(conn: sqlite3.Connection | None = None) -> dict:
             done.append(f"{meeting_id}: {count} events via {model}")
         except Exception as error:  # noqa: BLE001 - report and move on; the meeting stays pending
             failed.append(f"{meeting_id}: {str(error).splitlines()[0][:200]}")
+    report["names"] = names.name_all(conn)
     report.update(extracted=done, failed=failed, still_pending=len(pending_meetings(conn)),
                   seconds=round(time.time() - started, 1))
     return report

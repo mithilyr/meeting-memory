@@ -151,8 +151,9 @@ flowchart TB
 ## 6. Projects, and meetings that cover more than one
 
 In this corpus each team works on one project (a TV remote), so a project is a team id. The question
-names the team, code reads the id, and every search is filtered to that team. There is no project
-picker: the transcripts carry no project names, and a list of 35 bare ids helps nobody (D-024).
+names the team, code reads the id, and every search is filtered to that team. The transcripts carry no
+project names, so the model writes one per team from its final decisions ("Rubber curved universal
+remote · TS3012") and the Ask page offers them in a picker (D-025).
 
 A real company has meetings that touch two or three projects. The design handles that with two
 small changes, which are not built yet because no meeting here needs them:

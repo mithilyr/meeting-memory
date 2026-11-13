@@ -174,7 +174,7 @@ OpenRouter's free tier is 50 requests a day per account, and one full run plus t
 about that. Groq has its own free allowance, so the chain is OpenRouter, then Groq. Model ids are
 set in GROQ_MODELS and checked against Groq's live /models list.
 
-## D-024: Project picker removed; the team is named in the question (2026-11-13)
+## D-024: Project picker removed (reversed by D-025); the team is named in the question (2026-11-13)
 **Decision:** The Ask page has no project dropdown. Code reads the team id from the question.
 **Why:** the transcripts carry only a team id (no project or client name), and every team has the
 same brief, so the dropdown was a list of 35 codes like "ES2015". A picker is only worth having
@@ -182,3 +182,18 @@ with names people recognise.
 **Production:** names come from the meeting's own metadata at ingest (calendar title, Slack channel,
 or the project field in the meeting tool), stored in a `projects` table. The picker comes back then,
 and questions can say "the Acme remote" instead of an id.
+
+## D-025: Generated project names; whole transcript and original file one click from any quote (2026-11-13)
+**Decision:** The picker is back, now showing names such as "Rubber curved universal remote · TS3012".
+`src/memory/names.py` writes each name from the team's current decisions (one free model call per
+team) and keeps a hash of those decisions, so the name is rewritten only when they change. Refresh
+runs it. Code puts names in sentence case and asks again once when a name has the same words as
+another team's. The id is always shown beside the name, because the name is a model summary and
+the id is the fact.
+**Why:** people recognise names faster than they recall codes, and a list of codes (D-024) helps nobody.
+**Proof:** the transcript panel now has "Whole meeting" (every turn, scrolled to the quoted one) and
+"Download original (.txt)", which returns the file byte for byte. The meeting id is checked against
+the id pattern before any file is read, so the endpoint cannot be pointed at other files.
+**Limit:** ES2007 and ES2013 still have the same three words in different order after the retry
+("Kinetic curved rubber" vs "Curved rubber kinetic"). The id tells them apart. In production,
+names come from meeting metadata (D-024) and this module becomes the fallback.

@@ -96,7 +96,8 @@
 <main>
   <section id="ask">
     <h2 class="display">Ask the meetings</h2>
-    <p class="lede">Ask in plain English and name the team (for example ES2015). Every quote in the answer is checked against the transcript before it is shown.</p>
+    <p class="lede">Pick a project and ask in plain English. Every quote in the answer is checked against the transcript before it is shown.</p>
+    <div class="row" style="margin-bottom:10px"><select id="askTeam"><option value="">Project named in the question</option></select></div>
     <textarea id="q" placeholder="e.g. What energy source did Team ES2015 end up with, and who proposed it?"></textarea>
     <div class="row" style="margin-top:12px">
       <button class="btn" id="askBtn">Ask</button>
@@ -142,6 +143,10 @@
     <span class="display" style="font-size:24px" id="drTitle">Transcript</span>
     <button class="link" id="drClose">Close</button>
   </div>
+  <div class="row" style="margin:6px 0 12px;gap:16px">
+    <button class="link" id="drWhole">Whole meeting</button>
+    <a class="link" id="drRaw" href="#" download>Download original (.txt)</a>
+  </div>
   <div id="drBody"></div>
 </aside>
 
@@ -177,7 +182,7 @@ async function ask() {
   $("#askBtn").disabled = true;
   $("#result").innerHTML = `<div class="card"><span class="spin"></span> &nbsp;Searching the team's meetings…</div>`;
   try {
-    const r = await api("/api/ask", {question});
+    const r = await api("/api/ask", {question, team: $("#askTeam").value});
     const cites = r.citations.map(c => `
       <div class="cite"><span class="badge">${esc(c.meeting_id)}</span><q>${esc(c.quote)}</q>
       <button class="link" data-m="${esc(c.meeting_id)}" data-q="${esc(c.quote)}">show in transcript</button></div>`).join("")
@@ -198,15 +203,26 @@ async function ask() {
 $("#askBtn").onclick = ask;
 $("#q").onkeydown = e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) ask(); };
 
+let FOCUS = null;
+const renderTurns = turns => $("#drBody").innerHTML = turns.map(t => `<div class="turn ${t.idx === FOCUS.idx ? "focus" : ""}">
+    <b>Speaker ${esc(t.speaker)}</b> <span class="muted">#${t.idx}</span><br>${esc(t.text)}</div>`).join("");
 async function showTurns(meeting, idx, quote) {
   $("#drawer").classList.add("open");
   $("#drTitle").textContent = meeting;
+  $("#drRaw").href = `/api/raw?meeting=${encodeURIComponent(meeting)}`;
+  $("#drWhole").hidden = false;
   $("#drBody").innerHTML = `<span class="spin"></span>`;
   const qs = new URLSearchParams({meeting, idx: idx ?? -1, quote: quote || ""});
   const r = await api(`/api/turns?${qs}`);
-  $("#drBody").innerHTML = r.turns.map(t => `<div class="turn ${t.idx === r.focus ? "focus" : ""}">
-    <b>Speaker ${esc(t.speaker)}</b> <span class="muted">#${t.idx}</span><br>${esc(t.text)}</div>`).join("");
+  FOCUS = {meeting, idx: r.focus};
+  renderTurns(r.turns);
 }
+$("#drWhole").onclick = async () => {
+  $("#drWhole").hidden = true;
+  const r = await api(`/api/transcript?meeting=${encodeURIComponent(FOCUS.meeting)}`);
+  renderTurns(r.turns);
+  $("#drBody .focus")?.scrollIntoView({block: "center"});
+};
 document.body.addEventListener("click", e => {
   const b = e.target.closest("[data-m]");
   if (b) showTurns(b.dataset.m, b.dataset.i, b.dataset.q);
@@ -217,8 +233,11 @@ let TEAMS = [];
 let LEDGER = null, FILTER = "all";
 async function loadTeams() {
   TEAMS = await api("/api/teams");
-  const opts = TEAMS.map(t => `<option value="${t.team}">${t.team} (${t.extracted}/${t.meetings} meetings in memory)</option>`).join("");
+  const label = t => t.name ? `${esc(t.name)} · ${t.team}` : t.team;
+  const sorted = [...TEAMS].sort((a, b) => (a.name || a.team).localeCompare(b.name || b.team));
+  const opts = sorted.map(t => `<option value="${t.team}">${label(t)}</option>`).join("");
   $("#tlTeam").innerHTML = opts; $("#brTeam").innerHTML = opts;
+  $("#askTeam").innerHTML = `<option value="">Project named in the question</option>` + opts;
   $("#brTeam").value = "TS3012";
 }
 async function loadTimeline() {
