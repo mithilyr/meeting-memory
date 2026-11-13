@@ -35,7 +35,31 @@ Each one had a quote that wasn't in the cited turn or the turns next to it, and 
 by code. The event is lost, not stored with a bad quote. Most of these were long paraphrases
 written by the model in place of the speaker's words.
 
-## Eval misses (details in eval/results/summary.md)
+## The three wrong answers on the hosted run (the PDF asks for three)
+
+### F-008: The prompt budget cut the evidence the answer needed (E03, TS3005)
+The final remote had a microphone for speech recognition, and the ledger holds 13 events about it.
+None reached the model. TS3005's ledger is over the 11K-character budget, so code kept only the
+topics that match the question's words, and the question says "LCD" and "interface", not
+"microphone". The answer named the LCD and stopped.
+**Cause:** the budget added for Groq's 8K-token limit (D-023). Keyword overlap can't tell that a
+microphone is part of the interface. **Fix to try:** rank ledger topics with the Voyage embeddings
+already in the store, and always keep each topic's latest decision.
+
+### F-009: The final word on a topic was never extracted (E04, TS3005)
+The final meeting says "it's not very spongy, because it's hard rubber". No event was extracted
+from that line, so the latest case-material entry in the ledger is from meeting c. The model filled
+the gap with "spongy rubber", which was said earlier in the same turn. The quote check can't catch
+this: the evidence it cited is real, just not the final word.
+**Cause:** extraction missed an evaluation-stage remark. **Fix to try:** have extraction list
+every material, price or feature the final meeting states, even in passing.
+
+### F-010: Right evidence, wrong item (E08, IS1004)
+The filtered ledger did contain "forget about the L_C_D_ thing", but the answer listed "the advanced
+chip" as the second dropped feature. That is a reasoning slip by the model. Retrieval and the ledger
+were fine.
+
+## Eval misses on the local model (run 1, before local models were removed)
 
 ### F-005: The local model echoed the question as its answer (E01, qwen3:4b)
 **Cause:** a 4B model given a 10K-token prompt lost the task and copied the question.

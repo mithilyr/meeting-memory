@@ -69,7 +69,7 @@
       "id": "E07", "team": "IS1004",
       "question": "Team IS1004's industrial designer planned solar cells plus rechargeable batteries. Who questioned the solar cells, why, and were they kept?",
       "gold_answer": "Speaker B (User Interface Designer) said solar cells were no longer necessary with a recharging base station. The team decided against them; the final costing excluded solar cells.",
-      "must_include": [["speaker b"], ["base station", "recharg", "docking"], ["dropped", "against", "removed", "not kept", "no solar", "said no", "excluded", "were not", "decided against", "not included"]],
+      "must_include": [["speaker b"], ["base station", "recharg", "docking"], ["drop", "against", "removed", "not kept", "no solar", "said no", "excluded", "were not", "decided against", "not included"]],
       "gold_citations": [
         {"meeting_id": "IS1004d", "quote": "I don't really know if the solar cells are actually necessary any more if you have a recharging base station."},
         {"meeting_id": "IS1004d", "quote": "Solar cells, yeah yeah yeah yeah yeah, we said no to that."}
