@@ -161,7 +161,8 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
                       "meetings": sorted(meetings), "problems": problems})
         result = {"answer": str(reply.get("answer", "")).strip(), "citations": citations}
         too_long = len(re.findall(r"[.!?](?:\s|$)", result["answer"])) > 3
-        if citations and len(meetings) >= 2 and not too_long:
+        echoed = question.lower()[:60] in result["answer"].lower()  # seen from qwen3:4b (E01)
+        if citations and len(meetings) >= 2 and not too_long and not echoed:
             break
         if feedback:  # already retried once
             break
@@ -172,6 +173,8 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
             issues.append("All citations come from one meeting; cite evidence from at least two meetings if the answer spans them.")
         if too_long:
             issues.append("The answer is longer than 3 sentences; shorten it to 1 to 3 sentences.")
+        if echoed:
+            issues.append("The answer repeats the question instead of answering it.")
         feedback = ("\nYOUR PREVIOUS ANSWER: " + json.dumps(reply)[:1500] +
                     "\nPROBLEMS: " + " ".join(issues) +
                     " Prefer citing ledger events by id. Reply with corrected JSON.")

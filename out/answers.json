@@ -2,7 +2,7 @@
   "answers": [
     {
       "question_id": "Q01",
-      "answer": "The team planned both an LCD screen and speech recognition in meeting B (TS3006b#0110). When costs forced a cut in meeting D, they dropped speech recognition and kept the LCD screen. They kept the LCD because Speaker B objected that dropping it would lose their whole concept (TS3006d-E13), and they dropped speech recognition because it had not been integrated into the system, saving 4 Euros (TS3006d-E14).",
+      "answer": "The team planned both an LCD screen and speech recognition in meeting B. When costs forced a cut in meeting D, they dropped speech recognition and kept the LCD screen. They kept the LCD because Speaker B objected that dropping it would lose their whole concept, and they dropped speech recognition because it had not been integrated into the system, saving 4 Euros.",
       "citations": [
         {
           "meeting_id": "TS3006b",
@@ -20,7 +20,7 @@
     },
     {
       "question_id": "Q02",
-      "answer": "Team ES2003 initially leaned towards a spongy rubber (stress-ball type) material for the case, but ultimately switched to a plastic solid case with a single curve. The switch was driven by cost constraints: rubber added about €2 per unit while plastic incurred no extra cost, and the team needed to reduce the design by €4 to stay within budget while keeping the expensive LCD display.",
+      "answer": "The team initially leaned towards a flexible, spongy rubber material (stress-ball type) for the case, but switched to a solid plastic case with a single curve to stay within budget. The switch was driven by a 4 EUR per unit cost overrun, where the LCD and its chip accounted for about half the expenditure, and rubber cost 2 EUR per unit while plastic incurred no cost.",
       "citations": [
         {
           "meeting_id": "ES2003c",
@@ -28,17 +28,17 @@
         },
         {
           "meeting_id": "ES2003d",
-          "quote": "changing it to plastic and a solid unit with a single curve design"
+          "quote": "going for a plastic solid case, to keep the L_C_D_"
         },
         {
           "meeting_id": "ES2003d",
-          "quote": "rubber's only got a value of two Euros per unit"
+          "quote": "changing it to plastic and a solid unit with a single curve design"
         }
       ]
     },
     {
       "question_id": "Q03",
-      "answer": "Speaker B, the User Interface Designer, first proposed replacing the titanium back with titanium-coloured plastic to reduce cost. The titanium was not kept in the end; Speaker A decided to dump the titanium to meet the cost target.",
+      "answer": "Speaker B, the User Interface Designer, first proposed replacing the titanium with coloured plastic (titanium-coloured plastic). The titanium was not kept in the end; Speaker A, the Project Manager, decided to dump the titanium to meet the cost target.",
       "citations": [
         {
           "meeting_id": "TS3009c",
@@ -74,7 +74,7 @@
     },
     {
       "question_id": "Q05",
-      "answer": "The team first settled on a simple battery as the energy source in meeting b (Speaker C, the Industrial Designer). They later adopted a combination of battery and kinetic energy in meeting c (agreed by Speaker A, the Project Manager, based on Speaker C's proposal). In the final meeting d, Speaker A (Project Manager) proposed dropping kinetic energy due to cost, reverting to battery only.",
+      "answer": "In meeting b, the team first settled on a simple battery as the energy source (Speaker C's proposal). In meeting c, they changed to a combination of battery and kinetic energy. In meeting d, Speaker A (Project Manager) proposed dropping kinetic energy because it put the design over budget at €13.50, and the team reverted to battery only.",
       "citations": [
         {
           "meeting_id": "TS3007b",
@@ -82,7 +82,7 @@
         },
         {
           "meeting_id": "TS3007c",
-          "quote": "I I uh I would prefer uh both uh too"
+          "quote": "the energy, the combination between battery and kinetic"
         },
         {
           "meeting_id": "TS3007d",
@@ -92,7 +92,7 @@
     },
     {
       "question_id": "Q06",
-      "answer": "The team initially decided to include a lost-remote feature, but in the final meeting Speaker A decided not to build it because the bright colours would make the remote stand out. The main objection came from Speaker D, who argued that a remote under covers or in a couch cannot be seen, so the design does not solve losing it.",
+      "answer": "The lost-remote feature was initially proposed by Speaker D and later approved by Speaker A, but was ultimately dropped in the final meeting. Speaker D raised the main objection that a remote hidden under covers or in a couch cannot be seen, so a visual design does not solve the losing problem. Speaker A then decided not to build the feature, reasoning that the bright colours make the remote stand out.",
       "citations": [
         {
           "meeting_id": "ES2008b",
@@ -100,11 +100,11 @@
         },
         {
           "meeting_id": "ES2008d",
-          "quote": "we do we've decided not to worry about that for now"
+          "quote": "if it's like under covers or like in a couch you still can't see it"
         },
         {
           "meeting_id": "ES2008d",
-          "quote": "if it's like under covers or like in a couch you still can't see it"
+          "quote": "we do we've decided not to worry about that for now"
         }
       ]
     },
@@ -164,7 +164,7 @@
     },
     {
       "question_id": "Q10",
-      "answer": "Team TS3003 decided to design for people aged 60 to 80 years old. The Project Manager (Speaker A) explained that since the company's new products were being designed for younger people, the team could focus on the elderly market. This was supported by market research from the Market Expert (Speaker D) showing that this age group prefers fancy design, dark colours, and wood materials.",
+      "answer": "Team TS3003 decided to design for people aged 60 to 80. Speaker A, the Project Manager, announced this target in meeting c, explaining that the company's other new products are designed for younger people, so the team can focus on elderly users who are not served by those products. This followed a management requirement relayed by Speaker A in meeting b that the customer is 'forty plus,' which the team then narrowed to the 60-80 age range.",
       "citations": [
         {
           "meeting_id": "TS3003b",
@@ -172,11 +172,11 @@
         },
         {
           "meeting_id": "TS3003c",
-          "quote": "we're going to target uh sixty to to eighty year old customers"
+          "quote": "And we're going to target uh sixty to to eighty year old customers"
         },
         {
-          "meeting_id": "TS3003c",
-          "quote": "for our um group, we're focusing on the people of sixty to eighty y years old"
+          "meeting_id": "TS3003b",
+          "quote": "the customer is uh forty plus"
         }
       ]
     },
@@ -218,7 +218,7 @@
     },
     {
       "question_id": "Q13",
-      "answer": "Yes, speech recognition was included in the final design. The team reversed its position multiple times: first deciding to skip it in meeting b (TS3004b-E16), then in meeting c Speaker A reversed a decision to exclude it (TS3004c-E55), and the final reversal occurred in meeting d when Speaker B decided to include speech recognition because the budget allowed it (TS3004d-E01).",
+      "answer": "Yes, speech recognition was included in the final design. The team reversed its position multiple times: first deciding to skip it in meeting b, then in meeting c Speaker A reversed a decision to exclude it, and the final reversal occurred in meeting d when Speaker B decided to include speech recognition because the budget allowed it.",
       "citations": [
         {
           "meeting_id": "TS3004b",
@@ -304,8 +304,21 @@
     },
     {
       "question_id": "Q18",
-      "answer": "The agent could not produce an answer.",
-      "citations": []
+      "answer": "Team ES2014 first planned to use speech recognition to find a lost remote, but this changed to a clapping mechanism. Speaker D suggested presenting the new solution to buyers as a clapping feature.",
+      "citations": [
+        {
+          "meeting_id": "ES2014b",
+          "quote": "recognition as a way to find the remote control"
+        },
+        {
+          "meeting_id": "ES2014b",
+          "quote": "Yeah, I think she said twenty seconds to um"
+        },
+        {
+          "meeting_id": "ES2014b",
+          "quote": "I'm sure we'll have by the end of today."
+        }
+      ]
     },
     {
       "question_id": "Q19",
@@ -327,19 +340,19 @@
     },
     {
       "question_id": "Q20",
-      "answer": "Speaker C asked whether the remote should only have television buttons. Speaker A committed to look into whether video recorder functions could be included, and later reported back by deciding the remote is for television only.",
+      "answer": "Speaker D said they would look into whether video recorder functions can be included on the remote, and reported back that people use only 10% of the buttons on their remote, so the remote should focus on volume and channel buttons rather than audio, screen and channel settings.",
       "citations": [
         {
           "meeting_id": "ES2008a",
-          "quote": "Can I ask, are we designing a remote control for a television only"
+          "quote": "It's a good question. Um. I'll look into that."
         },
         {
           "meeting_id": "ES2008b",
-          "quote": "Just for television. That's what we're focused on."
+          "quote": "that's particularly of use to us, I think. Um also they did some questions on voice recognition and found that the desire for voice recognition was inversely related to age, so younger people were more inclined to want something with voice recognition, whereas the older people in the like sixty and above segment or so did not really think that they would pay more money for voice recognitions."
         },
         {
-          "meeting_id": "ES2008a",
-          "quote": "It's a good question. Um. I'll look into that."
+          "meeting_id": "ES2008b",
+          "quote": "people also had certain frustrations, that I think that we could try to take into consideration with our design. That being people k um frustrated with losing their remotes. I think, over fifty percent of the people mentioned that that was their biggest frustration."
         }
       ]
     },
@@ -381,30 +394,26 @@
     },
     {
       "question_id": "Q23",
-      "answer": "Team ES2006 kept headline features including voice recognition, an LCD display, and an advanced integrated circuit chip. To meet the 12.50 € production-cost cap they replaced the scroll wheel with simple up/down push-buttons for volume and navigation, dropped the sample sensor (the single most expensive component), and swapped the originally proposed remote locator for a simpler beeping device. The final design came in 1 € under budget.",
+      "answer": "Team ES2006 kept voice recognition and the LCD display as headline technical features. They swapped out the scroll wheel interface for a simpler button-based interface to stay under budget.",
       "citations": [
         {
-          "meeting_id": "ES2006c",
-          "quote": "we're definitely going in for voice recognition as well as"
+          "meeting_id": "ES2006d",
+          "quote": "we keep all the features, we keep voice recognition"
         },
         {
           "meeting_id": "ES2006d",
-          "quote": "Instead of scrolling here we have two buttons here, up for up and down"
+          "quote": "Yeah mm, as far as creativity is concerned, yeah I think there was there was room for creativity. The only the only problem being that at the end we had to cut some things down because of the the budget we had."
         },
         {
           "meeting_id": "ES2006d",
-          "quote": "One Euro left over for bits that we didn't foresee"
+          "quote": "Not really, no. Because we keep all the features, we keep voice recognition, we keep L_C_D_ display. We instead of having scrolling we we just push the buttons."
         }
       ]
     },
     {
       "question_id": "Q24",
-      "answer": "The team first agreed on regular batteries (not rechargeable) after the industrial designer objected to rechargeable units. The project manager liked the idea of adding kinetic power with a battery as backup. The final design used battery only, with no kinetic power.",
+      "answer": "Team ES2002 first agreed on a battery power source. Their project manager, Speaker B, liked the idea of kinetic power as a supplementary option. The final design used a standard battery with no kinetic power, as confirmed by Speaker B in the final meeting.",
       "citations": [
-        {
-          "meeting_id": "ES2002b",
-          "quote": "Okay, so just stick to to regular Okay."
-        },
         {
           "meeting_id": "ES2002c",
           "quote": "I really like the idea of this kinetic thing where you'd have the back-up of the battery"

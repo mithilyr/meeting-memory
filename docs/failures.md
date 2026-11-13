@@ -35,5 +35,21 @@ Each one had a quote that wasn't in the cited turn or the turns next to it, and 
 by code. The event is lost, not stored with a bad quote. Most of these were long paraphrases
 written by the model in place of the speaker's words.
 
-## Eval misses
-To be filled from the eval run.
+## Eval misses (details in eval/results/summary.md)
+
+### F-005: The local model echoed the question as its answer (E01, qwen3:4b)
+**Cause:** a 4B model given a 10K-token prompt lost the task and copied the question.
+**Fix:** code now detects an echoed question and sends the repair round with that problem named.
+
+### F-006: Right words, wrong claim (E02, E06, E07, qwen3:4b)
+E02 said the final design had a screen (it had none). E06 had the right figures but said the
+design was 1.5 Euros over budget (it was 3.5 over, or 0.5 without speech recognition). E07 said
+the solar cells were kept and also dropped. The keyword scorer marked all three right.
+**Cause:** the model reads the ledger but doesn't reason over it reliably at this size.
+**What it shows:** the quote check guarantees the evidence is real, not that the sentence built on
+it is right. The automatic score needs a hand check next to it, which is why both are reported.
+
+### F-007: Missed a change between meetings (E04, qwen3:4b)
+Soft rubber was chosen in meeting c and described as hard rubber in d. The answer said "rubber" for both.
+**Cause:** the two ledger events have different topic names, so the "replaced by" rule never linked
+them, and the model didn't notice the difference on its own.

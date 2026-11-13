@@ -1,0 +1,546 @@
+{
+  "summary": {
+    "correct": "8/10",
+    "all_citations_valid": "10/10",
+    "multi_meeting": "5/10",
+    "gold_meeting_cited": "10/10",
+    "avg_seconds": 69.7
+  },
+  "rows": [
+    {
+      "id": "E01",
+      "team": "ES2005",
+      "correct": false,
+      "missing": [
+        [
+          "14.6",
+          "fourteen point six"
+        ],
+        [
+          "11.6",
+          "eleven euros sixty",
+          "11,60"
+        ]
+      ],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 28.5,
+      "answer": "Team ES2005's first costing of their final design came out over budget. What was the first figure, what was found to fix it, and what did the cost come to?",
+      "gold": "Speaker C's spreadsheet first gave 14.6 Euros against the 12.50 Euro target. A curved case part had been entered twice; with one, the cost dropped to 11.60 Euros, under budget, though still not enough to add the scroll wheel.",
+      "citations": [
+        {
+          "meeting_id": "ES2005a",
+          "quote": "we're trying to make it for twelve Euros fifty"
+        },
+        {
+          "meeting_id": "ES2005d",
+          "quote": "that would take away three, which would give us"
+        },
+        {
+          "meeting_id": "ES2005d",
+          "quote": "We have under twelve Euros fifty"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2005"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2005's first costing of their final design came out over budget. What was the first figure, what was found to fix it, and what did the cost come to?"
+          ],
+          "turns": 26
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 3,
+          "meetings": [
+            "ES2005a",
+            "ES2005d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E02",
+      "team": "ES2005",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "2/2",
+      "multi_meeting": false,
+      "gold_overlap": true,
+      "seconds": 53.4,
+      "answer": "Team ES2005 nearly scratched speech recognition. The vote decided to keep speech recognition after a discussion about its feasibility and cost. The final design included speech recognition and a screen.",
+      "gold": "Speaker C first suggested scratching speech recognition, but the vote went for speech recognition with limited buttons and an organic design; nobody wanted the TFT screen. The final design kept speech technology but had no screen.",
+      "citations": [
+        {
+          "meeting_id": "ES2005b",
+          "quote": "Excellent, so we'll go with speech recognition, yeah?"
+        },
+        {
+          "meeting_id": "ES2005b",
+          "quote": "Five minutes. Okay. Decisions. Uh, votes, let's vote. Who wants T_F_T_? No-one does. Excellent, so we'll go with speech recognition, yeah? Um, speech recognition, limited buttons, organic design."
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2005"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2005 nearly scratched speech recognition. What did their vote decide, and did the final design have speech recognition and a screen?"
+          ],
+          "turns": 29
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 2,
+          "meetings": [
+            "ES2005b"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 2,
+          "meetings": [
+            "ES2005b"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E03",
+      "team": "TS3005",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "2/2",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 58.4,
+      "answer": "The team settled on an LCD screen interface for the remote, with the final remote including a touch screen that shows only essential buttons (volume, channel, and numbers) when needed, and no physical buttons. The interface was confirmed in where Speaker A decided the remote will use an LCD screen for now, and the final remote design was detailed in where Speaker B described the prototype with a light blue screen, scroll button, and microphone.",
+      "gold": "By the third meeting they had decided on no buttons, only an LCD screen (Speaker B, the User Interface Designer, designed it). The final remote had the LCD screen plus a microphone for speech recognition.",
+      "citations": [
+        {
+          "meeting_id": "TS3005b",
+          "quote": "But for now it's L_C_D_. Okay"
+        },
+        {
+          "meeting_id": "TS3005d",
+          "quote": "the screen light blue. Oh uh this the scroll button and the microphone on the on the sides here under"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3005"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3005 discussed an LCD screen in their second meeting despite cost worries. What interface did they settle on, and what did the final remote include?"
+          ],
+          "turns": 31
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 2,
+          "meetings": [
+            "TS3005b",
+            "TS3005d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E04",
+      "team": "TS3005",
+      "correct": false,
+      "missing": [
+        [
+          "soft rubber"
+        ],
+        [
+          "hard rubber"
+        ]
+      ],
+      "citations_valid": "2/2",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 40.0,
+      "answer": "Team TS3005 chose rubber as the case material in their third meeting (TS3005c), and in their final meeting (TS3005d), it was described as 'spongy rubber' that is 'one' in the evaluation criteria for 'hard to lose' and 'fancy' features.",
+      "gold": "In the third meeting they chose soft rubber (younger people like soft, spongy materials, older people like wood). In the final meeting it was described as hard rubber, not very spongy, with the idea of printing a wood-like look on it.",
+      "citations": [
+        {
+          "meeting_id": "TS3005c",
+          "quote": "the case was is made from rubber, I suppose"
+        },
+        {
+          "meeting_id": "TS3005d",
+          "quote": "you push the scroll button and a drop down menu or a pull out menu comes out"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3005"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "What case material did Team TS3005 choose in their third meeting, and how was the material described in their final meeting?"
+          ],
+          "turns": 26
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 2,
+          "meetings": [
+            "TS3005c",
+            "TS3005d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E05",
+      "team": "TS3008",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": false,
+      "gold_overlap": true,
+      "seconds": 164.2,
+      "answer": "In Team TS3008, Speaker A pushed back on adding an LCD display. The objection was that an LCD display would not fit the team's philosophy of simplicity and would be too fragile, adding nothing to the design while conflicting with the sturdy, user-friendly plastic and rubber materials they wanted. The final design did not have an LCD display.",
+      "gold": "Speaker A objected that an LCD did not fit the sturdy, throwable plastic-and-soft-rubber design they were after (Speaker D agreed it is fragile), while Speaker B argued it was up to the market if it was trendy. The final design had no LCD.",
+      "citations": [
+        {
+          "meeting_id": "TS3008c",
+          "quote": "I really don't feel the whole idea of an L_C_D_ display"
+        },
+        {
+          "meeting_id": "TS3008c",
+          "quote": "I really understand you want to make your job more exciting by putting an L_C_D_ in it, but I I really don't think it's a good n goo because it also doesn't stroke with we wanted uh c When we talk about the materials, uh it's a good idea to use these plastic materials with soft rubber stuff on it. It was our idea, you know, to give it a more sturdy look and that you ca like you can throw with it. But I don't think a L_C_D_ display fits in that image. You know, it's like more vulnerable, and it adds nothing really, you know."
+        },
+        {
+          "meeting_id": "TS3008c",
+          "quote": "I don't really feel it. We already we're uh Yeah, we already have the the th th th base station gadgets, and want and it uh uh, do it has to be a simple design, which sturdy, which soft"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3008"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "In Team TS3008, who pushed back on adding an LCD display, what was the objection, and did the final design have one?"
+          ],
+          "turns": 35
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 3,
+          "meetings": [
+            "TS3008c"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 3,
+          "meetings": [
+            "TS3008c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E06",
+      "team": "IS1000",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": false,
+      "gold_overlap": true,
+      "seconds": 100.9,
+      "answer": "The advanced design cost 16 euros, with 3 euros allocated to speech recognition. This was 1.5 euros over the 12.50 euro budget, so it was not within budget.",
+      "gold": "The basic design cost about 8 Euros and the advanced one 16 Euros, of which speech recognition was about 3 Euros; without it the advanced design was 13 Euros, still above the 12.50 Euro production budget.",
+      "citations": [
+        {
+          "meeting_id": "IS1000d",
+          "quote": "So the the cost is actually a bit more, it's uh it's it's sixteen Francs"
+        },
+        {
+          "meeting_id": "IS1000d",
+          "quote": "the S_R_ system would be uh something like three Francs per item"
+        },
+        {
+          "meeting_id": "IS1000d",
+          "quote": "So that takes it down to thirteen Euros without the speech recognition"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1000"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team IS1000 costed two designs in their final meeting. What did the advanced design cost, how much of that was speech recognition, and how did that compare with the budget?"
+          ],
+          "turns": 25
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 3,
+          "meetings": [
+            "IS1000d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 3,
+          "meetings": [
+            "IS1000d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E07",
+      "team": "IS1004",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": false,
+      "gold_overlap": true,
+      "seconds": 70.9,
+      "answer": "Speaker B questioned the solar cells because they thought the recharging base station would eliminate the need for solar cells, but they were kept as part of the energy source solution. The solar cells were dropped in favor of rechargeable batteries and a base station for charging, but the team decided to keep solar cells as a potential future option after the prototype was finalized.",
+      "gold": "Speaker B (User Interface Designer) said solar cells were no longer necessary with a recharging base station. The team decided against them; the final costing excluded solar cells.",
+      "citations": [
+        {
+          "meeting_id": "IS1004d",
+          "quote": "No kinetic also. I don't I don't see the difference between kinetic and dynamo"
+        },
+        {
+          "meeting_id": "IS1004d",
+          "quote": "I don't really know if the solar cells are actually necessary any more if you have a recharging base station."
+        },
+        {
+          "meeting_id": "IS1004d",
+          "quote": "Solar cells, yeah yeah yeah yeah yeah, we said no to that."
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1004"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team IS1004's industrial designer planned solar cells plus rechargeable batteries. Who questioned the solar cells, why, and were they kept?"
+          ],
+          "turns": 21
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 3,
+          "meetings": [
+            "IS1004d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 3,
+          "meetings": [
+            "IS1004d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E08",
+      "team": "IS1004",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 42.4,
+      "answer": "Team IS1004 dropped the LCD and speech recognition as advanced features. The industrial designer called the locator feature the most important in the final design.",
+      "gold": "They dropped speech recognition (decided by the second meeting) and the LCD screen (dropped in the third). In the final meeting Speaker C called the locator the most important feature, with the scroll buttons.",
+      "citations": [
+        {
+          "meeting_id": "IS1004c",
+          "quote": "we're going completely to forget about the L_C_D_ thing"
+        },
+        {
+          "meeting_id": "IS1004d",
+          "quote": "For a T_V_ the most important feature which I felt was the locator which is a cool feature."
+        },
+        {
+          "meeting_id": "IS1004c",
+          "quote": "so we're going for a stylish banana shape"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1004"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Which two advanced features did Team IS1004 drop across their meetings, and which feature did their industrial designer call the most important in the final design?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 3,
+          "meetings": [
+            "IS1004c",
+            "IS1004d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E09",
+      "team": "ES2015",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "2/2",
+      "multi_meeting": false,
+      "gold_overlap": true,
+      "seconds": 103.3,
+      "answer": "Team ES2015 ended up with kinetic energy as the power source, proposed by Speaker B, and the case was made of plastic coated in rubber.",
+      "gold": "Kinetic energy, proposed by Speaker B (Industrial Designer) in the third meeting and still in the final design. The remote is hard plastic with a rubber casing or coating, chosen for comfort and anti-RSI.",
+      "citations": [
+        {
+          "meeting_id": "ES2015c",
+          "quote": "Energy, we've decided on kinetic, right?"
+        },
+        {
+          "meeting_id": "ES2015c",
+          "quote": "energy source. It could make an we could have any kind of style. It wouldn't be as heavy or bulky, and"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2015"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "What energy source did Team ES2015 end up with, who proposed it, and what was the case made of?"
+          ],
+          "turns": 30
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 2,
+          "meetings": [
+            "ES2015c"
+          ],
+          "problems": [
+            "quote not found in ES2015c#0066: 'Yeah. Just for environmental reasons.'"
+          ]
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 2,
+          "meetings": [
+            "ES2015c"
+          ],
+          "problems": [
+            "quote not found in ES2015c#0066: 'Yeah. Just for environmental reasons.'"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E10",
+      "team": "ES2013",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 34.7,
+      "answer": "Speaker C favoured titanium for the case, based on their influence from minimalist and shiny iPod designs. By the final meeting, the case materials on the table were plastic with a rubber supplement.",
+      "gold": "Speakers B and C both said they were thinking titanium (C was influenced by iPods: minimalist and shiny). By the final meeting the case was either spongy rubber or hard plastic, with B still liking a plastic and rubber combination depending on cost.",
+      "citations": [
+        {
+          "meeting_id": "ES2013c",
+          "quote": "I have been influenced by pictures of iPods, and they're also minimalist and shiny"
+        },
+        {
+          "meeting_id": "ES2013d",
+          "quote": "let's put that rubber in then, of the case material supplement"
+        },
+        {
+          "meeting_id": "ES2013c",
+          "quote": "I was thinking titanium, I was thinking it's just I have been influenced by pictures of iPods, and they're also minimalist and shiny."
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2013"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2013 was drawn to titanium for the case. Who favoured it, and what case materials were on the table by the final meeting?"
+          ],
+          "turns": 29
+        },
+        {
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 3,
+          "meetings": [
+            "ES2013c",
+            "ES2013d"
+          ],
+          "problems": []
+        }
+      ]
+    }
+  ]
+}

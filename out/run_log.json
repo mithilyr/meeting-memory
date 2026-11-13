@@ -1,9 +1,9 @@
 {
-  "seconds": 1434.6,
+  "seconds": 378.4,
   "questions": [
     {
       "question_id": "Q01",
-      "seconds": 56.9,
+      "seconds": 3.3,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -40,7 +40,7 @@
     },
     {
       "question_id": "Q02",
-      "seconds": 31.7,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -68,7 +68,7 @@
     },
     {
       "question_id": "Q03",
-      "seconds": 38.0,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -105,7 +105,7 @@
     },
     {
       "question_id": "Q04",
-      "seconds": 27.1,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -133,7 +133,7 @@
     },
     {
       "question_id": "Q05",
-      "seconds": 28.5,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -162,7 +162,7 @@
     },
     {
       "question_id": "Q06",
-      "seconds": 109.4,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -179,6 +179,15 @@
         {
           "step": "answer",
           "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 2,
+          "meetings": [
+            "ES2008d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
           "citations": 3,
           "meetings": [
             "ES2008b",
@@ -190,7 +199,7 @@
     },
     {
       "question_id": "Q07",
-      "seconds": 18.1,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -218,7 +227,7 @@
     },
     {
       "question_id": "Q08",
-      "seconds": 20.2,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -247,7 +256,7 @@
     },
     {
       "question_id": "Q09",
-      "seconds": 58.3,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -275,7 +284,7 @@
     },
     {
       "question_id": "Q10",
-      "seconds": 32.9,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -303,7 +312,7 @@
     },
     {
       "question_id": "Q11",
-      "seconds": 24.8,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -331,7 +340,7 @@
     },
     {
       "question_id": "Q12",
-      "seconds": 51.8,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -368,7 +377,7 @@
     },
     {
       "question_id": "Q13",
-      "seconds": 25.0,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -397,7 +406,7 @@
     },
     {
       "question_id": "Q14",
-      "seconds": 12.6,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -425,7 +434,7 @@
     },
     {
       "question_id": "Q15",
-      "seconds": 136.8,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -462,7 +471,7 @@
     },
     {
       "question_id": "Q16",
-      "seconds": 77.6,
+      "seconds": 2.2,
       "citations_valid": "2/2",
       "trace": [
         {
@@ -490,7 +499,7 @@
     },
     {
       "question_id": "Q17",
-      "seconds": 28.8,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -527,8 +536,8 @@
     },
     {
       "question_id": "Q18",
-      "seconds": 13.4,
-      "citations_valid": "0/0",
+      "seconds": 87.7,
+      "citations_valid": "3/3",
       "trace": [
         {
           "step": "route",
@@ -542,30 +551,28 @@
           "turns": 32
         },
         {
-          "step": "ask",
-          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-          "result": "unparseable"
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 3,
+          "meetings": [
+            "ES2014b"
+          ],
+          "problems": []
         },
         {
-          "step": "ask",
-          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-          "result": "unparseable"
-        },
-        {
-          "step": "ask",
-          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-          "result": "unparseable"
-        },
-        {
-          "step": "ask",
-          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-          "result": "unparseable"
+          "step": "answer",
+          "model": "ollama/qwen3:4b",
+          "citations": 3,
+          "meetings": [
+            "ES2014b"
+          ],
+          "problems": []
         }
       ]
     },
     {
       "question_id": "Q19",
-      "seconds": 24.9,
+      "seconds": 2.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -593,7 +600,7 @@
     },
     {
       "question_id": "Q20",
-      "seconds": 17.4,
+      "seconds": 79.0,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -609,7 +616,7 @@
         },
         {
           "step": "answer",
-          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "model": "ollama/qwen3:4b",
           "citations": 3,
           "meetings": [
             "ES2008a",
@@ -621,7 +628,7 @@
     },
     {
       "question_id": "Q21",
-      "seconds": 48.2,
+      "seconds": 3.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -649,7 +656,7 @@
     },
     {
       "question_id": "Q22",
-      "seconds": 16.2,
+      "seconds": 2.1,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -678,7 +685,7 @@
     },
     {
       "question_id": "Q23",
-      "seconds": 68.0,
+      "seconds": 110.7,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -694,7 +701,7 @@
         },
         {
           "step": "answer",
-          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "model": "ollama/qwen3:4b",
           "citations": 3,
           "meetings": [
             "ES2006d"
@@ -703,10 +710,9 @@
         },
         {
           "step": "answer",
-          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "model": "ollama/qwen3:4b",
           "citations": 3,
           "meetings": [
-            "ES2006c",
             "ES2006d"
           ],
           "problems": []
@@ -715,8 +721,8 @@
     },
     {
       "question_id": "Q24",
-      "seconds": 40.1,
-      "citations_valid": "3/3",
+      "seconds": 51.6,
+      "citations_valid": "2/2",
       "trace": [
         {
           "step": "route",
@@ -731,10 +737,9 @@
         },
         {
           "step": "answer",
-          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-          "citations": 3,
+          "model": "ollama/qwen3:4b",
+          "citations": 2,
           "meetings": [
-            "ES2002b",
             "ES2002c",
             "ES2002d"
           ],
@@ -744,7 +749,7 @@
     },
     {
       "question_id": "Q25",
-      "seconds": 145.5,
+      "seconds": 3.2,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -789,127 +794,7 @@
   "model_calls": [
     {
       "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 22.43,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 29.49,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 29.55,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 17.04,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 18.76,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 24.79,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 25.58,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 106.4,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 15.21,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 17.27,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 55.35,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 29.91,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 21.82,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 32.27,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 16.64,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 22.03,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 9.73,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 20.68,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 113.41,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 74.67,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 20.22,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 5.67,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 5.03,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 5.37,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 0.01,
+      "seconds": 0.0,
       "cached": true
     },
     {
@@ -919,53 +804,168 @@
     },
     {
       "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 22.17,
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "ollama/qwen3:4b",
+      "seconds": 41.55,
+      "cached": false
+    },
+    {
+      "model": "ollama/qwen3:4b",
+      "seconds": 43.99,
       "cached": false
     },
     {
       "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 14.48,
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "ollama/qwen3:4b",
+      "seconds": 76.58,
       "cached": false
     },
     {
       "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 45.31,
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "ollama/qwen3:4b",
+      "seconds": 57.88,
+      "cached": false
+    },
+    {
+      "model": "ollama/qwen3:4b",
+      "seconds": 50.54,
+      "cached": false
+    },
+    {
+      "model": "ollama/qwen3:4b",
+      "seconds": 49.26,
       "cached": false
     },
     {
       "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 13.29,
-      "cached": false
+      "seconds": 0.0,
+      "cached": true
     },
     {
       "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 31.24,
-      "cached": false
+      "seconds": 0.0,
+      "cached": true
     },
     {
       "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 33.84,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 37.12,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 87.35,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 55.2,
-      "cached": false
-    },
-    {
-      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-      "seconds": 282.25,
-      "cached": false
+      "seconds": 0.0,
+      "cached": true
     }
   ]
 }
