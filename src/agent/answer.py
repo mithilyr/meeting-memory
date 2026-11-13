@@ -6,10 +6,10 @@
                         searches ({"search": [...]}), at most MAX_SEARCH_ROUNDS times
   4. Verify (code)      every citation becomes a meeting id + exact quote, or is dropped.
                         Citing a ledger event reuses its quote, already verified at ingest.
-  5. Repair (model)     if no citation survives, or all come from one meeting, one retry
+  5. Repair (model)     if no citation survives, or all come from one meeting, up to two retries
                         that tells the model exactly what failed
 
-Model calls per question: 1 typically, at most 1 + MAX_SEARCH_ROUNDS + 1.
+Model calls per question: 1 typically, at most 1 + MAX_SEARCH_ROUNDS + MAX_REPAIRS.
 """
 
 from __future__ import annotations
@@ -26,6 +26,7 @@ from src.ingest.extract import _snap
 from src.memory.store import connect
 
 MAX_SEARCH_ROUNDS = 2
+MAX_REPAIRS = 2
 MAX_CITATIONS = 3
 
 PROMPT = """You answer questions about a team's recorded meetings, using ONLY the evidence below.
@@ -137,8 +138,8 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
     ledger_text = retrieve.ledger_text(conn, team, upto_letter, query=question)
     speakers = retrieve.speakers(conn, team, upto_letter)
 
-    feedback, result, rounds = "", None, 0
-    for _ in range(MAX_SEARCH_ROUNDS + 2):
+    feedback, result, best, rounds, repairs = "", None, None, 0, 0
+    for _ in range(MAX_SEARCH_ROUNDS + MAX_REPAIRS + 2):
         prompt = PROMPT.format(question=question, team=team, rounds_left=MAX_SEARCH_ROUNDS - rounds,
                                ledger=ledger_text or "(empty)", speakers=speakers or "(unknown)",
                                turns=retrieve.render_turns(turns), feedback=feedback)
@@ -165,12 +166,16 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
         trace.append({"step": "answer", "model": model, "citations": len(citations),
                       "meetings": sorted(meetings), "problems": problems})
         result = {"answer": str(reply.get("answer", "")).strip(), "citations": citations}
+        score = (len(meetings), len(citations))
+        if best is None or score > best[0]:
+            best = (score, result)  # a repair can make things worse; keep the best attempt
         too_long = len(re.findall(r"[.!?](?:\s|$)", result["answer"])) > 3
         echoed = question.lower()[:60] in result["answer"].lower()  # seen in testing (E01)
         if citations and len(meetings) >= 2 and not too_long and not echoed:
             break
-        if feedback:  # already retried once
+        if repairs >= MAX_REPAIRS:
             break
+        repairs += 1
         issues = list(problems)
         if not citations:
             issues.append("No citation could be verified.")
@@ -183,8 +188,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
         feedback = ("\nYOUR PREVIOUS ANSWER: " + json.dumps(reply)[:1500] +
                     "\nPROBLEMS: " + " ".join(issues) +
                     " Prefer citing ledger events by id. Reply with corrected JSON.")
-    if result is None:
-        result = {"answer": "The agent could not produce an answer.", "citations": []}
+    result = best[1] if best else {"answer": "The agent could not produce an answer.", "citations": []}
     result["answer"] = clean_answer(result["answer"])
     result["trace"] = trace
     result["seconds"] = round(time.time() - started, 1)
