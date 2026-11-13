@@ -31,16 +31,23 @@ def embed(texts: list[str], *, model: str | None = None) -> list[list[float]]:
     return result["embeddings"]
 
 
-def generate(prompt: str, *, schema: dict | None = None, model: str = "qwen3:4b") -> str:
-    """One completion. Thinking off: answers are short and the evidence is already chosen."""
+def generate(prompt: str, *, schema: dict | str | None = "json", model: str = "qwen3:4b") -> str:
+    """One completion, constrained to JSON by default.
+
+    qwen3 ignores `think: false` on this Ollama version (0.32.9) and writes its reasoning into
+    the reply, which on a 10K-token prompt ran past the timeout. JSON mode stops that, and every
+    caller here wants JSON anyway. The context window is sized to the prompt so a small prompt
+    doesn't reserve 16K of GPU memory.
+    """
+    num_ctx = min(32768, ((len(prompt) // 3 + 2048) // 2048 + 1) * 2048)
     body = {
         "model": model,
         "prompt": prompt,
         "stream": False,
         "think": False,
-        "options": {"temperature": 0, "num_ctx": 16384},
+        "options": {"temperature": 0, "num_ctx": num_ctx},
     }
     if schema is not None:
         body["format"] = schema
-    result = with_retry(lambda: _post("/api/generate", body), description=f"ollama {model}")
+    result = with_retry(lambda: _post("/api/generate", body), description=f"ollama {model}", attempts=2)
     return result["response"].strip()

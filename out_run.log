@@ -1,0 +1,79 @@
+Q01: 3/3 citations valid, 2.9s
+Q02: 3/3 citations valid, 83.0s
+Q03: 3/3 citations valid, 65.7s
+Q04: 3/3 citations valid, 2.8s
+Q05: 3/3 citations valid, 29.3s
+Q06: 3/3 citations valid, 98.9s
+Q07: 3/3 citations valid, 2.8s
+Q08: 3/3 citations valid, 2.1s
+Q09: 3/3 citations valid, 2.1s
+Q10: 3/3 citations valid, 25.3s
+Q11: 3/3 citations valid, 2.9s
+Q12: 3/3 citations valid, 2.1s
+Q13: 3/3 citations valid, 2.1s
+Q14: 3/3 citations valid, 2.1s
+Q15: 3/3 citations valid, 2.1s
+Q16: 2/2 citations valid, 2.1s
+Q17: 3/3 citations valid, 2.1s
+Traceback (most recent call last):
+  File "E:\Catalist Intern Test\meeting-memory\src\clients\retry.py", line 132, in with_retry
+    return operation()
+           ^^^^^^^^^^^
+  File "E:\Catalist Intern Test\meeting-memory\src\clients\ollama.py", line 45, in <lambda>
+    result = with_retry(lambda: _post("/api/generate", body), description=f"ollama {model}")
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Catalist Intern Test\meeting-memory\src\clients\ollama.py", line 22, in _post
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\hermes\hermes-agent\.hermes-runtime\python\generation-1786982070-988-1347b085\cpython-3.11-windows-x86_64-none\Lib\urllib\request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\hermes\hermes-agent\.hermes-runtime\python\generation-1786982070-988-1347b085\cpython-3.11-windows-x86_64-none\Lib\urllib\request.py", line 519, in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\hermes\hermes-agent\.hermes-runtime\python\generation-1786982070-988-1347b085\cpython-3.11-windows-x86_64-none\Lib\urllib\request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\hermes\hermes-agent\.hermes-runtime\python\generation-1786982070-988-1347b085\cpython-3.11-windows-x86_64-none\Lib\urllib\request.py", line 496, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\hermes\hermes-agent\.hermes-runtime\python\generation-1786982070-988-1347b085\cpython-3.11-windows-x86_64-none\Lib\urllib\request.py", line 1377, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\hermes\hermes-agent\.hermes-runtime\python\generation-1786982070-988-1347b085\cpython-3.11-windows-x86_64-none\Lib\urllib\request.py", line 1352, in do_open
+    r = h.getresponse()
+        ^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\hermes\hermes-agent\.hermes-runtime\python\generation-1786982070-988-1347b085\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 1443, in getresponse
+    response.begin()
+  File "C:\Users\LENOVO\AppData\Local\hermes\hermes-agent\.hermes-runtime\python\generation-1786982070-988-1347b085\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 337, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\hermes\hermes-agent\.hermes-runtime\python\generation-1786982070-988-1347b085\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 298, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LENOVO\AppData\Local\hermes\hermes-agent\.hermes-runtime\python\generation-1786982070-988-1347b085\cpython-3.11-windows-x86_64-none\Lib\socket.py", line 718, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+TimeoutError: timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\Catalist Intern Test\meeting-memory\run.py", line 69, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "E:\Catalist Intern Test\meeting-memory\run.py", line 45, in main
+    result = answer(q["question"], conn=conn, local_only=args.local)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Catalist Intern Test\meeting-memory\src\agent\answer.py", line 140, in answer
+    text, model = complete(prompt, local_only=local_only)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Catalist Intern Test\meeting-memory\src\clients\llm.py", line 55, in complete
+    text = ollama.generate(prompt, model=LOCAL_MODEL)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Catalist Intern Test\meeting-memory\src\clients\ollama.py", line 45, in generate
+    result = with_retry(lambda: _post("/api/generate", body), description=f"ollama {model}")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Catalist Intern Test\meeting-memory\src\clients\retry.py", line 152, in with_retry
+    raise RetriesExhausted(
+src.clients.retry.RetriesExhausted: ollama qwen3:4b failed after 5 attempts. Last error: timed out

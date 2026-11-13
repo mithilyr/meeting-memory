@@ -1,0 +1,971 @@
+{
+  "seconds": 1434.6,
+  "questions": [
+    {
+      "question_id": "Q01",
+      "seconds": 56.9,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3006"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3006 planned both an LCD screen and speech recognition. When the costs forced a cut, which of the two did they drop, which did they keep, and what reason was given for keeping it?"
+          ],
+          "turns": 29
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "TS3006d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "TS3006b",
+            "TS3006d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q02",
+      "seconds": 31.7,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2003"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2003 leaned towards one material for the case and then switched to another. What did they lean towards first, what did they end with, and why did they switch?"
+          ],
+          "turns": 33
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2003c",
+            "ES2003d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q03",
+      "seconds": 38.0,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3009"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3009 planned a titanium back for their remote. Who first proposed replacing the titanium, what did they propose instead, and was the titanium kept in the end?"
+          ],
+          "turns": 26
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 2,
+          "meetings": [
+            "TS3009d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "TS3009c",
+            "TS3009d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q04",
+      "seconds": 27.1,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3011"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3011 chose a combined energy source for their remote. What was the combination, and what happened to it when the costs were added up?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "TS3011c",
+            "TS3011d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q05",
+      "seconds": 28.5,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3007"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3007's energy source changed between meetings. What did they first settle on, what did they end with, and who proposed the change?"
+          ],
+          "turns": 31
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "TS3007b",
+            "TS3007c",
+            "TS3007d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q06",
+      "seconds": 109.4,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2008"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2008 wanted a feature to stop the remote getting lost. What happened to that feature, who raised the main objection to it, and what was the objection?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2008b",
+            "ES2008d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q07",
+      "seconds": 18.1,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1008"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "In Team IS1008, a team member was asked to find out what adding a display would cost. Who was it, and what figure did they come back with?"
+          ],
+          "turns": 25
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "IS1008c",
+            "IS1008d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q08",
+      "seconds": 20.2,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2007"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "A health complaint about remote controls came up in Team ES2007's meetings. Who brought it up, what was it, and how did the team's design respond to it?"
+          ],
+          "turns": 33
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2007b",
+            "ES2007c",
+            "ES2007d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q09",
+      "seconds": 58.3,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1002"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "What selling price was Team IS1002 working with at first, what price range did they settle on later, and which speaker pushed hardest for a higher, more exclusive price?"
+          ],
+          "turns": 31
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "IS1002b",
+            "IS1002c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q10",
+      "seconds": 32.9,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3003"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Which age group did Team TS3003 decide to design for, and why that group rather than another?"
+          ],
+          "turns": 26
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "TS3003b",
+            "TS3003c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q11",
+      "seconds": 24.8,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2011"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2011's project manager said they would check what one of the new project requirements meant. What was the question, and what was the answer when it came up again?"
+          ],
+          "turns": 32
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2011b",
+            "ES2011c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q12",
+      "seconds": 51.8,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2004"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2004 considered voice recognition as a way to find the remote when it is lost. What happened to it in the final design, why, and what did they say would still make the remote easy to find?"
+          ],
+          "turns": 26
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2004d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2004c",
+            "ES2004d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q13",
+      "seconds": 25.0,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3004"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3004 changed its mind about speech recognition more than once. Was speech recognition in their final design, and in which of their four meetings did they last reverse their position on it?"
+          ],
+          "turns": 33
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "TS3004b",
+            "TS3004c",
+            "TS3004d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q14",
+      "seconds": 12.6,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1009"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team IS1009 left one feature pending more research into its cost. In their final costing, what total did they reach, and was that feature included in the total?"
+          ],
+          "turns": 29
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "IS1009c",
+            "IS1009d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q15",
+      "seconds": 136.8,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2016"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2016's first full costing of their design came out over budget. What total did they get, what was the limit, and which component did they remove to fix it?"
+          ],
+          "turns": 24
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2016d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2016a",
+            "ES2016d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q16",
+      "seconds": 77.6,
+      "citations_valid": "2/2",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3010"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3010's project manager favoured a particular kind of control for navigating. What was it, what replaced it in the final costed design, and what else was given up at the same time to reach the budget?"
+          ],
+          "turns": 25
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 2,
+          "meetings": [
+            "TS3010c",
+            "TS3010d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q17",
+      "seconds": 28.8,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2009"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2009 provisionally chose a touch screen. In which of their meetings was it dropped, what feature did they keep instead, and what cost per remote was estimated for the touch screen?"
+          ],
+          "turns": 24
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 2,
+          "meetings": [
+            "ES2009c"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2009b",
+            "ES2009c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q18",
+      "seconds": 13.4,
+      "citations_valid": "0/0",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2014"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "How did Team ES2014 first plan to let people find a lost remote, what did that plan change to, and who suggested how the new version should be presented to buyers?"
+          ],
+          "turns": 32
+        },
+        {
+          "step": "ask",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "result": "unparseable"
+        },
+        {
+          "step": "ask",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "result": "unparseable"
+        },
+        {
+          "step": "ask",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "result": "unparseable"
+        },
+        {
+          "step": "ask",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "result": "unparseable"
+        }
+      ]
+    },
+    {
+      "question_id": "Q19",
+      "seconds": 24.9,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1003"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team IS1003 picked a natural material for the case and later changed it. What was the material, what replaced it, and who suggested the switch?"
+          ],
+          "turns": 34
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "IS1003c",
+            "IS1003d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q20",
+      "seconds": 17.4,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2008"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Early on, a Team ES2008 member asked whether the remote should only have buttons for the television. Who said they would look into it, and what answer was reported back?"
+          ],
+          "turns": 23
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2008a",
+            "ES2008b"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q21",
+      "seconds": 48.2,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1007"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "In Team IS1007, one member said they would check the prices of components. Who was it, what total did they report for a version with all the functions, and what did the team then decide about the LCD?"
+          ],
+          "turns": 29
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "IS1007c",
+            "IS1007d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q22",
+      "seconds": 16.2,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2010"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2010 discussed several battery options. Who suggested a lithium battery, what did another member prefer instead and why, and what was the final choice?"
+          ],
+          "turns": 26
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2010a",
+            "ES2010c",
+            "ES2010d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q23",
+      "seconds": 68.0,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2006"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2006's final design had to fit the budget. Which of their headline technical features did they keep, and what did they swap out or simplify to get under budget?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2006d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2006c",
+            "ES2006d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q24",
+      "seconds": 40.1,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2002"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "What power source did Team ES2002 first agree on, what addition did their project manager like the idea of, and what did the final design use?"
+          ],
+          "turns": 30
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2002b",
+            "ES2002c",
+            "ES2002d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q25",
+      "seconds": 145.5,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2011"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2011 played with fruit and vegetable ideas for the look of their remote. What did they decide about fruit and vegetable shapes in the end, and why?"
+          ],
+          "turns": 25
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2011d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "citations": 3,
+          "meetings": [
+            "ES2011c",
+            "ES2011d"
+          ],
+          "problems": []
+        }
+      ]
+    }
+  ],
+  "brief": {
+    "team": "TS3012",
+    "upto_letter": "c",
+    "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "dropped_points": 0
+  },
+  "model_calls": [
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 22.43,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 29.49,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 29.55,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 17.04,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 18.76,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 24.79,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 25.58,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 106.4,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 15.21,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 17.27,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 55.35,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 29.91,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 21.82,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 32.27,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 16.64,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 22.03,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 9.73,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 20.68,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 113.41,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 74.67,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 20.22,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 5.67,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 5.03,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 5.37,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.01,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 0.0,
+      "cached": true
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 22.17,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 14.48,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 45.31,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 13.29,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 31.24,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 33.84,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 37.12,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 87.35,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 55.2,
+      "cached": false
+    },
+    {
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "seconds": 282.25,
+      "cached": false
+    }
+  ]
+}

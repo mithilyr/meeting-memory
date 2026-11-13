@@ -105,6 +105,16 @@ def _resolve_citations(conn: sqlite3.Connection, citations: list, team: str,
     return chosen[:MAX_CITATIONS], problems
 
 
+INTERNAL_ID = re.compile(r"\s*\((?:[^()]*?\b[A-Z]{2}\d{4}[a-d](?:#\d+|-E\d+)\b[^()]*?)\)|\b[A-Z]{2}\d{4}[a-d](?:#\d+|-E\d+)\b")
+
+
+def clean_answer(text: str) -> str:
+    """Strip internal ids (TS3006d-E13, TS3006b#0110) the model sometimes copies into prose.
+    The citations carry the evidence; the sentence should read cleanly."""
+    text = INTERNAL_ID.sub("", text)
+    return re.sub(r"\s+([.,;])", r"\1", re.sub(r"\s{2,}", " ", text)).strip()
+
+
 def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str | None = None,
            upto_letter: str | None = None, local_only: bool = False) -> dict:
     conn = conn or connect()
@@ -119,7 +129,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
     queries = [question]
     turns = retrieve.gather(conn, team, queries, upto_letter=upto_letter)
     trace.append({"step": "gather", "queries": queries, "turns": len(turns)})
-    ledger_text = retrieve.ledger_text(conn, team, upto_letter)
+    ledger_text = retrieve.ledger_text(conn, team, upto_letter, query=question)
     speakers = retrieve.speakers(conn, team, upto_letter)
 
     feedback, result, rounds = "", None, 0
@@ -127,7 +137,11 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
         prompt = PROMPT.format(question=question, team=team, rounds_left=MAX_SEARCH_ROUNDS - rounds,
                                ledger=ledger_text or "(empty)", speakers=speakers or "(unknown)",
                                turns=retrieve.render_turns(turns), feedback=feedback)
-        text, model = complete(prompt, local_only=local_only)
+        try:
+            text, model = complete(prompt, local_only=local_only)
+        except Exception as error:  # noqa: BLE001 - every backend down: report, don't crash the run
+            trace.append({"step": "ask", "result": f"no model available: {str(error)[:200]}"})
+            break
         try:
             reply = parse_json(text)
         except (ValueError, json.JSONDecodeError):
@@ -163,6 +177,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
                     " Prefer citing ledger events by id. Reply with corrected JSON.")
     if result is None:
         result = {"answer": "The agent could not produce an answer.", "citations": []}
+    result["answer"] = clean_answer(result["answer"])
     result["trace"] = trace
     result["seconds"] = round(time.time() - started, 1)
     return result

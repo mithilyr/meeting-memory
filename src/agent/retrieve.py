@@ -107,5 +107,39 @@ def render_turns(turns: dict[str, sqlite3.Row], limit: int = 70) -> str:
     return "\n".join(f"[{t['turn_id']}] Speaker {t['speaker']}: {t['text']}" for t in ordered)
 
 
-def ledger_text(conn: sqlite3.Connection, team: str, upto_letter: str | None = None) -> str:
-    return ledger.render(conn, team, upto_letter=upto_letter) if upto_letter else ledger.render(conn, team)
+#: Ledger size sent to the model, in characters (about 10K tokens). A free model returned an
+#: empty reply on a 55K-character prompt (ES2014, 268 events), so bigger ledgers are filtered.
+#: At company scale a project's ledger grows without limit, so this filter is what keeps a
+#: question's cost flat.
+LEDGER_BUDGET = 40_000
+
+
+def _words(text: str) -> set[str]:
+    return {w[:6] for w in re.findall(r"[a-z]{3,}", text.lower()) if w not in STOPWORDS}
+
+
+def ledger_text(conn: sqlite3.Connection, team: str, upto_letter: str | None = None,
+                query: str | None = None) -> str:
+    """The team's ledger; over budget, only the topics that best match the query (code, no model)."""
+    full = ledger.render(conn, team, upto_letter=upto_letter) if upto_letter else ledger.render(conn, team)
+    if len(full) <= LEDGER_BUDGET or not query:
+        return full
+    wanted = _words(query)
+    lines = full.split("\n")
+    def score(line: str) -> int:
+        parts = line.split(" | ")
+        bonus = 1 if len(parts) > 1 and parts[1] in ("decision", "number") else 0
+        return len(wanted & _words(line)) * 2 + bonus
+    topic_of = lambda line: line.split(" | ")[2] if line.count(" | ") >= 3 else ""
+    keep_topics, size = [], 0
+    for line in sorted(lines, key=score, reverse=True):
+        topic = topic_of(line)
+        if topic in keep_topics:
+            continue
+        topic_size = sum(len(l) + 1 for l in lines if topic_of(l) == topic)
+        if size + topic_size > LEDGER_BUDGET:
+            continue
+        keep_topics.append(topic)
+        size += topic_size
+    kept = [l for l in lines if topic_of(l) in keep_topics]
+    return "\n".join(kept) + f"\n(ledger filtered to the {len(keep_topics)} most relevant topics, {len(kept)} of {len(lines)} events)"
