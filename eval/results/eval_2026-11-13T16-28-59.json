@@ -1,0 +1,508 @@
+{
+  "summary": {
+    "correct": "3/10",
+    "all_citations_valid": "5/10",
+    "multi_meeting": "5/10",
+    "gold_meeting_cited": "5/10",
+    "avg_seconds": 24.3
+  },
+  "rows": [
+    {
+      "id": "E01",
+      "team": "ES2005",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 83.3,
+      "answer": "The first unit‑cost estimate was €14.60 (Speaker C, ES2005d‑E07); they found that removing three parts would bring the cost down; the revised cost came to €11.60 (Speaker C, ES2005d‑E13).",
+      "gold": "Speaker C's spreadsheet first gave 14.6 Euros against the 12.50 Euro target. A curved case part had been entered twice; with one, the cost dropped to 11.60 Euros, under budget, though still not enough to add the scroll wheel.",
+      "citations": [
+        {
+          "meeting_id": "ES2005c",
+          "quote": "still got to get within our twelve fifty"
+        },
+        {
+          "meeting_id": "ES2005d",
+          "quote": "it's gonna cost us fourteen point six Euros"
+        },
+        {
+          "meeting_id": "ES2005d",
+          "quote": "that would take away three, which would give us"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2005"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2005's first costing of their final design came out over budget. What was the first figure, what was found to fix it, and what did the cost come to?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "citations": 3,
+          "meetings": [
+            "ES2005d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "citations": 3,
+          "meetings": [
+            "ES2005c",
+            "ES2005d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E02",
+      "team": "ES2005",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 38.6,
+      "answer": "In meeting b, Speaker C, the Industrial Designer, put the TFT display to a vote which no one wanted, and subsequently decided to proceed with speech recognition, limited buttons, and an organic design. In meeting c, Speaker C confirmed the decision on speech recognition, and Speaker A later confirmed that the LCD screen was kept out of the final design.",
+      "gold": "Speaker C first suggested scratching speech recognition, but the vote went for speech recognition with limited buttons and an organic design; nobody wanted the TFT screen. The final design kept speech technology but had no screen.",
+      "citations": [
+        {
+          "meeting_id": "ES2005b",
+          "quote": "Who wants T_F_T_? No-one does. Excellent, so we'll go with speech recognition"
+        },
+        {
+          "meeting_id": "ES2005c",
+          "quote": "Uh speech recognition, I think, so we need a microphone presumably"
+        },
+        {
+          "meeting_id": "ES2005c",
+          "quote": "and keeping the L_C_D_ screen out"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2005"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2005 nearly scratched speech recognition. What did their vote decide, and did the final design have speech recognition and a screen?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "citations": 3,
+          "meetings": [
+            "ES2005b",
+            "ES2005c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E03",
+      "team": "TS3005",
+      "correct": false,
+      "missing": [
+        [
+          "microphone",
+          "speech"
+        ]
+      ],
+      "citations_valid": "2/2",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 3.6,
+      "answer": "The team settled on using an LCD screen as the remote’s interface, and the final remote was equipped with a normal scroll‑wheel control (as part of its feature set).",
+      "gold": "By the third meeting they had decided on no buttons, only an LCD screen (Speaker B, the User Interface Designer, designed it). The final remote had the LCD screen plus a microphone for speech recognition.",
+      "citations": [
+        {
+          "meeting_id": "TS3005b",
+          "quote": "But for now it's L_C_D_. Okay"
+        },
+        {
+          "meeting_id": "TS3005d",
+          "quote": "Yeah, I think that will be our best bet"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3005"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3005 discussed an LCD screen in their second meeting despite cost worries. What interface did they settle on, and what did the final remote include?"
+          ],
+          "turns": 29
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "citations": 2,
+          "meetings": [
+            "TS3005b",
+            "TS3005d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E04",
+      "team": "TS3005",
+      "correct": false,
+      "missing": [
+        [
+          "soft rubber"
+        ]
+      ],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 28.2,
+      "answer": "In their third meeting, Team TS3005 settled on rubber as the case material, debating between rubber and titanium (which was rejected for cost) and discussing variations like soft/spongy versus hard rubber. In their final meeting, the material was described as spongy rubber.",
+      "gold": "In the third meeting they settled on rubber (younger people like soft, spongy materials, older people like wood) and debated soft rubber (Speakers C and D) against hard rubber (Speaker B: it bounces back when dropped). In the final meeting it was described as hard rubber, not very spongy, with the idea of printing a wood-like look on it.",
+      "citations": [
+        {
+          "meeting_id": "TS3005c",
+          "quote": "titanium was also an option. But uh it's a very expensive material"
+        },
+        {
+          "meeting_id": "TS3005d",
+          "quote": "The material used is spongy, that that's uh that's a one, that's m rubber."
+        },
+        {
+          "meeting_id": "TS3005c",
+          "quote": "So we need a spongy feeling"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3005"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "What case material did Team TS3005 settle on in their third meeting, which two versions of it were debated, and how was it described in their final meeting?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "citations": 3,
+          "meetings": [
+            "TS3005c",
+            "TS3005d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E05",
+      "team": "TS3008",
+      "correct": false,
+      "missing": [
+        [
+          "speaker a"
+        ],
+        [
+          "fragile",
+          "sturdy",
+          "throw",
+          "coherent",
+          "concept",
+          "solid",
+          "rubber"
+        ],
+        [
+          "no lcd",
+          "not lcd",
+          "no l_c_d_",
+          "without",
+          "dropped",
+          "not include",
+          "rejected",
+          "not have",
+          "did not",
+          "didn't"
+        ]
+      ],
+      "citations_valid": "0/0",
+      "multi_meeting": false,
+      "gold_overlap": false,
+      "seconds": 3.1,
+      "answer": "The agent could not produce an answer.",
+      "gold": "Speaker A objected that an LCD did not fit the sturdy, throwable plastic-and-soft-rubber design they were after (Speaker D agreed it is fragile), while Speaker B argued it was up to the market if it was trendy. The final design had no LCD.",
+      "citations": [],
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3008"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "In Team TS3008, who pushed back on adding an LCD display, what was the objection, and did the final design have one?"
+          ],
+          "turns": 30
+        },
+        {
+          "step": "ask",
+          "result": "no model available: No hosted model answered. OpenRouter's free quota (50 requests a day, resets 00:00 UTC) may be used up, and Groq is unset or also failed."
+        }
+      ]
+    },
+    {
+      "id": "E06",
+      "team": "IS1000",
+      "correct": false,
+      "missing": [
+        [
+          "16",
+          "sixteen"
+        ],
+        [
+          "13",
+          "thirteen",
+          "3 euro",
+          "three euro"
+        ]
+      ],
+      "citations_valid": "0/0",
+      "multi_meeting": false,
+      "gold_overlap": false,
+      "seconds": 2.6,
+      "answer": "The agent could not produce an answer.",
+      "gold": "The basic design cost about 8 Euros and the advanced one 16 Euros, of which speech recognition was about 3 Euros; without it the advanced design was 13 Euros, still above the 12.50 Euro production budget.",
+      "citations": [],
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1000"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team IS1000 costed two designs in their final meeting. What did the advanced design cost, how much of that was speech recognition, and how did that compare with the budget?"
+          ],
+          "turns": 23
+        },
+        {
+          "step": "ask",
+          "result": "no model available: No hosted model answered. OpenRouter's free quota (50 requests a day, resets 00:00 UTC) may be used up, and Groq is unset or also failed."
+        }
+      ]
+    },
+    {
+      "id": "E07",
+      "team": "IS1004",
+      "correct": false,
+      "missing": [
+        [
+          "speaker b"
+        ],
+        [
+          "base station",
+          "recharg",
+          "docking"
+        ],
+        [
+          "dropped",
+          "against",
+          "removed",
+          "not kept",
+          "no solar",
+          "said no",
+          "excluded",
+          "were not",
+          "decided against",
+          "not included"
+        ]
+      ],
+      "citations_valid": "0/0",
+      "multi_meeting": false,
+      "gold_overlap": false,
+      "seconds": 2.8,
+      "answer": "The agent could not produce an answer.",
+      "gold": "Speaker B (User Interface Designer) said solar cells were no longer necessary with a recharging base station. The team decided against them; the final costing excluded solar cells.",
+      "citations": [],
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1004"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team IS1004's industrial designer planned solar cells plus rechargeable batteries. Who questioned the solar cells, why, and were they kept?"
+          ],
+          "turns": 21
+        },
+        {
+          "step": "ask",
+          "result": "no model available: No hosted model answered. OpenRouter's free quota (50 requests a day, resets 00:00 UTC) may be used up, and Groq is unset or also failed."
+        }
+      ]
+    },
+    {
+      "id": "E08",
+      "team": "IS1004",
+      "correct": false,
+      "missing": [
+        [
+          "speech"
+        ],
+        [
+          "lcd",
+          "l_c_d_"
+        ],
+        [
+          "locator",
+          "locat"
+        ]
+      ],
+      "citations_valid": "0/0",
+      "multi_meeting": false,
+      "gold_overlap": false,
+      "seconds": 30.7,
+      "answer": "The agent could not produce an answer.",
+      "gold": "They dropped speech recognition (decided by the second meeting) and the LCD screen (dropped in the third). In the final meeting Speaker C called the locator the most important feature, with the scroll buttons.",
+      "citations": [],
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1004"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Which two advanced features did Team IS1004 drop across their meetings, and which feature did their industrial designer call the most important in the final design?"
+          ],
+          "turns": 24
+        },
+        {
+          "step": "ask",
+          "result": "no model available: No hosted model answered. OpenRouter's free quota (50 requests a day, resets 00:00 UTC) may be used up, and Groq is unset or also failed."
+        }
+      ]
+    },
+    {
+      "id": "E09",
+      "team": "ES2015",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 47.1,
+      "answer": "Team ES2015 decided to use kinetic energy as the power source, a proposal made by Speaker B, and the case was decided to be plastic coated in rubber.",
+      "gold": "Kinetic energy, proposed by Speaker B (Industrial Designer) in the third meeting and still in the final design. The remote is hard plastic with a rubber casing or coating, chosen for comfort and anti-RSI.",
+      "citations": [
+        {
+          "meeting_id": "ES2015b",
+          "quote": "It could be a battery, like rechargeable probably"
+        },
+        {
+          "meeting_id": "ES2015c",
+          "quote": "Energy, we've decided on kinetic, right?"
+        },
+        {
+          "meeting_id": "ES2015c",
+          "quote": "I guess plastic and coated in rubber"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2015"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "What energy source did Team ES2015 end up with, who proposed it, and what was the case made of?"
+          ],
+          "turns": 24
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "citations": 3,
+          "meetings": [
+            "ES2015c"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "citations": 3,
+          "meetings": [
+            "ES2015b",
+            "ES2015c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E10",
+      "team": "ES2013",
+      "correct": false,
+      "missing": [
+        [
+          "titanium"
+        ],
+        [
+          "rubber"
+        ],
+        [
+          "plastic"
+        ]
+      ],
+      "citations_valid": "0/0",
+      "multi_meeting": false,
+      "gold_overlap": false,
+      "seconds": 3.1,
+      "answer": "The agent could not produce an answer.",
+      "gold": "Speakers B and C both said they were thinking titanium (C was influenced by iPods: minimalist and shiny). By the final meeting the case was either spongy rubber or hard plastic, with B still liking a plastic and rubber combination depending on cost.",
+      "citations": [],
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2013"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2013 was drawn to titanium for the case. Who favoured it, and what case materials were on the table by the final meeting?"
+          ],
+          "turns": 29
+        },
+        {
+          "step": "ask",
+          "result": "no model available: No hosted model answered. OpenRouter's free quota (50 requests a day, resets 00:00 UTC) may be used up, and Groq is unset or also failed."
+        }
+      ]
+    }
+  ]
+}

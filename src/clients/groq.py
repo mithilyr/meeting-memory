@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -49,12 +51,26 @@ def _call(model: str, prompt: str) -> str:
     return (payload["choices"][0]["message"]["content"] or "").strip()
 
 
+def _call_paced(model: str, prompt: str, attempts: int = 4) -> str:
+    """Groq's free tier allows 8K tokens per minute, so a 5K-token prompt right after another
+    gets a 429 with "try again in 1m2.5s". Wait exactly that long (plus a second) and retry."""
+    for attempt in range(attempts):
+        try:
+            return _call(model, prompt)
+        except RuntimeError as error:
+            wait = re.search(r"try again in (?:(\d+)m)?([\d.]+)s", str(error))
+            if "HTTP 429" not in str(error) or not wait or attempt == attempts - 1:
+                raise
+            time.sleep(int(wait.group(1) or 0) * 60 + float(wait.group(2)) + 1)
+    raise RuntimeError("unreachable")
+
+
 def generate(prompt: str) -> tuple[str, str]:
     """Try each configured model once (with retry on transient errors). Returns (text, model)."""
     last: Exception | None = None
     for model in models():
         try:
-            text = with_retry(lambda model=model: _call(model, prompt), description=f"groq {model}", attempts=2)
+            text = with_retry(lambda model=model: _call_paced(model, prompt), description=f"groq {model}", attempts=2)
             if text:
                 return text, f"groq/{model}"
         except Exception as error:  # noqa: BLE001 - try the next model

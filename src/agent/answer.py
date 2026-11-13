@@ -105,14 +105,19 @@ def _resolve_citations(conn: sqlite3.Connection, citations: list, team: str,
     return chosen[:MAX_CITATIONS], problems
 
 
-INTERNAL_ID = re.compile(r"\s*\((?:[^()]*?\b[A-Z]{2}\d{4}[a-d](?:#\d+|-E\d+)\b[^()]*?)\)|\b[A-Z]{2}\d{4}[a-d](?:#\d+|-E\d+)\b")
+#: Ledger ids (TS3006d-E13, also with Unicode hyphens) and turn ids (TS3006b#0110).
+INTERNAL_ID = re.compile(r"\b[A-Z]{2}\d{4}[a-d](?:#\d+|[-‐‑]E\d+)\b")
 
 
 def clean_answer(text: str) -> str:
-    """Strip internal ids (TS3006d-E13, TS3006b#0110) the model sometimes copies into prose.
-    The citations carry the evidence; the sentence should read cleanly."""
+    """Strip internal ids the model sometimes copies into prose, keeping the words around them:
+    "(Speaker C, ES2005d-E07)" becomes "(Speaker C)". The citations carry the evidence."""
     text = INTERNAL_ID.sub("", text)
-    return re.sub(r"\s+([.,;])", r"\1", re.sub(r"\s{2,}", " ", text)).strip()
+    text = re.sub(r"\(\s*[,;\s]*\)", "", text)            # brackets left empty
+    text = re.sub(r"[,;]\s*\)", ")", text)                 # "(Speaker C, )"
+    text = re.sub(r"\(\s*[,;]\s*", "(", text)              # "( , Speaker C)"
+    text = re.sub(r"\s{2,}", " ", text)
+    return re.sub(r"\s+([.,;)])", r"\1", text).strip()
 
 
 def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str | None = None,
