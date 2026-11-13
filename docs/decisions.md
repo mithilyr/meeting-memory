@@ -75,3 +75,14 @@ path (router, evidence fetch, one model call, quote check) has to run live, so i
 cached and able to fall back to a local model if a free tier rate-limits.
 **Agent loop defined:** widen the search (max 3 rounds) until evidence covers 2+ meetings; one
 answer call; quote check with snap-or-retry.
+
+## D-009: Extract each team's meetings in order, with the ledger so far as context; track commitments (2026-11-13)
+**Decision:** (1) When extracting meeting c, the extractor also receives the team's current ledger
+from a and b (a short list of topics and decisions, not the transcripts). (2) Action items get a
+status: open, reported back (a later meeting answers it), or dropped.
+**Why:** (1) The PDF warns that "people refer back to things without naming them". With the
+earlier topics in view, the model can link "the other one" to the earlier option. The cost is a
+few hundred extra tokens per meeting. (2) questions.json lists "commitments and whether they were
+followed up" as something the memory must hold, and open actions are a required part of the brief.
+**Trade-off:** A team's meetings must be extracted one after another (a, then b, then c). Teams
+still run in parallel, so throughput at scale is unaffected.

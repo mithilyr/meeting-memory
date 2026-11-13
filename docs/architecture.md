@@ -97,7 +97,9 @@ flowchart TB
    An embedder adds a vector for each chunk of turns (meaning-based search, so "battery" also finds "power source").
 4. **Event extractor (model).** Reads one meeting and lists what happened: decisions, proposals,
    action items and their owners, prices and numbers, objections, and who holds which role. Every
-   event points at the turn ids it came from.
+   event points at the turn ids it came from. A team's meetings are read in order (a, b, c), and the
+   extractor also sees the team's ledger so far, so "the other one" can be linked to the earlier
+   option (D-009). Action items get a status: open, reported back, or dropped.
 5. **Validator (code).** Rejects any event that does not fit the format, points at a turn that
    does not exist, or quotes text that is not in that turn. This is where model mistakes get
    caught before they reach memory.
