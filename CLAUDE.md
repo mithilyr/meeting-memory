@@ -39,8 +39,8 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
 14. Build-time extraction runs through Claude Code (subscription, no API spend), using the SAME
     prompt and JSON schema the production extractor sends to the API. Outputs land in the same
     cache and are validated by code (schema, turn ids, quotes). One flag switches to the API backend.
-15. The answering agent is code that calls a pluggable LLM backend, with at most 1 to 2 model calls
-    per question. Retrieval, timelines and verification are code, so free tiers are enough.
+15. The answering agent is code that calls hosted models only (OpenRouter free, then Groq free), with
+    1 to 3 model calls per question. Embeddings come from Voyage AI. No local models (D-021).
 16. Production proposal: Claude Haiku 5.5 via the Batch API for extraction. Pick the answering model by eval score.
 17. Every LLM response is cached on disk by a prompt hash. Re-runs must cost nothing.
 18. Record token counts and wall time per stage, for the "cost of 1,000 meetings" estimate.

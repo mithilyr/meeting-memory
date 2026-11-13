@@ -11,8 +11,8 @@ All three use the same pipeline and code. Only the model behind each step change
 | | A. Best quality | B. Cost-effective (what we recommend to Catalist) | C. This build ($0) |
 |---|---|---|---|
 | **Pull events out of meetings** | Claude Sonnet 5.5, Batch API | Claude Haiku 5.5, Batch API | Claude Code fills extraction jobs (subscription, no API spend) |
-| **Answer questions** | Sonnet 5.5, agent loop with several searches | Haiku 5.5. Hard questions escalate to Sonnet 5.5 | Free-tier API model, with a local fallback model |
-| **Search** | Postgres + pgvector + full-text | SQLite or Postgres full-text + small embeddings | SQLite full-text (FTS5) + local embeddings via Ollama |
+| **Answer questions** | Sonnet 5.5, agent loop with several searches | Haiku 5.5. Hard questions escalate to Sonnet 5.5 | Free OpenRouter models, then Groq's free tier |
+| **Search** | Postgres + pgvector + full-text | SQLite or Postgres full-text + Voyage embeddings | SQLite full-text (FTS5) + Voyage embeddings (free tier) |
 | **Cost to ingest 1,000 meetings** | ~$32 batched (~$64 standard) | **~$1.60 batched (~$3.20 standard)** | $0 |
 | **Cost per question** | ~$0.10 to $0.15 | ~$0.002 to $0.01 | $0 |
 | **When to choose it** | Legal or board-level accuracy matters | Daily use by a whole company | Demo and evaluation |
@@ -37,7 +37,7 @@ flowchart TB
         P["Parser<br/>CODE"]
         H{"Seen this file<br/>before? (content hash)<br/>CODE"}
         S[("Turn store<br/>SQLite + full-text index")]
-        E["Embedder<br/>small local model"]
+        E["Embedder<br/>Voyage AI (hosted)"]
         J["Extraction job writer<br/>CODE"]
         X["Event extractor<br/>MODEL"]
         V["Validator<br/>CODE: schema, turn ids exist,<br/>quotes match exactly"]
@@ -165,14 +165,9 @@ one about project Y.
 
 ## 7. Where the models run when this is hosted
 
-The page runs in the visitor's browser, but every model call happens on the machine running
-`python -m src.ui.server`. A visitor needs nothing installed.
-- By default the server calls OpenRouter with its own key.
-- With "local model only" ticked, the server calls Ollama on the server machine. On a laptop running the demo
-  that works. On a hosting service without Ollama it can't, so the page checks `/api/health` and
-  greys out the option.
-- Embeddings for search also need Ollama on the server. A host without it would need a hosted
-  embedding API instead (for example Voyage AI's free tier), set in `EMBED_MODEL`.
+Nothing runs on the user's machine and nothing needs a GPU (D-021). The server holds the API keys and calls
+OpenRouter and Groq for answers and Voyage AI for search vectors. A visitor only needs a browser.
+That is what makes it hostable on an ordinary small server or a free hosting tier.
 
 ## 8. Adding meetings
 New transcripts go into `inbox/`, either uploaded on the Add meetings page or dropped there by a

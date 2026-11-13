@@ -51,7 +51,7 @@ def keyword_turns(conn: sqlite3.Connection, team: str, query: str, k: int = 12,
 
 def vector_chunks(conn: sqlite3.Connection, team: str, query: str, k: int = 6,
                   upto_letter: str | None = None) -> list[sqlite3.Row]:
-    from src.clients.ollama import embed
+    from src.clients.voyage import embed
 
     rows = conn.execute(
         "SELECT c.*, m.letter FROM chunks c JOIN meetings m USING (meeting_id) "
@@ -60,7 +60,7 @@ def vector_chunks(conn: sqlite3.Connection, team: str, query: str, k: int = 6,
     ).fetchall()
     if not rows:
         return []
-    q = np.asarray(embed([f"search_query: {query}"])[0], dtype=np.float32)
+    q = np.asarray(embed([query], input_type="query")[0], dtype=np.float32)
     q /= np.linalg.norm(q) or 1.0
     matrix = np.stack([np.frombuffer(r["vector"], dtype=np.float32) for r in rows])
     order = np.argsort(-(matrix @ q))[:k]

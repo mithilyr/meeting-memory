@@ -3,7 +3,7 @@
     python -m src.memory.refresh
 
   1. Ingest (code)      new or changed files in the data folder and inbox/; unchanged ones skipped
-  2. Embed (local)      vectors for new chunks
+  2. Embed (Voyage)     vectors for new chunks
   3. Extract (model)    every meeting without ledger rows, team by team in meeting order.
                         Backend: Claude Haiku 5.5 if ANTHROPIC_API_KEY is set (tier B), otherwise
                         the free OpenRouter models.

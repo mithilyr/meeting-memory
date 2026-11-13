@@ -129,14 +129,14 @@ def ingest(conn: sqlite3.Connection) -> dict:
     return stats
 
 
-def embed_missing(conn: sqlite3.Connection, batch: int = 64) -> int:
+def embed_missing(conn: sqlite3.Connection, batch: int = 128) -> int:
     """Embed chunks that have no vector yet."""
-    from src.clients.ollama import embed
+    from src.clients.voyage import embed
 
     rows = conn.execute("SELECT chunk_id, text FROM chunks WHERE vector IS NULL").fetchall()
     for start in range(0, len(rows), batch):
         part = rows[start : start + batch]
-        vectors = embed([f"search_document: {r['text']}" for r in part])
+        vectors = embed([r["text"] for r in part], input_type="document")
         for row, vector in zip(part, vectors):
             v = np.asarray(vector, dtype=np.float32)
             v /= np.linalg.norm(v) or 1.0

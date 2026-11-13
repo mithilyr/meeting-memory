@@ -19,7 +19,6 @@ import json
 import os
 import sqlite3
 import threading
-import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -77,17 +76,10 @@ def turns_around(meeting_id: str, idx: int, quote: str | None = None) -> dict:
 
 
 def health() -> dict:
-    """What this machine can run. The page greys out options that would fail."""
+    """Which hosted services this server has keys for. The page shows it on Add meetings."""
     settings = get_settings()
-    try:
-        with urllib.request.urlopen(settings.ollama_url + "/api/tags", timeout=2) as r:
-            models = [m["name"] for m in json.loads(r.read())["models"]]
-        ollama = True
-    except OSError:
-        models, ollama = [], False
-    return {"ollama": ollama,
-            "embeddings": any(m.startswith(settings.embed_model) for m in models),
-            "free_api": bool(settings.openrouter_api_key), "anthropic_api": bool(os.getenv("ANTHROPIC_API_KEY"))}
+    return {"free_api": bool(settings.openrouter_api_key), "groq_api": bool(os.getenv("GROQ_API_KEY")),
+            "embeddings": bool(settings.voyage_api_key), "anthropic_api": bool(os.getenv("ANTHROPIC_API_KEY"))}
 
 
 def save_upload(filename: str, content: str) -> dict:

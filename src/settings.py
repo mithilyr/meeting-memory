@@ -23,9 +23,9 @@ class Settings:
     data_path: Path
     cache_dir: Path
     db_path: Path
-    ollama_url: str
-    #: Local embedding model, served by Ollama.
+    #: Hosted embedding model (Voyage AI, D-022).
     embed_model: str
+    voyage_api_key: str | None
     openrouter_api_key: str | None
 
     @property
@@ -58,7 +58,7 @@ def get_settings() -> Settings:
         data_path=Path(os.getenv("DATA_PATH", DEFAULT_DATA_PATH)),
         cache_dir=cache_dir,
         db_path=Path(os.getenv("DB_PATH", cache_dir / "memory.sqlite")),
-        ollama_url=os.getenv("OLLAMA_URL", "http://localhost:11434"),
-        embed_model=os.getenv("EMBED_MODEL", "nomic-embed-text"),
+        embed_model=os.getenv("EMBED_MODEL", "voyage-4-lite"),
+        voyage_api_key=os.getenv("VOYAGE_API_KEY") or None,
         openrouter_api_key=os.getenv("OPENROUTER_API_KEY") or None,
     )

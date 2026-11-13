@@ -276,8 +276,8 @@ async function loadHealth() {
   $("#health").innerHTML =
     yes(h.free_api, "Free online models (OpenRouter key set)") +
     yes(h.anthropic_api, "Claude API key set: new meetings are read by Claude Haiku 5.5") +
-    yes(h.ollama, "Ollama running on this machine") +
-    yes(h.embeddings, "Local embedding model installed (nomic-embed-text)");
+    yes(h.groq_api, "Groq key set (second free provider)") +
+    yes(h.embeddings, "Voyage AI key set (search embeddings)");
 }
 
 $("#refreshBtn").onclick = async () => {

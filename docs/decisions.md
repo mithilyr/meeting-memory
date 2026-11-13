@@ -154,3 +154,22 @@ plan's session limit. Through the API, teams run in parallel and a team's meetin
 so 1,000 meetings is 4 rounds (a, b, c, d). That's 4 Message Batches, each usually done in under an hour.
 **Ledger shape:** 3,040 proposals, 1,350 objections, 1,045 decisions, 775 numbers, 769 report-backs, 220 actions.
 Only 15 of 220 actions are matched to a report-back, so the "reported" rule is too strict (see failures.md).
+
+## D-021: No local models (2026-11-13)
+**Decision:** qwen3:4b (answer fallback) and Ollama (embeddings) are removed. Everything that needs
+a model calls a hosted API.
+**Why:** User decision. Catalist's staff mostly work remotely, so the tool has to live on a server
+anyone can reach from a browser, and a small server or free host has no GPU. The local fallback also
+scored 5/10 on hand-checked answers (eval/results/summary.md), against a quality bar it couldn't meet.
+**Effect:** If every hosted provider is down or out of quota, the agent says so (NoModelAvailable)
+instead of answering badly.
+
+## D-022: Search embeddings from Voyage AI (2026-11-13)
+voyage-4-lite, 1024 dimensions, asymmetric document/query embedding. The key comes from the
+CodeFest project (user approved). Free allowance is 200M tokens; the full corpus is about 3M. All
+15,868 chunks were re-embedded because the old 768-dim Ollama vectors aren't comparable.
+
+## D-023: Groq as the second free answer provider (2026-11-13)
+OpenRouter's free tier is 50 requests a day per account, and one full run plus the eval uses
+about that. Groq has its own free allowance, so the chain is OpenRouter, then Groq. Model ids are
+set in GROQ_MODELS and checked against Groq's live /models list.

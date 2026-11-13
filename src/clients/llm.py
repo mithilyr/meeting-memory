@@ -1,6 +1,6 @@
 """One entry point for "ask a model". Hosted APIs only (D-021: no local model).
 
-Free OpenRouter models are tried one by one. Non-empty replies are cached by prompt
+Free OpenRouter models are tried one by one, then Groq (D-023) if GROQ_API_KEY is set. Non-empty replies are cached by prompt
 hash, so a repeated question is free and instant; empty ones are never cached. If
 every model fails, NoModelAvailable says why, and the caller reports it instead of
 crashing.
@@ -9,10 +9,12 @@ crashing.
 from __future__ import annotations
 
 import json
+import os
 import re
 import time
 from dataclasses import dataclass, field
 
+from src.clients import groq
 from src.clients.openrouter import PHRASING_MODELS, AllModelsExhausted, OpenRouterPool, read_cached, write_cached
 
 
@@ -60,9 +62,17 @@ def complete(prompt: str) -> tuple[str, str]:
                 write_cached(prompt, text, used)
                 USAGE.record(used, time.time() - started, False)
                 return text, used
+    if os.getenv("GROQ_API_KEY"):
+        try:
+            text, used = groq.generate(prompt)
+            write_cached(prompt, text, used)
+            USAGE.record(used, time.time() - started, False)
+            return text, used
+        except RuntimeError:
+            pass
     raise NoModelAvailable(
-        "No hosted model answered. The free OpenRouter quota (50 requests a day) may be used up; "
-        "it resets at 00:00 UTC. Add another provider key or wait."
+        "No hosted model answered. OpenRouter's free quota (50 requests a day, resets 00:00 UTC) "
+        "may be used up, and Groq is unset or also failed."
     )
 
 

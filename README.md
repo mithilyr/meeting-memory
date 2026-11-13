@@ -15,23 +15,21 @@ Built for the Catalist Agentic AI Intern build test, on 138 AMI meetings (676,74
 
 ## Run it (about 10 minutes, $0)
 
-You need Python 3.11+ and [Ollama](https://ollama.com) running locally.
+You need Python 3.11+ and three free API keys (no local models, D-021).
 
 ```
-ollama pull nomic-embed-text          # local embeddings, 274 MB
-ollama pull qwen3:4b                  # local fallback answer model, 2.5 GB
 python -m venv .venv
 .venv\Scripts\activate                # Windows   (source .venv/bin/activate elsewhere)
 pip install -r requirements.txt
-copy .env.example .env                # add a free OPENROUTER_API_KEY (optional: without it, answers use qwen3:4b)
+copy .env.example .env                # add OPENROUTER_API_KEY, GROQ_API_KEY and VOYAGE_API_KEY (all free)
 ```
 
 The data folder is expected next to this repo (`../Catalist_AI_Intern_Build_Test_Data`); set
 `DATA_PATH` in `.env` if it is elsewhere.
 
-### Load the memory that is already extracted (about 10 minutes, no model calls)
+### Load the memory that is already extracted (a few minutes, no language-model calls)
 The model's extraction output for all 138 meetings ships in `snapshot/extracted/`. Rebuilding the
-store from it re-runs only code (parse, index, validate, statuses) plus local embeddings:
+store from it re-runs only code (parse, index, validate, statuses) plus Voyage embeddings:
 
 ```
 python -m src.memory.store ingest
@@ -68,7 +66,7 @@ Claude API. That path is written but was not run during the build.
 |---|---|
 | Parsing, ids, content hashes, incremental ingest | Pulling events out of messy speech (Haiku 5.5) |
 | Team filter, meeting cutoff for briefs | Writing the answer and the brief from given evidence |
-| Keyword (BM25) + vector search | Asking for more searches when evidence is thin |
+| Keyword (BM25) search; vectors come from Voyage AI | Asking for more searches when evidence is thin |
 | What is current / superseded / open (rules on meeting order) | |
 | Quote verification and repair, output format, eval scoring | |
 
@@ -78,7 +76,7 @@ run.py                 answers.json for the 25 questions + TS3012 brief
 src/ingest/            parse.py (files -> turns), verify.py (quote rule), extract.py (jobs, validation, API path)
 src/memory/            store.py (SQLite, FTS5, vectors), ledger.py (status rules)
 src/agent/             retrieve.py (search), answer.py (question loop), brief.py
-src/clients/           openrouter.py + retry.py (from CodeFest), ollama.py, llm.py (fallback chain)
+src/clients/           openrouter.py + retry.py (from CodeFest), groq.py, voyage.py, llm.py (provider chain)
 src/ui/                server.py + index.html (demo page)
 eval/                  own_questions.json (10, unseen teams), run_eval.py, results/
 docs/                  idea, architecture, write-up, decisions, failures, build log
