@@ -64,3 +64,14 @@ kept as an honest data point for the write-up.
 **Rejected:** qwen3:8b (does not fit the GPU). qwen3:4b as the main extractor (bad provenance).
 Free API tiers for extraction (daily caps).
 **Disclosure:** The README must say that the build-time extraction ran through Claude Code, and how to run the API backend instead.
+
+## D-008: Three deployment tiers, one codebase; demo runs on pre-extracted memory (2026-11-13)
+**Decision:** Document three tiers (A best quality, B cost-effective, C this $0 build) that share
+the same pipeline and differ only in which model sits behind extraction and answering. See `docs/architecture.md`.
+**Why:** Catalist asked for judgment over polish. Showing the same design at three price points
+shows the cost/quality trade-off is a configuration choice, not a rebuild.
+**Demo constraint:** Live questions run against the corpus we already extracted. Only the answering
+path (router, evidence fetch, one model call, quote check) has to run live, so it must be fast,
+cached and able to fall back to a local model if a free tier rate-limits.
+**Agent loop defined:** widen the search (max 3 rounds) until evidence covers 2+ meetings; one
+answer call; quote check with snap-or-retry.

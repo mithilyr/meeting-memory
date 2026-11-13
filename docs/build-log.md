@@ -11,3 +11,4 @@ Append one entry per session: what changed, what was measured. For the video and
 - Scaffolded the repo: CLAUDE.md (must/don't rules), parser, quote verifier, tests, decision log.
 - Benchmarked local models (D-007): qwen3:8b 120 s/chunk (spills to CPU), qwen3:4b 28 s/chunk but invents turn ids.
 - Decision: build-time extraction via Claude Code, production proposal Haiku 5.5 Batch (~$0.75 per 1,000 meetings).
+- Wrote docs/architecture.md: three-tier cost table, Mermaid system diagram, plain-English walk-through of every box (D-008).
