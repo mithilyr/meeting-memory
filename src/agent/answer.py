@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sqlite3
 import time
 
@@ -145,14 +146,20 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None,
         trace.append({"step": "answer", "model": model, "citations": len(citations),
                       "meetings": sorted(meetings), "problems": problems})
         result = {"answer": str(reply.get("answer", "")).strip(), "citations": citations}
-        if citations and (len(meetings) >= 2 or feedback):
+        too_long = len(re.findall(r"[.!?](?:\s|$)", result["answer"])) > 3
+        if citations and len(meetings) >= 2 and not too_long:
             break
         if feedback:  # already retried once
             break
+        issues = list(problems)
+        if not citations:
+            issues.append("No citation could be verified.")
+        elif len(meetings) < 2:
+            issues.append("All citations come from one meeting; cite evidence from at least two meetings if the answer spans them.")
+        if too_long:
+            issues.append("The answer is longer than 3 sentences; shorten it to 1 to 3 sentences.")
         feedback = ("\nYOUR PREVIOUS ANSWER: " + json.dumps(reply)[:1500] +
-                    "\nPROBLEM: " + ("; ".join(problems) if problems else "") +
-                    (" All citations come from one meeting; cite evidence from at least two meetings if the answer spans them."
-                     if citations else " No citation could be verified.") +
+                    "\nPROBLEMS: " + " ".join(issues) +
                     " Prefer citing ledger events by id. Reply with corrected JSON.")
     if result is None:
         result = {"answer": "The agent could not produce an answer.", "citations": []}
