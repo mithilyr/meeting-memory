@@ -127,8 +127,8 @@
           "quote": "you don't wanna really busy remote with a thousand buttons on it"
         },
         {
-          "meeting_id": "ES2007a",
-          "quote": "I think a flip up thing, 'cause you always have this problem of like"
+          "meeting_id": "ES2007b",
+          "quote": "seventy five per cent of users find the remote control ugly"
         }
       ]
     },
@@ -255,8 +255,8 @@
       "answer": "Speaker A, the project manager, favoured a joystick for navigation, which was replaced by push-buttons in the final costed design. To reach the budget, the team also gave up using a special colour for the remote.",
       "citations": [
         {
-          "meeting_id": "TS3010d",
-          "quote": "Then we have thirteen Euros. Half a Euro too much"
+          "meeting_id": "TS3010c",
+          "quote": "the one with with a menu has an L_C_D_"
         },
         {
           "meeting_id": "TS3010d",
@@ -320,7 +320,7 @@
     },
     {
       "question_id": "Q20",
-      "answer": "Speaker A said they would look into whether the remote should only have television‑related buttons (i.e., omit video‑recorder functions). No report‑back answer was recorded, so the action remains open.",
+      "answer": "Speaker A said they would look into whether the remote should only have television‑related buttons (the video‑recorder functions) — see the action item they created. No subsequent report‑back answer on that question appears in the evidence.",
       "citations": [
         {
           "meeting_id": "ES2008a",
@@ -406,19 +406,19 @@
     },
     {
       "question_id": "Q25",
-      "answer": "The team settled on a broccoli‑shaped remote – Speaker C announced that the broccoli shape wins and Speaker B agreed – because the team found that shape ergonomically comfortable, likening it to a joystick, whereas earlier fruit shapes were judged uncomfortable to hold.",
+      "answer": "The team decided that the broccoli shape wins for the remote's form factor, as it is ergonomically comfortable and resembles a joystick, unlike other fruit shapes that were found to be uncomfortable to hold. This decision followed earlier reports that the fruit and vegetable theme was a current trend, with a preference for fruits over vegetables.",
       "citations": [
+        {
+          "meeting_id": "ES2011c",
+          "quote": "the fruit and vegetable theme is the is the current trend"
+        },
         {
           "meeting_id": "ES2011d",
           "quote": "Well Yeah the broccoli I guess wins"
         },
         {
           "meeting_id": "ES2011d",
-          "quote": "the broccoli is quite comfortable, I have to say, like sorta like a joystick."
-        },
-        {
-          "meeting_id": "ES2011d",
-          "quote": "I personally don't think this is comfortable to to sit there"
+          "quote": "although the broccoli is quite comfortable, I have to say, like sorta like a joystick"
         }
       ]
     }

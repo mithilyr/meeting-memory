@@ -44,7 +44,7 @@ be fooled (`eval/results/summary.md`).
 
 | Run | Right (hand check) | All quotes verified | Cited 2+ meetings |
 |---|---|---|---|
-| Hosted, Groq | 7/10 | 10/10 | 9/10 |
+| Hosted, Groq | 7/10 | 10/10 | 10/10 |
 | Local qwen3:4b (since removed) | 5/10 | 10/10 | 5/10 |
 
 The three wrong answers on the hosted run, with causes checked in the ledger (`docs/failures.md`):
@@ -52,7 +52,8 @@ The three wrong answers on the hosted run, with causes checked in the ledger (`d
 - E04: the final meeting's "it's hard rubber" was never extracted, so the answer used an earlier mention.
 - E08: the evidence was there, but the model named the wrong dropped feature.
 
-On the 25 graded questions every citation passes the word-for-word check, and `out/run_log.json` has each answer's full trace.
+On the 25 graded questions every citation passes the word-for-word check and 23 of 25 cite two or
+more meetings (Q15 and Q20 cite one, even after two repair rounds). `out/run_log.json` has each answer's full trace.
 
 ## Cost and time for 1,000 meetings
 Measured on the real run: about 10.6K input and 4.3K output tokens per meeting.
