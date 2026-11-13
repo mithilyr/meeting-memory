@@ -1,10 +1,9 @@
-"""One entry point for "ask a model": free API first, local model as the safety net.
+"""One entry point for "ask a model". Hosted APIs only (D-021: no local model).
 
-Tier C (D-007, D-008): OpenRouter free models are tried one by one; if all fail,
-are rate-limited, or return nothing, the local qwen3:4b answers instead. A demo
-must not die on a 429. Non-empty responses are cached by prompt hash, so a
-repeated question is free and instant. Empty ones are never cached: a free model
-that returned nothing once (seen on a 14K-token prompt) must get another chance.
+Free OpenRouter models are tried one by one. Non-empty replies are cached by prompt
+hash, so a repeated question is free and instant; empty ones are never cached. If
+every model fails, NoModelAvailable says why, and the caller reports it instead of
+crashing.
 """
 
 from __future__ import annotations
@@ -14,10 +13,8 @@ import re
 import time
 from dataclasses import dataclass, field
 
-from src.clients import ollama
 from src.clients.openrouter import PHRASING_MODELS, AllModelsExhausted, OpenRouterPool, read_cached, write_cached
 
-LOCAL_MODEL = "qwen3:4b"
 
 
 @dataclass
@@ -35,15 +32,19 @@ _pools: dict[str, OpenRouterPool] = {}
 _api_paused_until = 0.0
 
 
-def complete(prompt: str, *, local_only: bool = False) -> tuple[str, str]:
+class NoModelAvailable(RuntimeError):
+    """Every hosted model failed or the daily quota is spent."""
+
+
+def complete(prompt: str) -> tuple[str, str]:
     """Return (text, model). Cached responses come back without a network call."""
     started = time.time()
     cached = read_cached(prompt)
-    if cached and cached[0].strip() and not local_only:
+    if cached and cached[0].strip():
         USAGE.record(cached[1], time.time() - started, True)
         return cached
     global _api_paused_until
-    if not local_only and time.time() >= _api_paused_until:
+    if time.time() >= _api_paused_until:
         for model in PHRASING_MODELS:
             try:
                 pool = _pools.setdefault(model, OpenRouterPool(models=(model,)))
@@ -59,17 +60,10 @@ def complete(prompt: str, *, local_only: bool = False) -> tuple[str, str]:
                 write_cached(prompt, text, used)
                 USAGE.record(used, time.time() - started, False)
                 return text, used
-    # Local replies get their own cache key, so a later run with API quota back still asks the
-    # stronger model instead of being served the fallback's answer.
-    local = read_cached(prompt, LOCAL_MODEL)
-    if local and local[0].strip():
-        USAGE.record(local[1], time.time() - started, True)
-        return local
-    text = ollama.generate(prompt, model=LOCAL_MODEL)
-    if text.strip():
-        write_cached(prompt, text, f"ollama/{LOCAL_MODEL}", LOCAL_MODEL)
-    USAGE.record(f"ollama/{LOCAL_MODEL}", time.time() - started, False)
-    return text, f"ollama/{LOCAL_MODEL}"
+    raise NoModelAvailable(
+        "No hosted model answered. The free OpenRouter quota (50 requests a day) may be used up; "
+        "it resets at 00:00 UTC. Add another provider key or wait."
+    )
 
 
 def parse_json(text: str) -> dict:

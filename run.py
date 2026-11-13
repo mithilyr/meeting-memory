@@ -1,7 +1,6 @@
 """Produce out/answers.json: the 25 questions plus the TS3012 brief.
 
-    python run.py              # free API models, local fallback
-    python run.py --local      # local model only
+    python run.py
 
 Writes out/answers.json (the submission format, nothing else in it) and
 out/run_log.json (per-question trace, model used, seconds, citation checks).
@@ -32,7 +31,6 @@ def check_citation(conn, citation: dict) -> bool:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--local", action="store_true")
     parser.add_argument("--only", nargs="*", help="question ids to run, e.g. Q01 Q07")
     args = parser.parse_args(argv)
 
@@ -42,7 +40,7 @@ def main(argv: list[str] | None = None) -> int:
     answers, log = [], []
     started = time.time()
     for q in questions:
-        result = answer(q["question"], conn=conn, local_only=args.local)
+        result = answer(q["question"], conn=conn)
         valid = [check_citation(conn, c) for c in result["citations"]]
         answers.append({"question_id": q["question_id"], "answer": result["answer"],
                         "citations": [c for c, ok in zip(result["citations"], valid) if ok]})
@@ -51,10 +49,14 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{q['question_id']}: {sum(valid)}/{len(valid)} citations valid, {result['seconds']}s")
 
     team = spec["brief_task"]["team"]
-    brief = write_brief(team, conn=conn, local_only=args.local)
+    brief = write_brief(team, conn=conn)
     print(f"brief {team}: meetings up to {brief['upto_letter']}, model {brief['model']}")
 
     OUT.mkdir(exist_ok=True)
+    if args.only and (OUT / "answers.json").exists():  # partial run: merge into the existing file
+        previous = json.loads((OUT / "answers.json").read_text(encoding="utf-8"))
+        fresh = {a["question_id"]: a for a in answers}
+        answers = [fresh.get(a["question_id"], a) for a in previous["answers"]]
     (OUT / "answers.json").write_text(
         json.dumps({"answers": answers, "brief": brief["brief"]}, indent=2, ensure_ascii=False), encoding="utf-8")
     (OUT / "run_log.json").write_text(json.dumps({

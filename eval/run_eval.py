@@ -6,8 +6,7 @@ Per question:
   multi_meeting    citations span 2+ meetings
   gold_overlap     the agent cited at least one gold meeting
 
-    python -m eval.run_eval            # free API models, local fallback
-    python -m eval.run_eval --local    # local model only
+    python -m eval.run_eval
 """
 
 from __future__ import annotations
@@ -31,7 +30,6 @@ def quote_ok(conn, meeting_id: str, quote: str) -> bool:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--local", action="store_true")
     args = parser.parse_args(argv)
     conn = connect()
     spec = json.loads((HERE / "own_questions.json").read_text(encoding="utf-8"))
@@ -47,7 +45,7 @@ def main(argv: list[str] | None = None) -> int:
     rows = []
     for q in spec["questions"]:
         result = answer(q["question"] if q["team"] in q["question"] else f"{q['team']}: {q['question']}",
-                        conn=conn, local_only=args.local)
+                        conn=conn)
         text = result["answer"].lower()
         missing = [g for g in q["must_include"] if not any(alt.lower() in text for alt in g)]
         valid = [quote_ok(conn, c["meeting_id"], c["quote"]) for c in result["citations"]]

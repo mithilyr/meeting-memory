@@ -4,7 +4,7 @@ Copied from the CodeFest ashen-assistant (D-005) with its two live-found bugs
 fixed there (HTTP 200 carrying an error body; unreachable network). Changes here:
 the model list, re-verified against the live /models endpoint on 2026-11-13, and
 the docstring. Gemini's key from CodeFest returned 401, so this is the only free
-API provider; `src/clients/llm.py` falls back to a local model after it.
+API provider used by `src/clients/llm.py`.
 """
 
 from __future__ import annotations

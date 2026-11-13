@@ -1,4 +1,4 @@
-"""Local models through Ollama: embeddings, and a fallback answer model.
+"""Embeddings through Ollama.
 
 Plain urllib, no SDK: two endpoints do not justify a dependency.
 """
@@ -29,25 +29,3 @@ def embed(texts: list[str], *, model: str | None = None) -> list[list[float]]:
     payload = {"model": model, "input": texts, "truncate": True}
     result = with_retry(lambda: _post("/api/embed", payload), description="ollama embed")
     return result["embeddings"]
-
-
-def generate(prompt: str, *, schema: dict | str | None = "json", model: str = "qwen3:4b") -> str:
-    """One completion, constrained to JSON by default.
-
-    qwen3 ignores `think: false` on this Ollama version (0.32.9) and writes its reasoning into
-    the reply, which on a 10K-token prompt ran past the timeout. JSON mode stops that, and every
-    caller here wants JSON anyway. The context window is sized to the prompt so a small prompt
-    doesn't reserve 16K of GPU memory.
-    """
-    num_ctx = min(32768, ((len(prompt) // 3 + 2048) // 2048 + 1) * 2048)
-    body = {
-        "model": model,
-        "prompt": prompt,
-        "stream": False,
-        "think": False,
-        "options": {"temperature": 0, "num_ctx": num_ctx},
-    }
-    if schema is not None:
-        body["format"] = schema
-    result = with_retry(lambda: _post("/api/generate", body), description=f"ollama {model}", attempts=2)
-    return result["response"].strip()

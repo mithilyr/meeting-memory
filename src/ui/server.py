@@ -26,7 +26,6 @@ from urllib.parse import parse_qs, urlparse
 
 from src.agent.answer import answer
 from src.agent.brief import write_brief
-from src.clients.llm import LOCAL_MODEL
 from src.ingest.parse import MEETING_ID, TURN_HEADER
 from src.memory import ledger
 from src.memory.refresh import refresh
@@ -86,7 +85,7 @@ def health() -> dict:
         ollama = True
     except OSError:
         models, ollama = [], False
-    return {"ollama": ollama, "local_model": LOCAL_MODEL in models,
+    return {"ollama": ollama,
             "embeddings": any(m.startswith(settings.embed_model) for m in models),
             "free_api": bool(settings.openrouter_api_key), "anthropic_api": bool(os.getenv("ANTHROPIC_API_KEY"))}
 
@@ -144,11 +143,9 @@ class Handler(BaseHTTPRequestHandler):
         body = json.loads(self.rfile.read(length) or b"{}")
         try:
             if self.path == "/api/ask":
-                self._json(answer(body["question"], conn=db(), team=body.get("team") or None,
-                                  local_only=bool(body.get("local"))))
+                self._json(answer(body["question"], conn=db(), team=body.get("team") or None))
             elif self.path == "/api/brief":
-                self._json(write_brief(body["team"], conn=db(), upto_letter=body.get("upto") or None,
-                                       local_only=bool(body.get("local"))))
+                self._json(write_brief(body["team"], conn=db(), upto_letter=body.get("upto") or None))
             elif self.path == "/api/upload":
                 self._json(save_upload(body["filename"], body["content"]))
             elif self.path == "/api/refresh":

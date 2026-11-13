@@ -101,7 +101,6 @@
     <textarea id="q" placeholder="e.g. What energy source did Team ES2015 end up with, and who proposed it?"></textarea>
     <div class="row" style="margin-top:12px">
       <button class="btn" id="askBtn">Ask</button>
-      <label class="muted" style="align-self:center" id="localLabel"><input type="checkbox" id="local"> local model only</label>
     </div>
     <div class="chips" id="examples"></div>
     <div id="result"></div>
@@ -179,7 +178,7 @@ async function ask() {
   $("#askBtn").disabled = true;
   $("#result").innerHTML = `<div class="card"><span class="spin"></span> &nbsp;Searching the team's meetings…</div>`;
   try {
-    const r = await api("/api/ask", {question, team: $("#askTeam").value, local: $("#local").checked});
+    const r = await api("/api/ask", {question, team: $("#askTeam").value});
     const cites = r.citations.map(c => `
       <div class="cite"><span class="badge">${esc(c.meeting_id)}</span><q>${esc(c.quote)}</q>
       <button class="link" data-m="${esc(c.meeting_id)}" data-q="${esc(c.quote)}">show in transcript</button></div>`).join("")
@@ -278,13 +277,7 @@ async function loadHealth() {
     yes(h.free_api, "Free online models (OpenRouter key set)") +
     yes(h.anthropic_api, "Claude API key set: new meetings are read by Claude Haiku 5.5") +
     yes(h.ollama, "Ollama running on this machine") +
-    yes(h.local_model, "Local answer model installed (qwen3:4b)") +
     yes(h.embeddings, "Local embedding model installed (nomic-embed-text)");
-  if (!h.local_model) {
-    $("#local").disabled = true;
-    $("#localLabel").title = "Needs Ollama and qwen3:4b on the machine running this server.";
-    $("#localLabel").style.opacity = .5;
-  }
 }
 
 $("#refreshBtn").onclick = async () => {

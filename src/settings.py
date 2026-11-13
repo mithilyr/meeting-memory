@@ -24,8 +24,6 @@ class Settings:
     cache_dir: Path
     db_path: Path
     ollama_url: str
-    #: Local model for extraction and answering. $0, runs on the 6GB GPU.
-    llm_model: str
     #: Local embedding model, served by Ollama.
     embed_model: str
     openrouter_api_key: str | None
@@ -61,7 +59,6 @@ def get_settings() -> Settings:
         cache_dir=cache_dir,
         db_path=Path(os.getenv("DB_PATH", cache_dir / "memory.sqlite")),
         ollama_url=os.getenv("OLLAMA_URL", "http://localhost:11434"),
-        llm_model=os.getenv("LLM_MODEL", "qwen3:8b"),
         embed_model=os.getenv("EMBED_MODEL", "nomic-embed-text"),
         openrouter_api_key=os.getenv("OPENROUTER_API_KEY") or None,
     )

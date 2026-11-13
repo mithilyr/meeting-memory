@@ -116,7 +116,7 @@ def clean_answer(text: str) -> str:
 
 
 def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str | None = None,
-           upto_letter: str | None = None, local_only: bool = False) -> dict:
+           upto_letter: str | None = None) -> dict:
     conn = conn or connect()
     trace: list[dict] = []
     started = time.time()
@@ -138,7 +138,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
                                ledger=ledger_text or "(empty)", speakers=speakers or "(unknown)",
                                turns=retrieve.render_turns(turns), feedback=feedback)
         try:
-            text, model = complete(prompt, local_only=local_only)
+            text, model = complete(prompt)
         except Exception as error:  # noqa: BLE001 - every backend down: report, don't crash the run
             trace.append({"step": "ask", "result": f"no model available: {str(error)[:200]}"})
             break
@@ -161,7 +161,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
                       "meetings": sorted(meetings), "problems": problems})
         result = {"answer": str(reply.get("answer", "")).strip(), "citations": citations}
         too_long = len(re.findall(r"[.!?](?:\s|$)", result["answer"])) > 3
-        echoed = question.lower()[:60] in result["answer"].lower()  # seen from qwen3:4b (E01)
+        echoed = question.lower()[:60] in result["answer"].lower()  # seen in testing (E01)
         if citations and len(meetings) >= 2 and not too_long and not echoed:
             break
         if feedback:  # already retried once
@@ -189,10 +189,9 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Ask the meeting memory a question.")
     parser.add_argument("question")
-    parser.add_argument("--local", action="store_true", help="use only the local model")
     parser.add_argument("--trace", action="store_true")
     args = parser.parse_args(argv)
-    result = answer(args.question, local_only=args.local)
+    result = answer(args.question)
     if not args.trace:
         result.pop("trace")
     print(json.dumps(result, indent=2, ensure_ascii=False))

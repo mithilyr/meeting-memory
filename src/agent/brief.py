@@ -14,7 +14,7 @@ import json
 import sqlite3
 
 from src.agent import retrieve
-from src.clients.llm import complete, parse_json
+from src.clients.llm import NoModelAvailable, complete, parse_json
 from src.memory import ledger
 from src.memory.store import connect
 
@@ -67,7 +67,7 @@ def _line(e: dict) -> str:
 
 
 def write_brief(team: str, *, conn: sqlite3.Connection | None = None, upto_letter: str | None = None,
-                local_only: bool = False) -> dict:
+                ) -> dict:
     conn = conn or connect()
     letters = [r[0] for r in conn.execute("SELECT letter FROM meetings WHERE team = ? ORDER BY letter", (team,))]
     if upto_letter is None:  # default: brief for the team's last meeting, from everything before it
@@ -82,10 +82,11 @@ def write_brief(team: str, *, conn: sqlite3.Connection | None = None, upto_lette
     )
     prompt = PROMPT.format(team=team, next_letter=next_letter, first_letter=letters[0], last_letter=upto_letter,
                            speakers=retrieve.speakers(conn, team, upto_letter), groups=groups_text)
-    text, model = complete(prompt, local_only=local_only)
     try:
+        text, model = complete(prompt)
         drafted = parse_json(text)
-    except (ValueError, json.JSONDecodeError):
+    except (ValueError, json.JSONDecodeError, NoModelAvailable):
+        model = "none"
         drafted = {key: [{"text": e["summary"], "events": [e["event_id"]]} for e in groups[key]] for key, _ in SECTIONS}
         model += " (unparseable; fell back to ledger summaries)"
 
@@ -114,9 +115,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Write a pre-meeting brief.")
     parser.add_argument("team")
     parser.add_argument("--upto", help="last meeting letter to include (default: all but the last)")
-    parser.add_argument("--local", action="store_true")
     args = parser.parse_args(argv)
-    result = write_brief(args.team, upto_letter=args.upto, local_only=args.local)
+    result = write_brief(args.team, upto_letter=args.upto)
     print(result["brief"])
     print(f"\n(model: {result['model']}, points dropped for missing evidence: {result['dropped_points']})")
     return 0

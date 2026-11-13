@@ -6,7 +6,7 @@
   2. Embed (local)      vectors for new chunks
   3. Extract (model)    every meeting without ledger rows, team by team in meeting order.
                         Backend: Claude Haiku 5.5 if ANTHROPIC_API_KEY is set (tier B), otherwise
-                        the free chain (OpenRouter free models, then local qwen3:4b).
+                        the free OpenRouter models.
   4. Validate (code)    same validator as always; a rejected meeting is reported and left pending
 
 Run it from the UI's Refresh button, a scheduled task, or a folder watcher.
@@ -45,7 +45,7 @@ def refresh(conn: sqlite3.Connection | None = None) -> dict:
     report: dict = {"ingest": ingest(conn)}
     report["embedded_chunks"] = embed_missing(conn)
     use_api = bool(os.getenv("ANTHROPIC_API_KEY"))
-    report["backend"] = "claude-haiku-5-5" if use_api else "free (OpenRouter, then local qwen3:4b)"
+    report["backend"] = "claude-haiku-5-5" if use_api else "free OpenRouter models"
     done, failed = [], []
     for meeting_id in pending_meetings(conn):
         team = conn.execute("SELECT team FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchone()[0]
