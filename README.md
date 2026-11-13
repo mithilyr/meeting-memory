@@ -6,12 +6,12 @@ speaker's exact words, and writes a brief before a team's next meeting.
 
 Built for the Catalist Agentic AI Intern build test, on 138 AMI meetings (676,745 words).
 
-- **The idea:** [docs/idea.md](docs/idea.md)
-- **Architecture + diagram:** [docs/architecture.md](docs/architecture.md)
-- **Write-up (one page):** [docs/writeup.md](docs/writeup.md)
-- **Every design decision:** [docs/decisions.md](docs/decisions.md)
-- **Where it fails:** [docs/failures.md](docs/failures.md)
-- **Submission:** [out/answers.json](out/answers.json)
+- [The idea](docs/idea.md)
+- [Architecture and diagram](docs/architecture.md)
+- [One-page write-up](docs/writeup.md)
+- [Design decisions, D-001 onward](docs/decisions.md)
+- [Where it fails](docs/failures.md)
+- [The submission: out/answers.json](out/answers.json)
 
 ## Run it (about 10 minutes, $0)
 

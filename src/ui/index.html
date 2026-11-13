@@ -84,22 +84,24 @@
 </head>
 <body>
 <header>
-  <div class="bar"><span class="logo">MEETING MEMORY</span><span class="tag">Decisions, commitments and disagreements, with the exact words that prove them.</span></div>
+  <div class="bar"><span class="logo">MEETING MEMORY</span><span class="tag">A searchable record of every meeting, with a source for every answer.</span></div>
   <nav>
     <button data-tab="ask" class="on">Ask</button>
     <button data-tab="timeline">Timeline</button>
     <button data-tab="brief">Brief</button>
+    <button data-tab="library">Add meetings</button>
   </nav>
 </header>
 
 <main>
   <section id="ask">
     <h2 class="display">Ask the meetings</h2>
-    <p class="lede">Ask in plain English and name the team. Every answer is checked against the transcript word for word before you see it.</p>
+    <p class="lede">Pick a project and ask in plain English. Every quote in the answer is checked against the transcript before it is shown.</p>
+    <div class="row" style="margin-bottom:10px"><select id="askTeam"><option value="">Project: named in the question</option></select></div>
     <textarea id="q" placeholder="e.g. What energy source did Team ES2015 end up with, and who proposed it?"></textarea>
     <div class="row" style="margin-top:12px">
       <button class="btn" id="askBtn">Ask</button>
-      <label class="muted" style="align-self:center"><input type="checkbox" id="local"> local model only</label>
+      <label class="muted" style="align-self:center" id="localLabel"><input type="checkbox" id="local"> local model only</label>
     </div>
     <div class="chips" id="examples"></div>
     <div id="result"></div>
@@ -107,7 +109,7 @@
 
   <section id="timeline" hidden>
     <h2 class="display">Team timeline</h2>
-    <p class="lede">Everything the memory holds for one team, meeting by meeting. What is current and what was replaced is worked out by rule, not by the model.</p>
+    <p class="lede">Everything the memory holds for one team, meeting by meeting. Code works out what is current and what was replaced from the meeting order.</p>
     <div class="row"><select id="tlTeam"></select></div>
     <div class="filters" id="tlFilters"></div>
     <div class="roles muted" id="tlRoles"></div>
@@ -123,6 +125,17 @@
       <button class="btn" id="brBtn">Write brief</button>
     </div>
     <div id="brOut"></div>
+  </section>
+  <section id="library" hidden>
+    <h2 class="display">Add meetings</h2>
+    <p class="lede">Upload new transcripts, then refresh. Refresh reads only what is new: it indexes the files, pulls out decisions and actions, and updates what is current. Files already in memory are skipped.</p>
+    <div class="row">
+      <input type="file" id="files" accept=".txt" multiple>
+      <button class="btn" id="refreshBtn">Refresh memory</button>
+    </div>
+    <p class="muted">File names must be the meeting id: team id plus meeting letter, for example TS3013a.txt. Each turn is a line like "00:01:06 Speaker B" followed by the words.</p>
+    <div id="refreshOut"></div>
+    <div class="card"><p class="kicker">This machine</p><div id="health" class="muted">Checking…</div></div>
   </section>
 </main>
 
@@ -166,7 +179,7 @@ async function ask() {
   $("#askBtn").disabled = true;
   $("#result").innerHTML = `<div class="card"><span class="spin"></span> &nbsp;Searching the team's meetings…</div>`;
   try {
-    const r = await api("/api/ask", {question, local: $("#local").checked});
+    const r = await api("/api/ask", {question, team: $("#askTeam").value, local: $("#local").checked});
     const cites = r.citations.map(c => `
       <div class="cite"><span class="badge">${esc(c.meeting_id)}</span><q>${esc(c.quote)}</q>
       <button class="link" data-m="${esc(c.meeting_id)}" data-q="${esc(c.quote)}">show in transcript</button></div>`).join("")
@@ -208,6 +221,8 @@ async function loadTeams() {
   TEAMS = await api("/api/teams");
   const opts = TEAMS.map(t => `<option value="${t.team}">${t.team} (${t.extracted}/${t.meetings} meetings in memory)</option>`).join("");
   $("#tlTeam").innerHTML = opts; $("#brTeam").innerHTML = opts;
+  $("#askTeam").innerHTML = `<option value="">Project: named in the question</option>` +
+    TEAMS.map(t => `<option value="${t.team}">Project ${t.team}</option>`).join("");
   $("#brTeam").value = "TS3012";
 }
 async function loadTimeline() {
@@ -256,7 +271,47 @@ $("#brBtn").onclick = async () => {
   $("#brBtn").disabled = false;
 };
 
+async function loadHealth() {
+  const h = await api("/api/health");
+  const yes = (ok, text) => `<div>${ok ? "✔" : "✘"} ${text}</div>`;
+  $("#health").innerHTML =
+    yes(h.free_api, "Free online models (OpenRouter key set)") +
+    yes(h.anthropic_api, "Claude API key set: new meetings are read by Claude Haiku 5.5") +
+    yes(h.ollama, "Ollama running on this machine") +
+    yes(h.local_model, "Local answer model installed (qwen3:4b)") +
+    yes(h.embeddings, "Local embedding model installed (nomic-embed-text)");
+  if (!h.local_model) {
+    $("#local").disabled = true;
+    $("#localLabel").title = "Needs Ollama and qwen3:4b on the machine running this server.";
+    $("#localLabel").style.opacity = .5;
+  }
+}
+
+$("#refreshBtn").onclick = async () => {
+  $("#refreshBtn").disabled = true;
+  const out = $("#refreshOut");
+  out.innerHTML = `<div class="card"><span class="spin"></span> &nbsp;Uploading and reading new meetings. A meeting takes about a minute to read.</div>`;
+  try {
+    for (const f of $("#files").files) {
+      await api("/api/upload", {filename: f.name, content: await f.text()});
+    }
+    const r = await api("/api/refresh", {});
+    const list = a => a.length ? `<ul>${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="muted">None.</p>`;
+    out.innerHTML = `<div class="card"><p class="kicker">Files</p>
+      <p>${r.ingest.new} new, ${r.ingest.changed} changed, ${r.ingest.unchanged} unchanged. ${r.embedded_chunks} chunks embedded.</p>
+      <p class="kicker">Read by ${esc(r.backend)}</p>${list(r.extracted)}
+      ${r.failed.length ? `<p class="kicker">Could not read (left pending)</p>${list(r.failed)}` : ""}
+      <p class="muted">${r.still_pending} meeting(s) still pending. Took ${r.seconds}s.</p></div>`;
+    $("#files").value = "";
+    loadTeams();
+  } catch (err) {
+    out.innerHTML = `<div class="card" style="border-color:var(--red)">${esc(err.message)}</div>`;
+  }
+  $("#refreshBtn").disabled = false;
+};
+
 loadTeams();
+loadHealth();
 </script>
 </body>
 </html>

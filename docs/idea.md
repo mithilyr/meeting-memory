@@ -13,7 +13,7 @@ each team before its next meeting without anyone asking.**
 
 ## What we built: five ideas
 
-### 1. A decision record, not a search box
+### 1. A decision record
 Plain search finds every place a topic came up, but cannot say which one is the answer now.
 We keep a **ledger**: every decision is stored with the meeting it came from. When a later
 meeting decides the same thing differently, the old entry is marked "replaced by" the new one.
@@ -34,27 +34,27 @@ Before each meeting, the system writes a one-page brief for that team: what is d
 changed, open actions and owners, and disagreements still open. Each point is cited. It only uses
 meetings that have already happened. Nobody has to request it.
 
-### 5. Cost grows with new meetings, not with the archive
+### 5. Cost grows only with new meetings
 Each meeting is read by a model **once**, when it arrives (about $0.00075 per meeting on Haiku 5.5 batch).
 After that, a question searches only the team or project it is about, so it costs the same at
 10 meetings or 10,000. Old meetings are never re-processed unless we choose to improve the extractor.
 
 ## What makes it work on messy, real speech
-- **Back-references resolved at read time.** When meeting c says "let's go with the other one",
+- When meeting c says "let's go with the other one",
   the extractor is given the team's ledger so far, so "the other one" is linked to the earlier
   option. Meetings of a team are read in order for this reason.
-- **The model reads, code decides.** The model turns messy speech into structured events. Code
-  handles ordering, "replaced by", filters, quote checks and the output format, which are the
-  parts where a wrong answer must be impossible, not unlikely.
-- **It says "not found" instead of guessing.** If the evidence does not cover the question, the answer says so.
+- The model turns messy speech into structured events. Code handles ordering, "replaced by",
+  filters, quote checks and the output format. A mistake in those parts would be silent and
+  costly, so no model touches them.
+- If the evidence does not cover the question, the answer says so and does not guess.
 
 ## Daily use, with almost no effort from staff
 | Moment | What happens | Staff effort |
 |---|---|---|
-| A meeting ends | The recording's transcript lands in a folder; it is ingested automatically | None |
-| 1 hour before a meeting | The brief is posted to the team (email or Slack) | Read it: 2 minutes |
+| A meeting ends | The transcript lands in the inbox folder (or is uploaded on the Add meetings page) and Refresh reads it | None, once Refresh runs on a schedule |
+| 1 hour before a meeting | The brief is posted to the team by email or Slack (planned; today it is one click on the Brief page) | Read it: 2 minutes |
 | Any time | Ask a question in plain English and get an answer with cited quotes | One question |
-| An answer is wrong | Click "wrong"; it becomes a test case for the next version | One click |
+| An answer is wrong | Flag it; it becomes a test case for the next version (planned) | One click |
 
 ## Three price points, one system
 | | Best quality | **Recommended** | Free demo (this build) |

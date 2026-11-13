@@ -90,9 +90,12 @@ def parse_meeting(path: Path) -> Meeting:
 
 
 def iter_meetings(transcripts_dir: Path | None = None):
-    directory = transcripts_dir or get_settings().require_data()
-    for path in sorted(directory.glob("*.txt")):
-        yield parse_meeting(path)
+    """Every transcript in the data folder, plus any new ones dropped in the inbox."""
+    settings = get_settings()
+    directories = [transcripts_dir] if transcripts_dir else [settings.require_data(), settings.inbox_dir]
+    for directory in directories:
+        for path in sorted(directory.glob("*.txt")) if directory.is_dir() else []:
+            yield parse_meeting(path)
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -105,14 +105,14 @@ def _resolve_citations(conn: sqlite3.Connection, citations: list, team: str,
     return chosen[:MAX_CITATIONS], problems
 
 
-def answer(question: str, *, conn: sqlite3.Connection | None = None,
+def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str | None = None,
            upto_letter: str | None = None, local_only: bool = False) -> dict:
     conn = conn or connect()
     trace: list[dict] = []
     started = time.time()
-    team = retrieve.team_from_question(question)
+    team = team or retrieve.team_from_question(question)  # the UI's project picker wins
     if team is None or conn.execute("SELECT 1 FROM meetings WHERE team = ?", (team,)).fetchone() is None:
-        return {"answer": "Please name the team (e.g. TS3012); no team id was found in the question.",
+        return {"answer": "Pick a project, or name its team id (for example TS3012) in the question.",
                 "citations": [], "trace": [{"step": "route", "result": "no team"}]}
     trace.append({"step": "route", "team": team})
 

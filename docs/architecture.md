@@ -89,55 +89,55 @@ flowchart TB
 ## 3. Each box, in plain English
 
 ### Ingest (once per meeting)
-1. **Seen this file before?** Every file gets a fingerprint (a hash). If the fingerprint is
+1. Seen this file before? Every file gets a fingerprint (a hash). If the fingerprint is
    already stored, the file is skipped. A new meeting costs one extraction; old meetings cost nothing.
-2. **Parser (code).** Splits a transcript into turns: who spoke, when, and the exact words.
+2. Parser (code). Splits a transcript into turns: who spoke, when, and the exact words.
    Each turn gets an id like `TS3012c#0042`. The words are never changed, because quotes are checked word for word.
-3. **Turn store (code).** Stores every turn in SQLite with a full-text index (keyword search).
+3. Turn store (code). Stores every turn in SQLite with a full-text index (keyword search).
    An embedder adds a vector for each chunk of turns (meaning-based search, so "battery" also finds "power source").
-4. **Event extractor (model).** Reads one meeting and lists what happened: decisions, proposals,
+4. Event extractor (model). Reads one meeting and lists what happened: decisions, proposals,
    action items and their owners, prices and numbers, objections, and who holds which role. Every
    event points at the turn ids it came from. A team's meetings are read in order (a, b, c), and the
    extractor also sees the team's ledger so far, so "the other one" can be linked to the earlier
    option (D-009). Action items get a status: open, reported back, or dropped.
-5. **Validator (code).** Rejects any event that does not fit the format, points at a turn that
+5. Validator (code). Rejects any event that does not fit the format, points at a turn that
    does not exist, or quotes text that is not in that turn. This is where model mistakes get
    caught before they reach memory.
-6. **Timeline builder (code).** Sorts each team's events by meeting (a, b, c, d). When a later
+6. Timeline builder (code). Sorts each team's events by meeting (a, b, c, d). When a later
    decision covers the same topic, the earlier one is marked "replaced by". This is how the
    system knows what is current, and it is a rule, not a guess.
 
 ### Ask (live)
-7. **Router (code).** Finds the team the question names and limits the search to that team's
+7. Router (code). Finds the team the question names and limits the search to that team's
    meetings. At 10,000 meetings, a question still only searches about 4 meetings.
-8. **Fetch evidence (code).** Pulls the team's timeline for the topic, plus the best-matching turns
+8. Fetch evidence (code). Pulls the team's timeline for the topic, plus the best-matching turns
    from keyword and vector search.
-9. **Enough evidence? (code).** Every question needs at least 2 meetings. If the evidence covers
+9. Enough evidence? (code). Every question needs at least 2 meetings. If the evidence covers
    fewer, the agent widens the search and tries again, up to 3 rounds. This is the agent loop.
-10. **Write answer (model, 1 call).** Writes 1 to 3 sentences and picks quotes by turn id.
-11. **Quote check (code).** Confirms each quote appears word for word in that turn (case and
+10. Write answer (model, 1 call). Writes 1 to 3 sentences and picks quotes by turn id.
+11. Quote check (code). Confirms each quote appears word for word in that turn (case and
     spacing ignored, as the grader does). If one fails, code snaps it to the real text or the
     model gets one retry. No unchecked quote reaches `answers.json`.
 
 ### Brief (before a meeting)
-12. **Cutoff (code).** For TS3012 only meetings a to c are used. Meeting d is the meeting being
+12. Cutoff (code). For TS3012 only meetings a to c are used. Meeting d is the meeting being
     prepared for, so reading it would leak the future.
-13. **Group the ledger (code).** Current decisions, what changed (from the "replaced by" links),
+13. Group the ledger (code). Current decisions, what changed (from the "replaced by" links),
     open actions and owners, and objections never resolved.
-14. **Write the brief (model, 1 call) and quote check (code).**
+14. Write the brief (model, 1 call) and quote check (code).
 
 ## 4. Why it holds up at 10,000 meetings
-- **Ingestion cost grows with new meetings only.** The fingerprint check skips everything already done.
-- **Question cost stays flat.** Every question is filtered to one team or project before searching.
-- **Storage swap, not a redesign.** SQLite becomes Postgres + pgvector. The tables and code stay the same.
-- **The model can be swapped.** Extraction and answering go through one interface, so A, B and C are a config change.
-- **Raw turns are kept.** If the extraction prompt improves, re-run extraction. Nothing is lost.
+- Ingestion cost grows with new meetings only. The fingerprint check skips everything already done.
+- Question cost stays flat. Every question is filtered to one team or project before searching.
+- Moving to Postgres + pgvector changes the storage layer only. The tables and code stay the same.
+- The model can be swapped. Extraction and answering go through one interface, so A, B and C are a config change.
+- Raw turns are kept. If the extraction prompt improves, re-run extraction. Nothing is lost.
 
 ## 5. Model vs code: the line and why
 | Code (never touches a model) | Why |
 |---|---|
 | Parsing, ids, fingerprints | The format is fixed. A model could only alter words we must quote exactly. |
-| Team filter, meeting cutoff | Leaking meeting d or another team must be impossible, not unlikely. |
+| Team filter, meeting cutoff | A rule in code cannot leak meeting d or another team's meetings. A prompt can. |
 | Meeting order, "replaced by" | Order is a fact in the file name. A model could get it wrong. |
 | Quote check, JSON shape | Graded by a machine, so checked by a machine. |
 
@@ -145,3 +145,36 @@ flowchart TB
 |---|---|
 | Event extraction | Real speech is messy: "yeah let's go with the um the rubber one". Rules cannot parse that. |
 | Answer and brief writing | Turning evidence into 2 clear sentences is a language task. |
+
+## 6. Projects, and meetings that cover more than one
+
+In this corpus each team works on one project (a TV remote), so a project is a team id. The Ask page
+has a project picker, and every search is filtered to the picked project.
+
+A real company has meetings that touch two or three projects. The design handles that with two
+small changes, which are not built yet because no meeting here needs them:
+1. The extractor tags each event with the project it is about, chosen from the company's project list
+   (or "general").
+2. A `meeting_projects` table links a meeting to every project it touched. A project's search then
+   covers all of its meetings, and its ledger holds only the events tagged with that project.
+
+"What is current" stays per project, so a decision about project X in a shared meeting can't replace
+one about project Y.
+
+## 7. Where the models run when this is hosted
+
+The page runs in the visitor's browser, but every model call happens on the machine running
+`python -m src.ui.server`. A visitor needs nothing installed.
+- By default the server calls OpenRouter with its own key.
+- With "local model only" ticked, the server calls Ollama on the server machine. On a laptop running the demo
+  that works. On a hosting service without Ollama it can't, so the page checks `/api/health` and
+  greys out the option.
+- Embeddings for search also need Ollama on the server. A host without it would need a hosted
+  embedding API instead (for example Voyage AI's free tier), set in `EMBED_MODEL`.
+
+## 8. Adding meetings
+New transcripts go into `inbox/`, either uploaded on the Add meetings page or dropped there by a
+recorder. Refresh (`python -m src.memory.refresh`, or the button) reads only what is new: ingest,
+embed, extract in meeting order, validate, update statuses. With `ANTHROPIC_API_KEY` set it uses
+Claude Haiku 5.5; without one it uses the free chain. Scheduled every few minutes, nobody has to
+press anything.

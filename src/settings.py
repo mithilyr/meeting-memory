@@ -35,6 +35,11 @@ class Settings:
         return self.data_path / "transcripts"
 
     @property
+    def inbox_dir(self) -> Path:
+        """Where new transcripts go (UI upload or a recorder drop). The data folder stays read-only."""
+        return PROJECT_ROOT / "inbox"
+
+    @property
     def questions_path(self) -> Path:
         return self.data_path / "questions.json"
 

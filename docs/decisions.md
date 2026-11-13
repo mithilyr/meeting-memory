@@ -117,3 +117,27 @@ rate limit can't stop a live demo.
 Ask (answer + verified quotes + "show in transcript" + agent trace), Timeline (ledger by meeting
 with current/superseded/open), Brief. Styling follows catalist.media (Anton/Archivo, #F8C020,
 #24408E, square corners). No framework, no build step.
+
+## D-015: Project picker; multi-project meetings designed, not built (2026-11-13)
+**Decision:** The Ask page has a project picker that overrides the team id in the question. For
+meetings that cover several projects: tag events with a project at extraction time and add a
+`meeting_projects` link table (docs/architecture.md section 6).
+**Why not built:** no meeting in this corpus covers two projects, so there is nothing to test it on.
+
+## D-016: Model calls run on the server; the page detects what the server can run (2026-11-13)
+`/api/health` reports Ollama, the local model, embeddings, and which API keys are set. The page
+disables "local model only" when the server can't run it.
+
+## D-017: Refresh: one command or button brings memory up to date (2026-11-13)
+Uploads go to `inbox/` (the data folder stays read-only). The name and turn format are checked
+before saving. Refresh = ingest + embed + extract pending meetings in order + validate. Backend:
+Claude Haiku 5.5 if `ANTHROPIC_API_KEY` is set, otherwise the free chain. A meeting that fails
+validation stays pending and is reported.
+
+## D-018: Subagents run on Haiku or Sonnet, never Opus (2026-11-13)
+User instruction. Extraction already ran on Haiku. The plan's session limit was hit once at
+111/138 meetings; the agents resumed after the reset.
+
+## D-019: All prose checked with the ai-writing-signs catalogue (2026-11-13)
+README, docs, CLAUDE.md and the page text were scanned and rewritten. The fixes were bold-label
+lists, "X, not Y" constructions, and two claims about features that do not exist yet (now marked "planned").

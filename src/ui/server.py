@@ -6,27 +6,37 @@ Endpoints (JSON):
   GET  /api/teams                      team ids with meeting count and extraction progress
   GET  /api/ledger?team=TS3012         the team's events with statuses, grouped by meeting
   GET  /api/turns?meeting=X&idx=N      the turn and its neighbours, for "show in transcript"
-  POST /api/ask    {"question"}        the question agent (answer.py)
-  POST /api/brief  {"team", "upto"}    the brief writer (brief.py)
+  GET  /api/health                     which model backends this machine can use
+  POST /api/ask     {"question", "team"} the question agent (answer.py)
+  POST /api/brief   {"team", "upto"}     the brief writer (brief.py)
+  POST /api/upload  {"filename", "content"}  save a transcript to inbox/
+  POST /api/refresh                     ingest + embed + extract anything new (refresh.py)
 """
 
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 import threading
+import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from src.agent.answer import answer
 from src.agent.brief import write_brief
+from src.clients.llm import LOCAL_MODEL
+from src.ingest.parse import MEETING_ID, TURN_HEADER
 from src.memory import ledger
+from src.memory.refresh import refresh
 from src.memory.store import connect
+from src.settings import get_settings
 
 PAGE = Path(__file__).resolve().parent / "index.html"
 PORT = 8765
 _local = threading.local()
+_refresh_lock = threading.Lock()  # one refresh at a time
 
 
 def db() -> sqlite3.Connection:
@@ -67,6 +77,35 @@ def turns_around(meeting_id: str, idx: int, quote: str | None = None) -> dict:
     return {"meeting_id": meeting_id, "focus": idx, "turns": [dict(r) for r in rows]}
 
 
+def health() -> dict:
+    """What this machine can run. The page greys out options that would fail."""
+    settings = get_settings()
+    try:
+        with urllib.request.urlopen(settings.ollama_url + "/api/tags", timeout=2) as r:
+            models = [m["name"] for m in json.loads(r.read())["models"]]
+        ollama = True
+    except OSError:
+        models, ollama = [], False
+    return {"ollama": ollama, "local_model": LOCAL_MODEL in models,
+            "embeddings": any(m.startswith(settings.embed_model) for m in models),
+            "free_api": bool(settings.openrouter_api_key), "anthropic_api": bool(os.getenv("ANTHROPIC_API_KEY"))}
+
+
+def save_upload(filename: str, content: str) -> dict:
+    """Accept a transcript into inbox/. Code checks the name and format before anything runs."""
+    stem = filename.rsplit("/", 1)[-1].rsplit("\\", 1)[-1].removesuffix(".txt")
+    if not MEETING_ID.match(stem):
+        raise ValueError("File name must be a meeting id: team id + meeting letter, e.g. TS3013a.txt")
+    if not any(TURN_HEADER.match(line) for line in content.splitlines()):
+        raise ValueError("No turns found. Each turn needs a line like '00:01:06 Speaker B' followed by the words.")
+    if (get_settings().transcripts_dir / f"{stem}.txt").exists():
+        raise ValueError(f"{stem} is already in the corpus.")
+    inbox = get_settings().inbox_dir
+    inbox.mkdir(exist_ok=True)
+    (inbox / f"{stem}.txt").write_text(content, encoding="utf-8")
+    return {"saved": f"inbox/{stem}.txt"}
+
+
 class Handler(BaseHTTPRequestHandler):
     def _send(self, status: int, body: bytes, kind: str = "application/json") -> None:
         self.send_response(status)
@@ -87,6 +126,8 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if url.path in ("/", "/index.html"):
                 self._send(200, PAGE.read_bytes(), "text/html")
+            elif url.path == "/api/health":
+                self._json(health())
             elif url.path == "/api/teams":
                 self._json(teams())
             elif url.path == "/api/ledger":
@@ -103,10 +144,16 @@ class Handler(BaseHTTPRequestHandler):
         body = json.loads(self.rfile.read(length) or b"{}")
         try:
             if self.path == "/api/ask":
-                self._json(answer(body["question"], conn=db(), local_only=bool(body.get("local"))))
+                self._json(answer(body["question"], conn=db(), team=body.get("team") or None,
+                                  local_only=bool(body.get("local"))))
             elif self.path == "/api/brief":
                 self._json(write_brief(body["team"], conn=db(), upto_letter=body.get("upto") or None,
                                        local_only=bool(body.get("local"))))
+            elif self.path == "/api/upload":
+                self._json(save_upload(body["filename"], body["content"]))
+            elif self.path == "/api/refresh":
+                with _refresh_lock:
+                    self._json(refresh(db()))
             else:
                 self._json({"error": "not found"}, 404)
         except Exception as error:  # noqa: BLE001
