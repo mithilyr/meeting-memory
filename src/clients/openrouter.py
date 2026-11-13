@@ -170,8 +170,16 @@ def _call_model(
         },
         method="POST",
     )
-    with urllib.request.urlopen(request, timeout=timeout) as response:
-        payload = json.loads(response.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as error:
+        # The status line alone ("429 Too Many Requests") hides whether the limit is per
+        # minute or per day. The body says ("free-models-per-day"), and retry.py needs it
+        # to stop retrying a quota that only resets tomorrow.
+        if error.code == 429:
+            raise RuntimeError(f"HTTP 429 from OpenRouter: {error.read()[:300]!r}") from error
+        raise
 
     # LIVE BUG 1, found by the sister team by actually running the thing.
     # OpenRouter can return HTTP 200 with an *error body* rather than a

@@ -30,6 +30,9 @@ class Usage:
 
 USAGE = Usage()
 _pools: dict[str, OpenRouterPool] = {}
+#: OpenRouter's free allowance is per account, not per model: once one model reports the daily
+#: limit, the others will too. Skip the API until this time instead of trying each model.
+_api_paused_until = 0.0
 
 
 def complete(prompt: str, *, local_only: bool = False) -> tuple[str, str]:
@@ -39,7 +42,8 @@ def complete(prompt: str, *, local_only: bool = False) -> tuple[str, str]:
     if cached and cached[0].strip() and not local_only:
         USAGE.record(cached[1], time.time() - started, True)
         return cached
-    if not local_only:
+    global _api_paused_until
+    if not local_only and time.time() >= _api_paused_until:
         for model in PHRASING_MODELS:
             try:
                 pool = _pools.setdefault(model, OpenRouterPool(models=(model,)))
@@ -47,6 +51,9 @@ def complete(prompt: str, *, local_only: bool = False) -> tuple[str, str]:
                     continue  # this model's daily quota is gone
                 text, used = pool.generate([prompt], description="answer", use_cache=False, attempts=2)
             except (AllModelsExhausted, RuntimeError):
+                if pool.usage.exhausted:
+                    _api_paused_until = time.time() + 3600
+                    break
                 continue
             if text.strip():
                 write_cached(prompt, text, used)
