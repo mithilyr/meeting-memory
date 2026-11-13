@@ -21,3 +21,12 @@ Append one entry per session: what changed, what was measured. For the video and
 - Answer agent + brief writer + run.py. First smoke test: 9 s, 3 verified citations across 2 meetings.
 - Own eval set: 10 questions on 7 unseen teams; all 25 gold quotes pass the verifier.
 - Web UI on http.server styled after catalist.media.
+
+## 2026-11-13: Session 3, hosted-only and finishing
+- Extraction finished: 138/138 meetings, 7,199 events, 40 dropped by the validator (0.6%). Snapshot committed.
+- Rebuild check: a fresh store built from snapshot/ in 26 s holds the same 7,199 events.
+- First full run: 24/25 answered on OpenRouter; Q18 failed on an empty reply to a 55K-character prompt (F-001).
+- OpenRouter's 50-a-day free limit was hit. Local qwen3:4b eval: auto 8/10, hand-checked 5/10.
+- Local models removed (D-021). Embeddings moved to Voyage AI (D-022), 15,868 chunks re-embedded.
+- Groq added (D-023). Groq rejects Python's default user agent (Cloudflare 1010) and caps a free request at 8K tokens,
+  so prompts were cut to about 16 to 22K characters (ledger 11K, turns 8K).
