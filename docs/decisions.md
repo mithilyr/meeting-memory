@@ -118,7 +118,7 @@ Ask (answer + verified quotes + "show in transcript" + agent trace), Timeline (l
 with current/superseded/open), Brief. Styling follows catalist.media (Anton/Archivo, #F8C020,
 #24408E, square corners). No framework, no build step.
 
-## D-015: Project picker; multi-project meetings designed, not built (2026-11-13)
+## D-015: Project picker (removed in D-024); multi-project meetings designed, not built (2026-11-13)
 **Decision:** The Ask page has a project picker that overrides the team id in the question. For
 meetings that cover several projects: tag events with a project at extraction time and add a
 `meeting_projects` link table (docs/architecture.md section 6).
@@ -173,3 +173,12 @@ CodeFest project (user approved). Free allowance is 200M tokens; the full corpus
 OpenRouter's free tier is 50 requests a day per account, and one full run plus the eval uses
 about that. Groq has its own free allowance, so the chain is OpenRouter, then Groq. Model ids are
 set in GROQ_MODELS and checked against Groq's live /models list.
+
+## D-024: Project picker removed; the team is named in the question (2026-11-13)
+**Decision:** The Ask page has no project dropdown. Code reads the team id from the question.
+**Why:** the transcripts carry only a team id (no project or client name), and every team has the
+same brief, so the dropdown was a list of 35 codes like "ES2015". A picker is only worth having
+with names people recognise.
+**Production:** names come from the meeting's own metadata at ingest (calendar title, Slack channel,
+or the project field in the meeting tool), stored in a `projects` table. The picker comes back then,
+and questions can say "the Acme remote" instead of an id.

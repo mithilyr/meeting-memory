@@ -126,9 +126,9 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
     conn = conn or connect()
     trace: list[dict] = []
     started = time.time()
-    team = team or retrieve.team_from_question(question)  # the UI's project picker wins
+    team = team or retrieve.team_from_question(question)
     if team is None or conn.execute("SELECT 1 FROM meetings WHERE team = ?", (team,)).fetchone() is None:
-        return {"answer": "Pick a project, or name its team id (for example TS3012) in the question.",
+        return {"answer": "Name the team in the question, for example TS3012.",
                 "citations": [], "trace": [{"step": "route", "result": "no team"}]}
     trace.append({"step": "route", "team": team})
 

@@ -96,8 +96,7 @@
 <main>
   <section id="ask">
     <h2 class="display">Ask the meetings</h2>
-    <p class="lede">Pick a project and ask in plain English. Every quote in the answer is checked against the transcript before it is shown.</p>
-    <div class="row" style="margin-bottom:10px"><select id="askTeam"><option value="">Project: named in the question</option></select></div>
+    <p class="lede">Ask in plain English and name the team (for example ES2015). Every quote in the answer is checked against the transcript before it is shown.</p>
     <textarea id="q" placeholder="e.g. What energy source did Team ES2015 end up with, and who proposed it?"></textarea>
     <div class="row" style="margin-top:12px">
       <button class="btn" id="askBtn">Ask</button>
@@ -178,7 +177,7 @@ async function ask() {
   $("#askBtn").disabled = true;
   $("#result").innerHTML = `<div class="card"><span class="spin"></span> &nbsp;Searching the team's meetings…</div>`;
   try {
-    const r = await api("/api/ask", {question, team: $("#askTeam").value});
+    const r = await api("/api/ask", {question});
     const cites = r.citations.map(c => `
       <div class="cite"><span class="badge">${esc(c.meeting_id)}</span><q>${esc(c.quote)}</q>
       <button class="link" data-m="${esc(c.meeting_id)}" data-q="${esc(c.quote)}">show in transcript</button></div>`).join("")
@@ -220,8 +219,6 @@ async function loadTeams() {
   TEAMS = await api("/api/teams");
   const opts = TEAMS.map(t => `<option value="${t.team}">${t.team} (${t.extracted}/${t.meetings} meetings in memory)</option>`).join("");
   $("#tlTeam").innerHTML = opts; $("#brTeam").innerHTML = opts;
-  $("#askTeam").innerHTML = `<option value="">Project: named in the question</option>` +
-    TEAMS.map(t => `<option value="${t.team}">Project ${t.team}</option>`).join("");
   $("#brTeam").value = "TS3012";
 }
 async function loadTimeline() {
