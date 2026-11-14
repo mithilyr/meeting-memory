@@ -46,6 +46,7 @@ python -m src.agent.answer "Who proposed kinetic energy in team ES2015?" --trace
 python -m src.agent.brief TS3012                          # brief before TS3012's last meeting (uses a-c only)
 python run.py                                             # regenerates out/answers.json
 python -m eval.run_eval                                   # scores the agent on our 10 hand-checked questions
+python -m eval.route_check                                # project suggestions for questions that name no project
 python -m pytest -q
 ```
 

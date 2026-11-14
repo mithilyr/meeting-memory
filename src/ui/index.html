@@ -135,6 +135,7 @@
     <textarea id="q" placeholder="e.g. What energy source did they end up with, and who proposed it?"></textarea>
     <div class="row" style="margin-top:12px">
       <button class="btn" id="askBtn">Ask</button>
+      <span class="muted" style="align-self:center">Enter to ask · Shift+Enter for a new line</span>
     </div>
     <div class="chips" id="examples"></div>
     <div id="result"></div>
@@ -448,7 +449,10 @@ $("#result").addEventListener("click", e => {
 });
 
 $("#askBtn").onclick = ask;
-$("#q").onkeydown = e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) ask(); };
+// Enter asks; Shift+Enter adds a new line. isComposing skips Enter pressed to confirm an IME character.
+$("#q").onkeydown = e => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); if (!$("#askBtn").disabled) ask(); }
+};
 
 let FOCUS = null;
 const renderTurns = turns => $("#drBody").innerHTML = turns.map(t => `<div class="turn ${t.idx === FOCUS.idx ? "focus" : ""}">

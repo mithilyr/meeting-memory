@@ -96,23 +96,51 @@ def _by_ledger(conn: sqlite3.Connection, question: str) -> tuple[list[str], dict
     """Projects ranked by their best-matching ledger events. Summaries are clean sentences, so they
     match better than raw speech. Rare words count more (inverse document frequency), so "backup"
     outweighs "remote", which every project uses."""
-    wanted = retrieve._words(question)
-    rows = conn.execute("SELECT team, meeting_id, speaker, summary FROM events").fetchall()
+    intent_types, rest = _intent(question)
+    wanted = retrieve._words(rest)
+    rows = conn.execute("SELECT team, meeting_id, speaker, type, topic, summary FROM events").fetchall()
     if not wanted or not rows:
         return [], {}
-    words = [retrieve._words(r["summary"]) for r in rows]
+    words = [retrieve._words(r["summary"] + " " + r["topic"].replace("_", " ")) for r in rows]
     df = {w: sum(w in ws for ws in words) for w in wanted}
     idf = {w: np.log(len(rows) / (1 + df[w])) for w in wanted}
     per_team: dict[str, list[tuple[float, sqlite3.Row]]] = defaultdict(list)
     for row, ws in zip(rows, words):
         score = sum(idf[w] for w in wanted & ws)
         if score > 0:
+            if row["type"] in intent_types:  # "who pushed back" wants objections, "what did they decide" decisions
+                score *= INTENT_BOOST
             per_team[row["team"]].append((score, row))
     for hits in per_team.values():
         hits.sort(key=lambda h: -h[0])
-    # the best single event counts most: one sentence matching every rare word beats many partial matches
-    ranked = sorted(per_team, key=lambda t: -(per_team[t][0][0] + 0.3 * sum(s for s, _ in per_team[t][1:3])))
+    # The best event counts most, and depth counts too: a team with many matching events discussed it
+    # more than a team with one passing mention. sqrt keeps a long list from swamping a precise match.
+    ranked = sorted(per_team, key=lambda t: -(per_team[t][0][0] + np.sqrt(sum(s for s, _ in per_team[t][1:]))))
     return ranked, {t: per_team[t][0][1] for t in per_team}
+
+
+#: Question phrasings that name the KIND of event wanted, mapped to ledger event types. The phrasing
+#: itself is dropped from the topic words: summaries say "objected", people ask "who pushed back".
+INTENTS = [
+    (r"push(ed|es|ing)? back|object(ed|ion|s)?|against|disagree\w*|question(ed)?|critici[sz]\w*|concern\w*|"
+     r"oppos\w*|reject\w*|argu\w*|doubt\w*|complain\w*|worr(y|ied|ies)", {"objection"}),
+    (r"decid\w*|decision|chose|chosen|choose|settled?|end(ed)? up|final(ly)?|agreed|went with|picked", {"decision"}),
+    (r"propos\w*|suggest\w*|idea|came up with|pitch(ed)?", {"proposal"}),
+    (r"cost\w*|price\w*|budget|how much|euros?|dollars?|percent\w*", {"number"}),
+    (r"promis\w*|assign\w*|task|action|follow[- ]?up|responsible|owner", {"action_item", "report_back"}),
+]
+INTENT_BOOST = 1.5
+
+
+def _intent(question: str) -> tuple[set[str], str]:
+    import re
+
+    types, rest = set(), question
+    for pattern, kinds in INTENTS:
+        if re.search(rf"\b(?:{pattern})\b", rest, re.I):
+            types |= kinds
+            rest = re.sub(rf"\b(?:{pattern})\b", " ", rest, flags=re.I)
+    return types, rest
 
 
 def similar_ids(conn: sqlite3.Connection, team: str, k: int = 3) -> list[dict]:

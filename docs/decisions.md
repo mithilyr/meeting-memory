@@ -284,3 +284,23 @@ beats the picker. Every fallback is code plus at most one Voyage embedding: no m
 **Why:** each of these used to leave a person with nothing to do next. The passages are exact transcript
 lines, so even with no model the page shows evidence, never an unchecked summary.
 
+## D-031: Project suggestions understand what kind of event is asked for (2026-11-14)
+**Found by the user:** "Who pushed back on the LCD display and why" did not suggest TS3008, the team
+with the most LCD objections in the corpus (about 15, ending in "decided to skip the LCD display").
+**Causes (checked):**
+1. Wording gap: the ledger says "objected"; people ask "who pushed back". The words "pushed" and
+   "back" are rare, so the one team whose summary literally says "pushed back" (IS1005) scored high,
+   while TS3008's objections matched only "LCD" and "display".
+2. Depth ignored: a team scored by its best event plus a little for the next two, so 15 objections
+   counted the same as one passing mention. TS3008 came 9th in the ledger ranking.
+3. Event type ignored: the question asks for objections, but proposals about an LCD scored the same.
+4. The meaning and keyword rankings (raw speech) had TS3008 12th and 14th, so fusion could not rescue it.
+**Fix (code, no model):** a short list of question phrasings maps to event types ("pushed back",
+"against", "questioned" to objections; "decided", "ended up" to decisions; "cost", "how much" to
+numbers; and so on). Matching events score 1.5x, and the phrasing is dropped from the topic words.
+A team now scores its best event plus the square root of all its other matching events, so depth counts
+without swamping one precise match. Event topics are matched too, not only summaries.
+**Measured:** `python -m eval.route_check`, 6 own cases (not questions.json): 5/6 before, 6/6 after.
+TS3008 now comes 3rd of 5 for the LCD question.
+**Also:** Enter sends the question; Shift+Enter adds a new line.
+
