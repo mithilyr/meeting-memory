@@ -1,40 +1,37 @@
-"""Download the demo data parts from the GitHub release, join them, check the SHA-256 and unpack (D-037).
+"""Download the demo data bundle, check its SHA-256 and unpack it (D-037).
 
-    python fetch_data.py RELEASE_URL TARGET_DIR
+    python fetch_data.py TARGET_DIR
+
+The bundle (prebuilt memory store, saved model replies, transcripts) lives in a public Hugging Face
+dataset: GitHub release uploads kept failing on a slow connection, and the dataset upload resumes.
 """
 
 from __future__ import annotations
 
 import hashlib
-import io
 import sys
 import tarfile
 import urllib.request
 
-PARTS = [f"memory-bundle.part-{n:02d}" for n in range(5)]
+URL = "https://huggingface.co/datasets/mithilyr/meeting-memory-demo-data/resolve/main/memory-bundle.tar.gz"
+SHA256 = "b01abfbfff76a65caafeba8232d68b59513f49c58e11df6e79533a211f160ada"
 
 
-def fetch(url: str) -> bytes:
+def main(target: str) -> None:
     for attempt in range(3):
         try:
-            with urllib.request.urlopen(url, timeout=300) as response:
-                return response.read()
+            urllib.request.urlretrieve(URL, "/tmp/bundle.tgz")
+            break
         except OSError as error:
             if attempt == 2:
                 raise
-            print(f"retrying {url}: {error}")
-    raise RuntimeError("unreachable")
-
-
-def main(release: str, target: str) -> None:
-    blob = b"".join(fetch(f"{release}/{part}") for part in PARTS)
-    expected = fetch(f"{release}/memory-bundle.sha256").decode().strip()
-    actual = hashlib.sha256(blob).hexdigest()
-    if actual != expected:
-        raise SystemExit(f"bundle checksum mismatch: {actual} != {expected}")
-    tarfile.open(fileobj=io.BytesIO(blob), mode="r:gz").extractall(target, filter="data")
-    print(f"unpacked {len(blob) / 1e6:.0f} MB into {target}")
+            print(f"retrying: {error}")
+    digest = hashlib.sha256(open("/tmp/bundle.tgz", "rb").read()).hexdigest()
+    if digest != SHA256:
+        raise SystemExit(f"bundle checksum mismatch: {digest}")
+    tarfile.open("/tmp/bundle.tgz", "r:gz").extractall(target, filter="data")
+    print(f"unpacked into {target}")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1])
