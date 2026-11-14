@@ -1,0 +1,18 @@
+cards/00-title.png=Catalist Agentic AI Intern build test|Meeting Memory|A searchable record of every meeting, with a source for every answer.
+cards/01-problem.png=01|The problem|Hundreds of hours of meetings. Nobody can find the decision they need.
+cards/02-how.png=02|How it works|Read each meeting once into a ledger. Search one project at a time.
+cards/03-memory.png=03|Memory over time|Code, not the model, decides what is current.
+cards/04-ask.png=04|Ask a question|Every quote checked word for word.
+cards/05-no.png=05|Saying no|No guessing when the meetings are silent.
+cards/06-brief.png=06|The brief|Only meetings that have happened. The cutoff is code.
+cards/07-line.png=07|Model or code|One right answer means plain code.
+cards/08-proof.png=08|Proof and failures|Measured, checked by hand, and honest about misses.
+cards/09-next.png=09|What production needs|Paid models, Postgres, login and review.
+callouts/a-flat-cost.png=Cost stays flat at 10,000 meetings
+callouts/b-current.png=Current = latest decision, set by code
+callouts/c-quotes.png=Every quote checked word for word
+callouts/d-no.png=7 of 7 correct refusals
+callouts/e-cutoff.png=Final meeting never read
+callouts/f-audit.png=16 unsaid figures caught
+callouts/g-score.png=8/10 hand-checked · 25/25 quotes verified
+callouts/h-cost.png=About $1.60 per 1,000 meetings

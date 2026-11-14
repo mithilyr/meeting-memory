@@ -4,6 +4,26 @@ The PDF asks for a 3 to 5 minute walkthrough. Catalist says they care about judg
 the video shows decisions and honest failures, not a feature tour. Target: 4 minutes 30 seconds.
 Spoken lines are suggestions; say them in your own words.
 
+## Style (chosen 2026-11-14)
+Screen recording of the app between black-and-yellow title cards in the app's Anton style; short
+yellow callouts for key numbers (not full subtitles); calm, measured ElevenLabs voice; no music.
+
+Assets in `docs/video/`:
+- `cards/` 10 title cards and `callouts/` 8 transparent callouts, 1920x1080. Edit `cards.txt`, then
+  `bash docs/video/render_cards.sh` to re-render.
+- `voiceover.md`: the script, one block per section, with ElevenLabs pause tags (about 4 min 35 s).
+- `build_video.py`: joins everything into `walkthrough.mp4`.
+
+## Make the video (about 1 hour)
+1. ElevenLabs: generate each section of `voiceover.md` separately; save as `docs/video/audio/01.mp3`
+   to `09.mp3`.
+2. Record one screen clip per section (Win+Alt+R), following the shot list; save as
+   `docs/video/screen/01.mp4` to `09.mp4`. Length doesn't matter: each is cut to its voice clip and the
+   last frame is held if it is short. Record a little slower than feels natural.
+3. Run `python docs/video/build_video.py`. It puts each section's card first, lays the voice and
+   callouts over the clip, and writes `docs/video/walkthrough.mp4` with its running time.
+4. Watch it once, re-record any section that drifts, re-run step 3. Upload unlisted (YouTube or Drive).
+
 ## Before recording (about 20 minutes, the day before)
 1. Warm the answers so the demo is instant and doesn't depend on free quotas on the day. Run each
    demo question once (step 3 below); the reply is cached on disk and comes back in about 1 second.

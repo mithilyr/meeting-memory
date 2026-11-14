@@ -6,3 +6,6 @@ __pycache__/
 *.before-ai-signs.*
 *.log
 inbox/
+docs/video/audio/
+docs/video/screen/
+docs/video/*.mp4
