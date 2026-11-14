@@ -147,8 +147,11 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
     notify = on_step or (lambda step: None)
     team = retrieve.team_from_question(question) or team  # a team named in the question beats the picker
     if team is None or conn.execute("SELECT 1 FROM meetings WHERE team = ?", (team,)).fetchone() is None:
-        return {"answer": "Name the team in the question, for example TS3012.",
-                "citations": [], "trace": [{"step": "route", "result": "no team"}]}
+        from src.agent.route import suggest  # no project named: offer the closest ones, never guess (D-029)
+        suggestions = suggest(question, conn=conn, k=5)
+        return {"answer": "No project was named. Pick one of these, or name its ID in the question.",
+                "citations": [], "suggestions": suggestions, "seconds": round(time.time() - started, 1),
+                "trace": [{"step": "route", "result": "no team", "suggested": [s["team"] for s in suggestions]}]}
     trace.append({"step": "route", "team": team})
 
     queries = [question]

@@ -36,6 +36,7 @@ python -m src.memory.store ingest
 python -m src.memory.store embed
 python -m src.ingest.extract import-all
 python -m src.memory.names                                # project names for the picker (35 free model calls)
+python -m src.agent.route                                 # project profiles, for questions that name no project (1 Voyage call)
 ```
 
 ### Use it

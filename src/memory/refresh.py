@@ -9,6 +9,7 @@
                         the free OpenRouter models.
   4. Validate (code)    same validator as always; a rejected meeting is reported and left pending
   5. Name (model)       readable project names, rewritten only for teams whose decisions changed
+  6. Profile (Voyage)   one embedding per project, used to suggest projects for questions that name none
 
 Before step 1, files that read like instructions to a model are held for review (src/ingest/screen.py).
 Run it from the UI's Refresh button, a scheduled task, or a folder watcher.
@@ -23,6 +24,7 @@ import time
 
 from src.clients.llm import complete, parse_json
 from src.ingest import extract, screen
+from src.agent import route
 from src.memory import names
 from src.memory.store import connect, embed_missing, ingest
 
@@ -66,6 +68,7 @@ def refresh(conn: sqlite3.Connection | None = None) -> dict:
         except Exception as error:  # noqa: BLE001 - report and move on; the meeting stays pending
             failed.append(f"{meeting_id}: {str(error).splitlines()[0][:200]}")
     report["names"] = names.name_all(conn)
+    report["profiles_embedded"] = route.update_profiles(conn)  # for questions that name no project
     report.update(extracted=done, failed=failed, still_pending=len(pending_meetings(conn)),
                   seconds=round(time.time() - started, 1))
     return report

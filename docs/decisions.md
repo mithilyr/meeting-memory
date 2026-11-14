@@ -246,3 +246,26 @@ quote such as "Okay we put it on top" can be read in context. The timeline numbe
 shows a gap where a meeting has no transcript (IS1002 has no meeting 1 in the corpus).
 **Why:** a newcomer knows neither the codes nor the letters a to d. Search beats scrolling 35 near-identical names.
 
+## D-029: A question with no project gets the closest projects, not a guess (2026-11-14)
+**Decision:** when a question names no project and none is picked, `src/agent/route.py` lists the 5
+projects that talk about it most, each with the line that matched, plus "Ask this project" and
+"Open project timeline". Nothing is answered until the person picks one.
+**How (no model call):** three rankings merged by reciprocal rank fusion:
+1. Ledger: the question's rare words against every event sentence (rare words weigh more, so
+   "backup" outweighs "remote"). Weighted 4x, because event sentences are clean and specific.
+2. Meaning: the question's Voyage embedding against one profile vector per project (name + current
+   decisions). One vector per project keeps this fast at thousands of projects; searching all
+   15,868 transcript windows would not scale.
+3. Keywords: SQLite full-text search over every turn, a project scored by its 3 best hits.
+Cost per question: one Voyage embedding plus SQL, about 1 second. Profiles are re-embedded only for
+projects whose decisions changed (Refresh does it).
+**Measured on 5 questions:** "who wanted the remote shaped like a fruit?" gives 3 teams that each
+proposed a fruit shape; "glow in the dark" gives 3 teams that each discussed it. "Backup energy
+source" is broad (most teams discussed power): the team with the clearest match (ES2009, solar with
+a battery backup) comes 4th of 5, which is why 5 are shown and the person chooses.
+**Why not auto-pick the top project:** in this corpus every team designs a remote, so most questions
+fit several projects. A wrong guess gives a confident answer about the wrong project.
+**Wiki links:** the "Open project timeline" link is the wiki-style page per project: everything the
+memory holds for it, meeting by meeting. A fuller wiki (pages per topic and per person, linked to
+each other) is possible from the same ledger without model calls, and is listed as later work.
+

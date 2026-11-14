@@ -315,7 +315,9 @@ class Progress {
     if (detail !== undefined) s.detail = detail;
   }
   update(step) {
-    if (step.step === "route" && step.team) {
+    if (step.step === "route" && !step.team) {
+      this.set("route", "done", "No project named: listing the closest matches instead");
+    } else if (step.step === "route" && step.team) {
       const t = TEAMS.find(x => x.team === step.team);
       this.set("route", "done", t ? projectLabel(t) : step.team);
       this.set("gather", "active", "Keyword and meaning search over the transcripts");
@@ -356,6 +358,7 @@ async function ask() {
   try {
     const r = await askStream(question, step => progress.update(step));
     progress.stop();
+    if (r.suggestions) { showSuggestions(r.suggestions); $("#askBtn").disabled = false; return; }
     const cites = r.citations.map(c => `
       <div class="cite">
         <div class="who"><span class="badge" title="${esc(c.meeting_id)}">Meeting ${c.number} of ${c.of}</span>
@@ -379,6 +382,30 @@ async function ask() {
   }
   $("#askBtn").disabled = false;
 }
+// No project named: show the closest projects with the line that matched. Found by search, not a model.
+function showSuggestions(list) {
+  $("#result").innerHTML = `<div class="card"><p class="kicker">Which project do you mean?</p>
+    <p class="muted">The question names no project, so nothing was answered yet. These projects talk about it most.</p>
+    ${list.map(s => {
+      const t = TEAMS.find(x => x.team === s.team) || {team: s.team, name: s.name};
+      const m = s.match;
+      return `<div class="cite">
+        <div class="who"><b>${esc(shortName(t))}</b><span class="muted">${esc(s.team)}</span></div>
+        ${!m ? "" : m.kind === "summary"
+          ? `<span class="before">Meeting ${meetingNo(m.meeting_id.slice(-1))}: ${esc(m.text)}</span>`
+          : `<span class="before">Meeting ${meetingNo(m.meeting_id.slice(-1))}, Speaker ${esc(m.speaker)}: “${esc(m.text)}”</span>`}
+        <div class="row" style="gap:16px;margin-top:6px">
+          <button class="link" data-ask-team="${esc(s.team)}">Ask this project</button>
+          <button class="link" data-open-team="${esc(s.team)}">Open project timeline</button></div></div>`;
+    }).join("")}</div>`;
+}
+$("#result").addEventListener("click", e => {
+  const askTeam = e.target.closest("[data-ask-team]"), openTeam = e.target.closest("[data-open-team]");
+  if (askTeam) { PICK.ask.pick(askTeam.dataset.askTeam); ask(); }
+  if (openTeam) { PICK.timeline.value = openTeam.dataset.openTeam; PICK.timeline.show();
+                  $('nav button[data-tab="timeline"]').click(); loadTimeline(); }
+});
+
 $("#askBtn").onclick = ask;
 $("#q").onkeydown = e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) ask(); };
 
@@ -466,7 +493,9 @@ $("#brBtn").onclick = async () => {
       }
     }
     if (inList) html += "</ul>";
-    $("#brOut").innerHTML = `<div class="card brief">${html}<p class="muted">Model: ${esc(r.model)}</p></div>`;
+    $("#brOut").innerHTML = `<div class="card brief">${html}
+      <details class="how"><summary>How this brief was made</summary>
+      <div class="trace"><span class="step"><b>model</b> ${esc(r.model)}</span></div></details></div>`;
   } catch (err) {
     $("#brOut").innerHTML = `<div class="card" style="border-color:var(--red)">Error: ${esc(err.message)}</div>`;
   }
