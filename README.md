@@ -14,7 +14,7 @@ Built for the Catalist Agentic AI Intern build test, on 138 AMI meetings (676,74
 - [The submission: out/answers.json](out/answers.json)
 
 ## Try it hosted
-A read-only copy runs on Render's free tier (link in the submission email; the first visit after a quiet
+A read-only copy runs at https://meeting-memory-orox.onrender.com (Render free tier; the first visit after a quiet
 spell takes about a minute to wake). It holds all 138 meetings; uploads are switched off there. It is
 built from `deploy/render/Dockerfile`, which downloads the prebuilt memory from a public Hugging Face
 dataset. API keys go in the service's environment settings, never in the image.

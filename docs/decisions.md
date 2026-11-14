@@ -439,4 +439,7 @@ The prebuilt data (98 MB) can't go in git, and GitHub release uploads failed rep
 connection, so it sits in a public Hugging Face *dataset* (free; the upload resumes after a drop) and the
 build downloads it and checks a pinned SHA-256. Free-tier cost: the service sleeps after 15 minutes idle,
 so the first visit after a pause takes about a minute.
+The full 98 MB store also failed to upload to Hugging Face (connection resets), so the bundle was cut to
+8 MB by leaving out the vectors; the Render build re-embeds them with Voyage (about 5 minutes per deploy,
+inside the free allowance). Service: https://meeting-memory-orox.onrender.com (Render, Singapore, free).
 
