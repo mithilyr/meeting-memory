@@ -14,7 +14,7 @@ import tarfile
 import urllib.request
 
 URL = "https://huggingface.co/datasets/mithilyr/meeting-memory-demo-data/resolve/main/memory-bundle.tar.gz"
-SHA256 = "b01abfbfff76a65caafeba8232d68b59513f49c58e11df6e79533a211f160ada"
+SHA256 = "8a2dfa2bbdc081ebfb1017e527b609fb2da61005a72bf39f69433ba2ea6b7a4a"
 
 
 def main(target: str) -> None:

@@ -43,7 +43,7 @@ This file feeds the write-up and the video. The index below says which decisions
 | D-034 | Over-budget ledger ranked by meaning; final decisions never dropped | Active |
 | D-035 | Answers are a sentence or two, as the brief requires | Active |
 | D-036 | Video built by script: headless Edge recording + ffmpeg, not Remotion | Active |
-| D-037 | Hosted read-only demo on Hugging Face Spaces | Active |
+| D-037 | Hosted read-only demo (Render free tier; data from a Hugging Face dataset) | Active |
 
 ## D-001: Event ledger + retrieval, not a knowledge graph (2026-11-13)
 **Decision:** Store raw turns as the source of truth. Extract typed events (decision, proposal,
@@ -432,4 +432,11 @@ the page's existing notice when the daily quota is spent).
 **Tested:** the staged folder run with the hosted settings: read-only blocks uploads, the original-file
 download works, the 4th question in an hour gets the limit message. The Docker image itself was not
 built locally (Docker Desktop was not running); Spaces builds it from the same Dockerfile.
+
+**Update (same day): moved to Render.** Hugging Face now requires a paid plan ($9/month) for Docker
+Spaces, and the user chose $0. The demo runs on Render's free tier from `deploy/render/Dockerfile`.
+The prebuilt data (98 MB) can't go in git, and GitHub release uploads failed repeatedly on the ~50 kB/s
+connection, so it sits in a public Hugging Face *dataset* (free; the upload resumes after a drop) and the
+build downloads it and checks a pinned SHA-256. Free-tier cost: the service sleeps after 15 minutes idle,
+so the first visit after a pause takes about a minute.
 
