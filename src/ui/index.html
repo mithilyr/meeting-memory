@@ -165,7 +165,10 @@
   <section id="library" hidden>
     <h2 class="display">Add meetings</h2>
     <p class="lede">Upload new transcripts, then refresh. Refresh reads only what is new: it indexes the files, pulls out decisions and actions, and updates what is current. Files already in memory are skipped.</p>
-    <div class="row">
+    <div class="card" id="readOnly" hidden><p class="kicker">Read-only demo</p>
+      <p style="margin:0">This hosted copy holds the 138 meetings and can't take new ones, so visitors can't change the memory or use up its quota.
+      To add meetings, run it locally (README). New uploads go through the same checks: screening for planted instructions, quote checks and the truth audit.</p></div>
+    <div class="row" id="uploadRow">
       <input type="file" id="files" accept=".txt" multiple>
       <button class="btn" id="refreshBtn">Refresh memory</button>
     </div>
@@ -188,7 +191,7 @@
   <div id="drBody"></div>
 </aside>
 
-<footer>Local demo. Data: AMI Meeting Corpus, University of Edinburgh and partners, CC BY 4.0.</footer>
+<footer><span id="where">Local demo.</span> Data: AMI Meeting Corpus, University of Edinburgh and partners, CC BY 4.0.</footer>
 
 <script>
 const $ = s => document.querySelector(s);
@@ -291,6 +294,7 @@ $("#examples").onclick = e => { if (e.target.matches(".chip")) { $("#q").value =
 async function askStream(question, onStep) {
   const res = await fetch("/api/ask", {method: "POST", headers: {"Content-Type": "application/json"},
                                        body: JSON.stringify({question, team: PICK.ask.value})});
+  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || `The server answered ${res.status}.`);
   const reader = res.body.getReader(), decoder = new TextDecoder();
   let buffer = "";
   for (;;) {
@@ -588,6 +592,10 @@ $("#heldOut").onclick = async e => {
 
 async function loadHealth() {
   const h = await api("/api/health");
+  if (h.read_only) {  // hosted demo (D-037): no uploads or refresh
+    $("#readOnly").hidden = false; $("#uploadRow").hidden = true;
+    $("#where").textContent = "Hosted demo, read-only.";
+  }
   const yes = (ok, text) => `<div>${ok ? "✔" : "✘"} ${text}</div>`;
   $("#health").innerHTML =
     yes(h.free_api, "Free online models (OpenRouter key set)") +

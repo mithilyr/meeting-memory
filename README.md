@@ -13,6 +13,11 @@ Built for the Catalist Agentic AI Intern build test, on 138 AMI meetings (676,74
 - [Where it fails](docs/failures.md)
 - [The submission: out/answers.json](out/answers.json)
 
+## Try it hosted
+A read-only copy runs on Hugging Face Spaces (link in the submission email). It holds all 138 meetings;
+uploads are switched off there. To deploy your own: `python deploy/build_space.py --push USER/meeting-memory`
+after `hf auth login`, then add OPENROUTER_API_KEY, GROQ_API_KEY and VOYAGE_API_KEY as Space secrets.
+
 ## Run it (about 10 minutes, $0)
 
 You need Python 3.11+ and three free API keys (no local models, D-021).

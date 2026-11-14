@@ -11,3 +11,4 @@ docs/video/screen/
 docs/video/*.mp4
 
 docs/audio/
+deploy/hf-space/build/

@@ -25,6 +25,7 @@ import json
 import os
 import sqlite3
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -40,7 +41,14 @@ from src.memory.store import connect
 from src.settings import get_settings
 
 PAGE = Path(__file__).resolve().parent / "index.html"
-PORT = 8765
+PORT = int(os.getenv("PORT", "8765"))
+HOST = os.getenv("HOST", "127.0.0.1")  # the hosted demo sets 0.0.0.0
+#: Hosted demo (D-037): no uploads, refresh or review, so visitors can't add meetings or spend
+#: extraction quota. Questions and briefs are limited per visitor to protect the free model quota.
+READ_ONLY = os.getenv("READ_ONLY") == "1"
+MODEL_CALLS_PER_HOUR = int(os.getenv("MODEL_CALLS_PER_HOUR", "20"))
+_visits: dict[str, list[float]] = {}
+_visits_lock = threading.Lock()
 _local = threading.local()
 _refresh_lock = threading.Lock()  # one refresh at a time
 
@@ -140,7 +148,22 @@ def health() -> dict:
     """Which hosted services this server has keys for. The page shows it on Add meetings."""
     settings = get_settings()
     return {"free_api": bool(settings.openrouter_api_key), "groq_api": bool(os.getenv("GROQ_API_KEY")),
-            "embeddings": bool(settings.voyage_api_key), "anthropic_api": bool(os.getenv("ANTHROPIC_API_KEY"))}
+            "embeddings": bool(settings.voyage_api_key), "anthropic_api": bool(os.getenv("ANTHROPIC_API_KEY")),
+            "read_only": READ_ONLY}
+
+
+def allow(visitor: str) -> bool:
+    """At most MODEL_CALLS_PER_HOUR questions or briefs per visitor in the hosted demo."""
+    if not READ_ONLY:
+        return True
+    now = time.time()
+    with _visits_lock:
+        recent = [t for t in _visits.get(visitor, []) if now - t < 3600]
+        if len(recent) >= MODEL_CALLS_PER_HOUR:
+            _visits[visitor] = recent
+            return False
+        _visits[visitor] = recent + [now]
+        return True
 
 
 def save_upload(filename: str, content: str) -> dict:
@@ -237,6 +260,14 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"error": f"Request too large (limit {screen.MAX_UPLOAD_BYTES // 1_000_000} MB per file)."}, 413)
             return
         body = json.loads(self.rfile.read(length) or b"{}")
+        if READ_ONLY and self.path in ("/api/upload", "/api/refresh", "/api/held"):
+            self._json({"error": "This is a read-only demo. To add meetings, run it locally (see the README)."}, 403)
+            return
+        visitor = self.headers.get("X-Forwarded-For", self.client_address[0]).split(",")[0].strip()
+        if self.path in ("/api/ask", "/api/brief") and not allow(visitor):
+            self._json({"error": f"Demo limit: {MODEL_CALLS_PER_HOUR} questions or briefs an hour per visitor, "
+                                 "to keep the free model quota for everyone. Please try again later."}, 429)
+            return
         try:
             if self.path == "/api/ask":
                 self._stream_answer(body["question"], body.get("team") or None)
@@ -261,7 +292,7 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main() -> None:
-    server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
+    server = ThreadingHTTPServer((HOST, PORT), Handler)
     print(f"Meeting Memory running at http://localhost:{PORT}  (Ctrl+C to stop)")
     server.serve_forever()
 

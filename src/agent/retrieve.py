@@ -93,7 +93,11 @@ def gather(conn: sqlite3.Connection, team: str, queries: list[str],
     for query in queries:
         for t in keyword_turns(conn, team, query, upto_letter=upto_letter):
             found.setdefault(t["turn_id"], t)
-        for c in vector_chunks(conn, team, query, upto_letter=upto_letter):
+        try:
+            chunks = vector_chunks(conn, team, query, upto_letter=upto_letter)
+        except Exception:  # noqa: BLE001 - embeddings unavailable (no key, quota spent): keyword search still answers
+            chunks = []
+        for c in chunks:
             for t in turns_in_range(conn, c["meeting_id"], c["first_idx"], c["last_idx"]):
                 if len(t["text"]) > 25:
                     found.setdefault(t["turn_id"], t)

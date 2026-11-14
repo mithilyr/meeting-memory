@@ -43,6 +43,7 @@ This file feeds the write-up and the video. The index below says which decisions
 | D-034 | Over-budget ledger ranked by meaning; final decisions never dropped | Active |
 | D-035 | Answers are a sentence or two, as the brief requires | Active |
 | D-036 | Video built by script: headless Edge recording + ffmpeg, not Remotion | Active |
+| D-037 | Hosted read-only demo on Hugging Face Spaces | Active |
 
 ## D-001: Event ledger + retrieval, not a knowledge graph (2026-11-13)
 **Decision:** Store raw turns as the source of truth. Extract typed events (decision, proposal,
@@ -415,4 +416,20 @@ forced repaint after scrolling (the screencast can leave a torn frame), and the 
 first, because the free model quota was spent; `gpt-oss-20b` was added as a third Groq fallback, with
 one retry when it invents a tool call. Whisper on Groq confirmed each voice clip is in its section.
 **Result:** `docs/video/walkthrough.mp4`, 4 min 20 s, 1080p, voice in sync with every section.
+
+## D-037: A hosted, read-only demo on Hugging Face Spaces (2026-11-14)
+**Why:** the brief accepts a README ("hosted or Colab is fine") or a live demo, but a link the team can
+click before the call is the easiest way for them to try new questions.
+**Decision:** a Docker Space built by `deploy/build_space.py`: the code, the 138 transcripts (CC BY 4.0),
+the prebuilt memory store and the saved model replies, so it starts in seconds with nothing to re-extract
+or re-embed. `READ_ONLY=1` turns off upload, refresh and review (visitors can't change the memory or spend
+extraction quota), and each visitor gets 20 questions or briefs an hour. Keys live in Space secrets,
+never in the image (the build refuses to stage a .env). If Voyage is unavailable, search falls back to
+keywords instead of failing.
+**Rejected:** Render's free tier (sleeps after 15 minutes and has no lasting disk, so the store would be
+rebuilt with about 7 minutes of embedding calls on every start); paid credit (the user chose $0, with
+the page's existing notice when the daily quota is spent).
+**Tested:** the staged folder run with the hosted settings: read-only blocks uploads, the original-file
+download works, the 4th question in an hour gets the limit message. The Docker image itself was not
+built locally (Docker Desktop was not running); Spaces builds it from the same Dockerfile.
 
