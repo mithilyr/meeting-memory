@@ -45,7 +45,9 @@
   .cite q { font-style: italic; flex: 1; }
   .badge { font: 12px Anton, sans-serif; letter-spacing: 1px; background: var(--navy); color: var(--white); padding: 3px 8px; white-space: nowrap; }
   .link { background: none; border: 0; color: var(--navy); text-decoration: underline; cursor: pointer; font: inherit; font-size: 14px; padding: 0; white-space: nowrap; }
-  .trace { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; }
+  .how { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  .how summary { cursor: pointer; width: fit-content; }
+  .trace { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; font-size: 13px; }
   .step { border: 1px solid var(--line); padding: 3px 8px; background: var(--paper); }
   .step b { color: var(--ink); }
   .muted { color: var(--muted); font-size: 14px; }
@@ -91,7 +93,8 @@
   .elapsed { font-size: 13px; color: var(--muted); margin: 14px 0 0; }
   @media (prefers-reduced-motion: reduce) { .stages li.active .mark { animation: none; border-right-color: var(--ink); } }
   footer { max-width: 1180px; margin: 0 auto; padding: 0 20px 30px; font-size: 13px; color: var(--muted); }
-  @media (max-width: 800px) { .cols { grid-template-columns: 1fr; } h2 { font-size: 32px; } }
+  @media (max-width: 800px) { .cols { grid-template-columns: 1fr; } h2 { font-size: 32px; }
+    .cite { flex-wrap: wrap; } .cite q { flex-basis: 100%; order: 2; } }
 </style>
 </head>
 <body>
@@ -174,6 +177,7 @@ const api = async (path, body) => {
 };
 
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  history.replaceState(null, "", "#" + b.dataset.tab);  // a tab can be linked to directly
   document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
   document.querySelectorAll("main section").forEach(s => s.hidden = s.id !== b.dataset.tab);
   if (b.dataset.tab === "timeline" && !$("#tlCols").innerHTML) loadTimeline();
@@ -281,7 +285,8 @@ async function ask() {
     }).join("");
     $("#result").innerHTML = `<div class="card"><p class="kicker">Answer</p><p class="answer">${esc(r.answer)}</p>
       <p class="kicker">Evidence (checked word for word)</p>${cites}
-      <div class="trace"><span class="step"><b>${esc(r.seconds)}s</b></span>${steps}</div></div>`;
+      <details class="how"><summary>How this answer was made (${esc(r.seconds)} s)</summary>
+      <div class="trace">${steps}</div></details></div>`;
   } catch (err) {
     progress.stop();
     $("#result").innerHTML = `<div class="card" style="border-color:var(--red)">Error: ${esc(err.message)}</div>`;
@@ -378,7 +383,8 @@ async function loadHealth() {
   const yes = (ok, text) => `<div>${ok ? "✔" : "✘"} ${text}</div>`;
   $("#health").innerHTML =
     yes(h.free_api, "Free online models (OpenRouter key set)") +
-    yes(h.anthropic_api, "Claude API key set: new meetings are read by Claude Haiku 5.5") +
+    (h.anthropic_api ? yes(true, "Claude API key set: new meetings are read by Claude Haiku 5.5")
+                     : yes(false, "No Claude API key: new meetings are read by the free models")) +
     yes(h.groq_api, "Groq key set (second free provider)") +
     yes(h.embeddings, "Voyage AI key set (search embeddings)");
 }
@@ -406,7 +412,12 @@ $("#refreshBtn").onclick = async () => {
   $("#refreshBtn").disabled = false;
 };
 
-loadTeams();
+// Links open the right tab (#timeline) and can carry a question (?q=...); add &run to ask it at once.
+loadTeams().then(() => {
+  document.querySelector(`nav button[data-tab="${location.hash.slice(1)}"]`)?.click();
+  const params = new URLSearchParams(location.search);
+  if (params.get("q")) { $("#q").value = params.get("q"); if (params.has("run")) ask(); }
+});
 loadHealth();
 </script>
 </body>
