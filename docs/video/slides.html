@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Video slides</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800&display=block" rel="stylesheet">
+<style>
+  /* Explainer slides for the walkthrough video (record_screen.mjs opens slides.html#diagram etc.).
+     Same palette as the app: code is navy, the model is yellow. Items fade in one after another. */
+  :root { --ink: #0B0B0C; --paper: #F2EFE9; --yellow: #F8C020; --navy: #24408E; --muted: #77746E; --line: #D9D4CA; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--paper); color: var(--ink);
+               font: 30px/1.4 Archivo, sans-serif; }
+  section { display: none; position: absolute; inset: 0; padding: 90px 120px; }
+  section.on { display: block; }
+  h2 { font: 84px/1 Anton, sans-serif; text-transform: uppercase; margin: 0 0 14px; }
+  .sub { color: var(--muted); font-size: 32px; margin: 0 0 50px; }
+  .in { opacity: 0; transform: translateY(14px); }
+  .go .in { animation: in .5s ease-out forwards; }  /* starts when the recorder adds "go" */
+  @keyframes in { to { opacity: 1; transform: none; } }
+  /* flow diagram */
+  .lane { display: flex; align-items: center; gap: 18px; margin: 0 0 22px; }
+  .lane-name { width: 190px; font: 30px Anton, sans-serif; letter-spacing: 1px; text-transform: uppercase; }
+  .box { flex: 1; min-height: 150px; padding: 18px 20px; border: 3px solid var(--ink); background: #fff; font-size: 25px; line-height: 1.3; }
+  .box b { display: block; font: 21px Anton, sans-serif; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .box.code b { color: var(--navy); } .box.model { background: var(--yellow); }
+  .arrow { font: 44px Anton, sans-serif; color: var(--muted); }
+  .note { margin-top: 44px; font-size: 32px; border-left: 10px solid var(--yellow); padding: 10px 24px; background: #fff; max-width: 1500px; }
+  .legend { position: absolute; right: 120px; top: 100px; display: flex; gap: 24px; font-size: 24px; }
+  .legend span::before { content: ""; display: inline-block; width: 24px; height: 24px; margin-right: 10px; vertical-align: -4px; border: 3px solid var(--ink); }
+  .legend .c::before { background: #fff; } .legend .m::before { background: var(--yellow); }
+  /* two columns */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
+  .col h3 { font: 44px Anton, sans-serif; text-transform: uppercase; margin: 0 0 18px; padding-bottom: 10px; border-bottom: 8px solid var(--ink); }
+  .col.model h3 { border-color: var(--yellow); }
+  .col li { margin: 0 0 16px; } .col ul { padding-left: 30px; margin: 0; }
+  /* numbers */
+  .nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; margin-bottom: 50px; }
+  .num { background: #fff; border: 3px solid var(--ink); padding: 24px; box-shadow: 8px 8px 0 var(--ink); }
+  .num .big { font: 96px/1 Anton, sans-serif; } .num .big.y { color: var(--navy); }
+  .num .lbl { font-size: 24px; color: var(--muted); margin-top: 10px; }
+  .two { display: grid; grid-template-columns: 1.3fr 1fr; gap: 50px; }
+  .two h3 { font: 34px Anton, sans-serif; text-transform: uppercase; margin: 0 0 12px; }
+  .two li { margin: 0 0 10px; font-size: 26px; } .two ul { padding-left: 28px; margin: 0; }
+  .repo { position: absolute; left: 120px; bottom: 90px; font: 40px Anton, sans-serif; background: var(--ink); color: var(--yellow); padding: 14px 28px; }
+</style>
+</head>
+<body>
+
+<section id="diagram">
+  <h2 class="in">How it works</h2>
+  <p class="sub in" style="animation-delay:.2s">Every meeting is read once. Every question works on one project.</p>
+  <div class="legend in" style="animation-delay:.3s"><span class="c">Plain code</span><span class="m">Model</span></div>
+  <div class="lane">
+    <div class="lane-name in" style="animation-delay:.6s">Ingest</div>
+    <div class="box code in" style="animation-delay:1.0s"><b>PARSE</b>Turns, speakers, ids. Unchanged files skipped by hash.</div><span class="arrow in" style="animation-delay:1.3s">›</span>
+    <div class="box code in" style="animation-delay:1.6s"><b>STORE</b>SQLite + keyword index + Voyage vectors.</div><span class="arrow in" style="animation-delay:1.9s">›</span>
+    <div class="box model in" style="animation-delay:2.4s"><b>EXTRACT</b>Decisions, proposals, actions, figures, objections.</div><span class="arrow in" style="animation-delay:2.7s">›</span>
+    <div class="box code in" style="animation-delay:3.0s"><b>CHECK + ORDER</b>Quotes exact, figures audited. Latest decision is current.</div>
+  </div>
+  <div class="lane">
+    <div class="lane-name in" style="animation-delay:15s">Ask</div>
+    <div class="box code in" style="animation-delay:15.6s"><b>ROUTE</b>One project only.</div><span class="arrow in" style="animation-delay:15.9s">›</span>
+    <div class="box code in" style="animation-delay:16.4s"><b>SEARCH</b>That project's ledger + transcript hits.</div><span class="arrow in" style="animation-delay:16.7s">›</span>
+    <div class="box model in" style="animation-delay:17.4s"><b>ANSWER</b>A sentence or two, quotes chosen.</div><span class="arrow in" style="animation-delay:17.7s">›</span>
+    <div class="box code in" style="animation-delay:18.2s"><b>VERIFY</b>Every quote word for word. Figures must be in the evidence.</div>
+  </div>
+  <p class="note in" style="animation-delay:27s">Each question touches one project, so its cost is the same at 100 meetings or 10,000.</p>
+</section>
+
+<section id="line">
+  <h2 class="in">Model or code</h2>
+  <p class="sub in" style="animation-delay:.2s">If there is one right answer, it is plain code.</p>
+  <div class="cols">
+    <div class="col">
+      <h3 class="in" style="animation-delay:.6s">Plain code</h3>
+      <ul>
+        <li class="in" style="animation-delay:1.2s">Parsing, ids, incremental ingest</li>
+        <li class="in" style="animation-delay:1.8s">Meeting order and what is current</li>
+        <li class="in" style="animation-delay:2.4s">Quote checks, word for word</li>
+        <li class="in" style="animation-delay:3.0s">The brief's cutoff, the output format</li>
+        <li class="in" style="animation-delay:13s"><b>Auditing the model's notes: 16 figures nobody said, 1 currency wrong</b></li>
+      </ul>
+    </div>
+    <div class="col model">
+      <h3 class="in" style="animation-delay:7s">Model</h3>
+      <ul>
+        <li class="in" style="animation-delay:7.6s">Reading messy, overlapping speech into events</li>
+        <li class="in" style="animation-delay:8.2s">Writing a clear answer from given evidence</li>
+        <li class="in" style="animation-delay:8.8s">Deciding it needs another search</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="proof">
+  <h2 class="in">Proof and failures</h2>
+  <p class="sub in" style="animation-delay:.2s">Measured on the real corpus, checked by hand.</p>
+  <div class="nums">
+    <div class="num in" style="animation-delay:2.0s"><div class="big">8/10</div><div class="lbl">own questions right, checked by hand</div></div>
+    <div class="num in" style="animation-delay:6.0s"><div class="big">7/7</div><div class="lbl">questions that need a no, answered no</div></div>
+    <div class="num in" style="animation-delay:9.5s"><div class="big">25/25</div><div class="lbl">graded answers pass the quote check</div></div>
+    <div class="num in" style="animation-delay:17s"><div class="big y">$1.60</div><div class="lbl">to ingest 1,000 meetings (Haiku 5.5, Batch API)</div></div>
+  </div>
+  <div class="two">
+    <div><h3 class="in" style="animation-delay:12.5s">Three it got wrong</h3><ul>
+      <li class="in" style="animation-delay:13s">E03: left out the microphone; the prompt budget cut its evidence</li>
+      <li class="in" style="animation-delay:13.6s">E08: named the wrong dropped feature, with the evidence in front of it</li>
+      <li class="in" style="animation-delay:14.2s">E04: a final-meeting line was never extracted</li></ul></div>
+    <div><h3 class="in" style="animation-delay:24s">Where free tiers broke</h3><ul>
+      <li class="in" style="animation-delay:25s">50 requests a day (OpenRouter)</li>
+      <li class="in" style="animation-delay:26.5s">8,000 tokens per request (Groq)</li></ul></div>
+  </div>
+</section>
+
+<section id="next">
+  <h2 class="in">What production needs</h2>
+  <p class="sub in" style="animation-delay:.2s">35 design decisions logged, each with what was rejected.</p>
+  <div class="cols"><div class="col"><ul>
+    <li class="in" style="animation-delay:4.5s">Paid models on the Batch API</li>
+    <li class="in" style="animation-delay:5.3s">Postgres + pgvector</li>
+    <li class="in" style="animation-delay:6.1s">Login, and review before uploaded meetings count</li>
+  </ul></div></div>
+  <div class="repo in" style="animation-delay:9s">github.com/mithilyr/meeting-memory</div>
+</section>
+
+<script>
+  const id = location.hash.slice(1) || "diagram";
+  document.getElementById(id).classList.add("on");
+  // Opened by hand: play at once. Opened by the recorder (?r=...): wait for it to add "go".
+  if (!location.search.includes("r=")) document.body.classList.add("go");
+</script>
+</body>
+</html>

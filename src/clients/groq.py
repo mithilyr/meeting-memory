@@ -20,7 +20,7 @@ from src.clients.retry import with_retry
 
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
 MODELS_URL = "https://api.groq.com/openai/v1/models"
-DEFAULT_MODELS = "openai/gpt-oss-120b,qwen/qwen3.8-27b"  # checked live 2026-11-13
+DEFAULT_MODELS = "openai/gpt-oss-120b,qwen/qwen3.8-27b,openai/gpt-oss-20b"  # checked live 2026-11-14; each has its own daily cap
 #: Groq sits behind Cloudflare, which rejects Python's default "Python-urllib" agent (error 1010).
 USER_AGENT = "meeting-memory/1.0"
 
@@ -36,8 +36,8 @@ def _key() -> str:
     return key
 
 
-def _call(model: str, prompt: str) -> str:
-    body = {"model": model, "messages": [{"role": "user", "content": prompt}], "temperature": 0,
+def _call(model: str, prompt: str, temperature: float = 0) -> str:
+    body = {"model": model, "messages": [{"role": "user", "content": prompt}], "temperature": temperature,
             "max_completion_tokens": 4000}  # long JSON replies (the brief) were cut off at the default
     request = urllib.request.Request(
         API_URL, data=json.dumps(body).encode("utf-8"), method="POST",
@@ -55,10 +55,16 @@ def _call(model: str, prompt: str) -> str:
 def _call_paced(model: str, prompt: str, attempts: int = 4) -> str:
     """Groq's free tier allows 8K tokens per minute, so a 5K-token prompt right after another
     gets a 429 with "try again in 1m2.5s". Wait exactly that long (plus a second) and retry."""
+    temperature = 0.0
     for attempt in range(attempts):
         try:
-            return _call(model, prompt)
+            return _call(model, prompt, temperature)
         except RuntimeError as error:
+            if "tool_use_failed" in str(error) and attempt < attempts - 1:
+                # gpt-oss sometimes answers {"search": ...} as a call to a tool that doesn't exist;
+                # at temperature 0 it repeats exactly, so retry once with a little variation
+                temperature = 0.3
+                continue
             wait = re.search(r"try again in (?:(\d+)m)?([\d.]+)s", str(error))
             if "HTTP 429" not in str(error) or not wait or attempt == attempts - 1:
                 raise

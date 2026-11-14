@@ -42,6 +42,7 @@ This file feeds the write-up and the video. The index below says which decisions
 | D-033 | Saying no beats making things up: statuses and grounding checks | Active |
 | D-034 | Over-budget ledger ranked by meaning; final decisions never dropped | Active |
 | D-035 | Answers are a sentence or two, as the brief requires | Active |
+| D-036 | Video built by script: headless Edge recording + ffmpeg, not Remotion | Active |
 
 ## D-001: Event ledger + retrieval, not a knowledge graph (2026-11-13)
 **Decision:** Store raw turns as the source of truth. Extract typed events (decision, proposal,
@@ -401,4 +402,17 @@ model (2 of 13 kept, before 0).
 **Found in the final check against the PDF:** it asks for each answer "in a sentence or two"; our rule
 said 1 to 3 sentences, and 4 of 25 answers had three. **Decision:** the prompt asks for 1 or 2 sentences
 and code repairs, then ranks attempts by, that limit. The 4 answers were re-run with the new rule.
+
+## D-036: The walkthrough video is built by script: headless Edge + ffmpeg, not Remotion (2026-11-14)
+**Decision:** `docs/video/record_screen.mjs` drives the real app in headless Edge through the DevTools
+protocol (typing, clicks with a drawn cursor, scrolling), records each section with the screencast API
+to the length of its ElevenLabs voice clip, and `build_video.py` joins title cards, clips, voice and
+callouts with ffmpeg. Explainer slides (`slides.html`) fade in on cue with the voice.
+**Why not Remotion:** it would mean a React project and an npm install for a 4-minute video. Edge, Node
+and ffmpeg were already on the machine, and recording the live app shows the real product, not a mock.
+**What it needed:** a full page load per section (a hash change alone left the app on the old tab), a
+forced repaint after scrolling (the screencast can leave a torn frame), and the demo answers cached
+first, because the free model quota was spent; `gpt-oss-20b` was added as a third Groq fallback, with
+one retry when it invents a tool call. Whisper on Groq confirmed each voice clip is in its section.
+**Result:** `docs/video/walkthrough.mp4`, 4 min 20 s, 1080p, voice in sync with every section.
 

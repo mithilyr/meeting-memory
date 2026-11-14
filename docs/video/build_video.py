@@ -24,15 +24,15 @@ CARD_SECONDS = 2.5
 TITLE_SECONDS = 3.0
 W, H, FPS = 1920, 1080, 30
 #: section -> [(callout file, start as a share of the voice, seconds shown)]
+#: Slides (sections 2 and 8) already state their numbers on screen, so they get no callout.
 CALLOUTS = {
-    2: [("a-flat-cost.png", 0.70, 5)],
     3: [("b-current.png", 0.35, 5)],
     4: [("c-quotes.png", 0.55, 5)],
     5: [("d-no.png", 0.60, 5)],
     6: [("e-cutoff.png", 0.55, 5)],
-    7: [("f-audit.png", 0.65, 5)],
-    8: [("g-score.png", 0.15, 6), ("h-cost.png", 0.65, 5)],
+    7: [("f-audit.png", 0.78, 5)],
 }
+END_HOLD = 1.5  # seconds of quiet on the last frame before the video ends
 VIDEO = ["-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p", "-r", str(FPS)]
 AUDIO = ["-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2"]
 
@@ -59,8 +59,8 @@ def still(image: Path, seconds: float, out: Path) -> None:
          "-i", "anullsrc=r=48000:cl=stereo", "-vf", fit(""), *VIDEO, *AUDIO, "-shortest", str(out)])
 
 
-def body(n: int, card: Path, screen: Path | None, voice: Path, out: Path) -> None:
-    length = duration(voice)
+def body(n: int, card: Path, screen: Path | None, voice: Path, out: Path, hold: float = 0.0) -> None:
+    length = duration(voice) + hold
     inputs = (["-i", str(screen)] if screen else ["-loop", "1", "-i", str(card)]) + ["-i", str(voice)]
     chain = f"[0:v]{fit('')},tpad=stop_mode=clone:stop_duration=600,trim=duration={length:.3f},setpts=PTS-STARTPTS[v0]"
     last = "v0"
@@ -71,7 +71,8 @@ def body(n: int, card: Path, screen: Path | None, voice: Path, out: Path) -> Non
                   f"fade=out:st={start + shown - 0.3:.2f}:d=0.3:alpha=1[c{i}]"
                   f";[{last}][c{i}]overlay=0:0:enable='between(t,{start:.2f},{start + shown:.2f})'[v{i}]")
         last = f"v{i}"
-    run([*inputs, "-filter_complex", chain, "-map", f"[{last}]", "-map", "1:a", "-t", f"{length:.3f}",
+    chain += ";[1:a]apad[a]"  # silence after the voice fills any hold
+    run([*inputs, "-filter_complex", chain, "-map", f"[{last}]", "-map", "[a]", "-t", f"{length:.3f}",
          *VIDEO, *AUDIO, str(out)])
 
 
@@ -96,7 +97,7 @@ def main() -> int:
             card = next(c for c in cards if c.name.startswith(f"{n:02d}-"))
             screen = next(iter(sorted(screens.glob(f"{n:02d}.*"))), None) if screens.is_dir() else None
             still(card, CARD_SECONDS, Path(tmp) / f"{n:02d}a.mp4")
-            body(n, card, screen, voice, Path(tmp) / f"{n:02d}b.mp4")
+            body(n, card, screen, voice, Path(tmp) / f"{n:02d}b.mp4", END_HOLD if n == 9 else 0.0)
             parts += [Path(tmp) / f"{n:02d}a.mp4", Path(tmp) / f"{n:02d}b.mp4"]
             print(f"section {n}: {duration(voice):.1f} s of voice, {'screen clip' if screen else 'card only'}")
         listing = Path(tmp) / "parts.txt"

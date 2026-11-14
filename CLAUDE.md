@@ -57,7 +57,7 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
 - [x] 3 questions the agent got wrong, with reasons (`docs/failures.md`)
 - [x] Cost and time to ingest 1,000 meetings
 - [x] One-page write-up: architecture, model-vs-code line, tools, where they broke, production needs
-- [ ] 3 to 5 minute walkthrough video (plan: docs/video-plan.md)
+- [x] 3 to 5 minute walkthrough video (docs/video/walkthrough.mp4, 4 min 20 s; upload pending)
 
 ### Record keeping (for the video and write-up)
 19. Every design decision gets an entry in `docs/decisions.md` (D-NNN: decision, why, alternatives rejected).

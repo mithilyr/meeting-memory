@@ -14,7 +14,12 @@ Assets in `docs/video/`:
 - `voiceover.md`: the script, one block per section, with ElevenLabs pause tags (about 4 min 35 s).
 - `build_video.py`: joins everything into `walkthrough.mp4`.
 
-## Make the video (about 1 hour)
+## Built automatically (D-036)
+`node docs/video/record_screen.mjs` records every section from the live app (needs the server running,
+Edge on port 9333 and the voice clips in `docs/video/audio/`); then `python docs/video/build_video.py`.
+Output: `docs/video/walkthrough.mp4`, 4 min 20 s. The manual steps below are kept for a re-record by hand.
+
+## Make the video by hand (about 1 hour)
 1. ElevenLabs: generate each section of `voiceover.md` separately; save as `docs/video/audio/01.mp3`
    to `09.mp3`.
 2. Record one screen clip per section (Win+Alt+R), following the shot list; save as
