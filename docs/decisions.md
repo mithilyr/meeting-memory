@@ -183,7 +183,7 @@ with names people recognise.
 or the project field in the meeting tool), stored in a `projects` table. The picker comes back then,
 and questions can say "the Acme remote" instead of an id.
 
-## D-025: Generated project names; whole transcript and original file one click from any quote (2026-11-13)
+## D-025: Generated project names (Ask picker removed again in D-026); whole transcript and original file one click from any quote (2026-11-13)
 **Decision:** The picker is back, now showing names such as "Rubber curved universal remote · TS3012".
 `src/memory/names.py` writes each name from the team's current decisions (one free model call per
 team) and keeps a hash of those decisions, so the name is rewritten only when they change. Refresh
@@ -197,3 +197,15 @@ the id pattern before any file is read, so the endpoint cannot be pointed at oth
 **Limit:** ES2007 and ES2013 still have the same three words in different order after the retry
 ("Kinetic curved rubber" vs "Curved rubber kinetic"). The id tells them apart. In production,
 names come from meeting metadata (D-024) and this module becomes the fallback.
+
+## D-026: Ask page streams the agent's real steps instead of a spinner (2026-11-14)
+**Decision:** The Ask page has no project dropdown; the question names the team. Names stay on the
+Timeline and Brief pickers. While a question runs, `/api/ask` sends one JSON line per agent step and
+the page shows a 4-step checklist that moves only when the agent reports progress: find the project,
+search its meetings, read and write, check every quote. Retries say why they happen. A timer shows
+the seconds passed.
+**Why:** a question takes 20 s to over a minute (measured: 74 s for a question that needed 2 repairs,
+about 20 s per model call). A spinner gives no sign of whether it is stuck. A fake progress bar
+would be a guess; the agent already records its steps for the run log, so the page shows those.
+**Alternatives rejected:** Server-Sent Events (EventSource only does GET, and the question is a POST);
+polling a job id (needs a job store for no gain on one server).

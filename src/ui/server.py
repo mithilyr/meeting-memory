@@ -9,7 +9,8 @@ Endpoints (JSON):
   GET  /api/transcript?meeting=X       every turn of the meeting, for "whole meeting"
   GET  /api/raw?meeting=X              the original .txt file, unchanged, as a download
   GET  /api/health                     which model backends this machine can use
-  POST /api/ask     {"question", "team"} the question agent (answer.py)
+  POST /api/ask     {"question"}         the question agent (answer.py), streamed as one JSON line per
+                                       step so the page can show progress; the last line holds the answer
   POST /api/brief   {"team", "upto"}     the brief writer (brief.py)
   POST /api/upload  {"filename", "content"}  save a transcript to inbox/
   POST /api/refresh                     ingest + embed + extract anything new (refresh.py)
@@ -128,6 +129,22 @@ class Handler(BaseHTTPRequestHandler):
     def _json(self, data, status: int = 200) -> None:
         self._send(status, json.dumps(data, ensure_ascii=False).encode("utf-8"))
 
+    def _stream_answer(self, question: str) -> None:
+        self.send_response(200)
+        self.send_header("Content-Type", "application/x-ndjson; charset=utf-8")
+        self.send_header("Cache-Control", "no-cache")
+        self.end_headers()
+
+        def line(data: dict) -> None:
+            self.wfile.write((json.dumps(data, ensure_ascii=False) + "\n").encode("utf-8"))
+            self.wfile.flush()
+
+        try:
+            result = answer(question, conn=db(), on_step=line)
+            line({"step": "done", "result": result})
+        except Exception as error:  # noqa: BLE001 - headers are sent; report the error as the last line
+            line({"step": "error", "error": str(error)})
+
     def log_message(self, fmt, *args) -> None:  # keep the terminal quiet during a demo
         pass
 
@@ -166,7 +183,7 @@ class Handler(BaseHTTPRequestHandler):
         body = json.loads(self.rfile.read(length) or b"{}")
         try:
             if self.path == "/api/ask":
-                self._json(answer(body["question"], conn=db(), team=body.get("team") or None))
+                self._stream_answer(body["question"])
             elif self.path == "/api/brief":
                 self._json(write_brief(body["team"], conn=db(), upto_letter=body.get("upto") or None))
             elif self.path == "/api/upload":

@@ -19,6 +19,7 @@ import json
 import re
 import sqlite3
 import time
+from collections.abc import Callable
 
 from src.agent import retrieve
 from src.clients.llm import complete, parse_json
@@ -122,10 +123,19 @@ def clean_answer(text: str) -> str:
 
 
 def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str | None = None,
-           upto_letter: str | None = None) -> dict:
+           upto_letter: str | None = None, on_step: Callable[[dict], None] | None = None) -> dict:
+    """on_step gets each step as it happens, so the page can show progress while the model works."""
     conn = conn or connect()
-    trace: list[dict] = []
     started = time.time()
+
+    class Trace(list):
+        def append(self, step: dict) -> None:
+            super().append(step)
+            if on_step:
+                on_step(step)
+
+    trace: list[dict] = Trace()
+    notify = on_step or (lambda step: None)
     team = team or retrieve.team_from_question(question)
     if team is None or conn.execute("SELECT 1 FROM meetings WHERE team = ?", (team,)).fetchone() is None:
         return {"answer": "Name the team in the question, for example TS3012.",
@@ -143,6 +153,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
         prompt = PROMPT.format(question=question, team=team, rounds_left=MAX_SEARCH_ROUNDS - rounds,
                                ledger=ledger_text or "(empty)", speakers=speakers or "(unknown)",
                                turns=retrieve.render_turns(turns), feedback=feedback)
+        notify({"step": "thinking", "repair": repairs, "search_rounds": rounds})
         try:
             text, model = complete(prompt)
         except Exception as error:  # noqa: BLE001 - every backend down: report, don't crash the run
@@ -161,6 +172,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
             turns.update(retrieve.gather(conn, team, extra, upto_letter=upto_letter))
             trace.append({"step": "search", "model": model, "queries": extra, "new_turns": len(turns) - before})
             continue
+        notify({"step": "verifying", "citations": len(reply.get("citations") or [])})
         citations, problems = _resolve_citations(conn, reply.get("citations", []), team, upto_letter)
         meetings = {c["meeting_id"] for c in citations}
         trace.append({"step": "answer", "model": model, "citations": len(citations),
@@ -190,7 +202,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
                     " Prefer citing ledger events by id. Reply with corrected JSON.")
     result = best[1] if best else {"answer": "The agent could not produce an answer.", "citations": []}
     result["answer"] = clean_answer(result["answer"])
-    result["trace"] = trace
+    result["trace"] = list(trace)
     result["seconds"] = round(time.time() - started, 1)
     return result
 
