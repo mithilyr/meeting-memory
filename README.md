@@ -47,6 +47,8 @@ python -m src.agent.brief TS3012                          # brief before TS3012'
 python run.py                                             # regenerates out/answers.json
 python -m eval.run_eval                                   # scores the agent on our 10 hand-checked questions
 python -m eval.route_check                                # project suggestions for questions that name no project
+python -m eval.run_abstain                                # questions it must decline or correct (should be 7/7)
+python -m src.memory.audit                                # truth checks on every stored event
 python -m pytest -q
 ```
 

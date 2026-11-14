@@ -1,0 +1,107 @@
+[
+  {
+    "id": "N01",
+    "question": "Which supplier did Team ES2015 sign a contract with for the remote's parts?",
+    "expect": [
+      "not_discussed"
+    ],
+    "status": "not_discussed",
+    "answer": "The meetings do not record any supplier contract being signed for the remote's parts. The team discussed materials (rubber, plastic, shape-memory alloys), components (circuit board, chips, LEDs), and a recycling company, but no procurement contract is mentioned.",
+    "citations": [],
+    "pass": true
+  },
+  {
+    "id": "N02",
+    "question": "How much were the designers in Team IS1004 paid for the project?",
+    "expect": [
+      "not_discussed"
+    ],
+    "status": "not_discussed",
+    "answer": "The meetings do not record how much the designers were paid for the project.",
+    "citations": [],
+    "pass": true
+  },
+  {
+    "id": "N03",
+    "question": "Did Team ES2016 decide to add Bluetooth or Wi-Fi to the remote?",
+    "expect": [
+      "not_discussed"
+    ],
+    "status": "not_discussed",
+    "answer": "The meetings do not record any discussion of adding Bluetooth or Wi-Fi to the remote. The cited ledger events concern finding features, sensor costs, and a two-piece remote design, not wireless connectivity.",
+    "citations": [],
+    "pass": true
+  },
+  {
+    "id": "N04",
+    "question": "Why did Team TS3008 decide to include an LCD display in the final remote?",
+    "expect": [
+      "premise_wrong"
+    ],
+    "status": "premise_wrong",
+    "answer": "The meetings do not record a decision to include an LCD display; instead, Speaker A decided to skip the LCD display. Speaker C proposed an LCD as a trendy feature that could show a TV guide or programme information, but Speaker A objected it was redundant with the TV, did not fit the sturdy rubber-and-plastic concept, and contradicted the simplicity philosophy. Speaker D objected the team did not know what to show, that an LCD is fragile, and that a colour LCD would be too expensive.",
+    "citations": [
+      {
+        "meeting_id": "TS3008c",
+        "quote": "we s skip the L_C_D_ display"
+      },
+      {
+        "meeting_id": "TS3008c",
+        "quote": "it only cost a bit more, but maybe it can be uh within the limits"
+      },
+      {
+        "meeting_id": "TS3008c",
+        "quote": "I don't know what to display on it"
+      }
+    ],
+    "pass": true
+  },
+  {
+    "id": "N05",
+    "question": "What did Team IS1002 decide in their first meeting?",
+    "expect": [
+      "premise_wrong",
+      "not_discussed"
+    ],
+    "status": "not_discussed",
+    "answer": "The meetings do not record what Team IS1002 decided in their first meeting (IS1002a), as that meeting is missing from the record.",
+    "citations": [],
+    "pass": true
+  },
+  {
+    "id": "N06",
+    "question": "What did Team TS3012 decide in their fifth meeting?",
+    "expect": [
+      "premise_wrong",
+      "not_discussed"
+    ],
+    "status": "not_discussed",
+    "answer": "The meetings do not record a fifth meeting.",
+    "citations": [],
+    "pass": true
+  },
+  {
+    "id": "N07",
+    "question": "What energy source did Team ES2015 end up with, and which supplier did they order it from?",
+    "expect": [
+      "partial"
+    ],
+    "status": "partial",
+    "answer": "Team ES2015 decided on kinetic energy as the power source for the remote control, with no backup battery or solar. The meetings record the decision but do not mention any supplier being selected or ordered from.",
+    "citations": [
+      {
+        "meeting_id": "ES2015c",
+        "quote": "Energy, we've decided on kinetic, right?"
+      },
+      {
+        "meeting_id": "ES2015c",
+        "quote": "I think we should just like take uh advantage of like using this to its full potential"
+      },
+      {
+        "meeting_id": "ES2015c",
+        "quote": "Energy, we've decided on kinetic, right? Okay, so that's good."
+      }
+    ],
+    "pass": true
+  }
+]

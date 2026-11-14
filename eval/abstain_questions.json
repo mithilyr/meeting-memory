@@ -1,0 +1,19 @@
+{
+  "about": "Questions the meetings do not answer, or that rest on a false premise. The right reply is a clear no, never a made-up answer (D-033). Absence was checked by searching every turn and ledger event of the team. Own set, not from questions.json.",
+  "questions": [
+    {"id": "N01", "question": "Which supplier did Team ES2015 sign a contract with for the remote's parts?",
+     "expect": ["not_discussed"], "check": "no turn or event of ES2015 mentions a contract, supplier or manufacturer"},
+    {"id": "N02", "question": "How much were the designers in Team IS1004 paid for the project?",
+     "expect": ["not_discussed"], "check": "no turn or event of IS1004 mentions salary, wages or pay"},
+    {"id": "N03", "question": "Did Team ES2016 decide to add Bluetooth or Wi-Fi to the remote?",
+     "expect": ["not_discussed"], "check": "no turn or event of ES2016 mentions Bluetooth, Wi-Fi or wireless"},
+    {"id": "N04", "question": "Why did Team TS3008 decide to include an LCD display in the final remote?",
+     "expect": ["premise_wrong"], "check": "TS3008c-E44 and others: the team decided to skip the LCD display"},
+    {"id": "N05", "question": "What did Team IS1002 decide in their first meeting?",
+     "expect": ["premise_wrong", "not_discussed"], "check": "IS1002a is not in the corpus"},
+    {"id": "N06", "question": "What did Team TS3012 decide in their fifth meeting?",
+     "expect": ["premise_wrong", "not_discussed"], "check": "TS3012 has four meetings, a to d"},
+    {"id": "N07", "question": "What energy source did Team ES2015 end up with, and which supplier did they order it from?",
+     "expect": ["partial"], "check": "energy source is in the ledger; no supplier is ever named"}
+  ]
+}

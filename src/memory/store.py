@@ -79,6 +79,8 @@ def connect(db_path: Path | None = None) -> sqlite3.Connection:
     conn = sqlite3.connect(path, timeout=60)
     conn.row_factory = sqlite3.Row
     conn.executescript(SCHEMA)
+    if "flags" not in {r["name"] for r in conn.execute("PRAGMA table_info(events)")}:
+        conn.execute("ALTER TABLE events ADD COLUMN flags TEXT")  # audit findings, JSON list (D-032)
     return conn
 
 
@@ -147,6 +149,40 @@ def embed_missing(conn: sqlite3.Connection, batch: int = 128) -> int:
     return len(rows)
 
 
+EVENT_VECTORS = """CREATE TABLE IF NOT EXISTS event_vectors (
+    event_id TEXT PRIMARY KEY, text_hash TEXT NOT NULL, vector BLOB NOT NULL)"""
+
+
+def event_text(e: sqlite3.Row) -> str:
+    return f"{e['topic'].replace('_', ' ')}: {e['summary']}"
+
+
+def embed_events(conn: sqlite3.Connection, batch: int = 128) -> int:
+    """Embed each ledger event (topic + summary), so the ledger can be ranked by meaning when it is
+    too long for one prompt (F-008: "microphone" is part of the "interface", but shares no word with it).
+    Only new or changed events are embedded; re-running costs nothing."""
+    import hashlib
+
+    from src.clients.voyage import embed
+
+    conn.execute(EVENT_VECTORS)
+    stored = dict(conn.execute("SELECT event_id, text_hash FROM event_vectors").fetchall())
+    todo = []
+    for e in conn.execute("SELECT event_id, topic, summary FROM events").fetchall():
+        text = event_text(e)
+        digest = hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
+        if stored.get(e["event_id"]) != digest:
+            todo.append((e["event_id"], digest, text))
+    for start in range(0, len(todo), batch):
+        part = todo[start : start + batch]
+        for (event_id, digest, _), vector in zip(part, embed([t for _, _, t in part], input_type="document")):
+            v = np.asarray(vector, dtype=np.float32)
+            v /= np.linalg.norm(v) or 1.0
+            conn.execute("INSERT OR REPLACE INTO event_vectors VALUES (?, ?, ?)", (event_id, digest, v.tobytes()))
+        conn.commit()
+    return len(todo)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build or update the memory store.")
     parser.add_argument("command", choices=["ingest", "embed", "stats"])
@@ -156,7 +192,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "ingest":
         print(ingest(conn))
     elif args.command == "embed":
-        print(f"embedded {embed_missing(conn)} chunks")
+        print(f"embedded {embed_missing(conn)} chunks, {embed_events(conn)} ledger events")
     for table in ("meetings", "turns", "chunks", "events"):
         print(f"{table}: {conn.execute(f'SELECT COUNT(*) FROM {table}').fetchone()[0]}")
     extracted = conn.execute("SELECT COUNT(*) FROM meetings WHERE extracted_hash = content_hash").fetchone()[0]

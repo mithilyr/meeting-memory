@@ -143,6 +143,25 @@ def _intent(question: str) -> tuple[set[str], str]:
     return types, rest
 
 
+def team_matches(conn: sqlite3.Connection, team: str, question: str, upto_letter: str | None = None,
+                 k: int = 5) -> list[sqlite3.Row]:
+    """The team's ledger events that share at least two topic words with the question. Used to check a
+    "not discussed" reply: if these exist, the model is asked to look at them before saying no."""
+    _, rest = _intent(question)
+    wanted = retrieve._words(rest)
+    sql, params = "SELECT * FROM events WHERE team = ?", [team]
+    if upto_letter:
+        sql += " AND letter <= ?"
+        params.append(upto_letter)
+    rows = conn.execute(sql, params).fetchall()
+    scored = []
+    for r in rows:
+        hits = wanted & retrieve._words(r["summary"] + " " + r["topic"].replace("_", " "))
+        if len(hits) >= 2 or (len(wanted) == 1 and hits):
+            scored.append((len(hits), r))
+    return [r for _, r in sorted(scored, key=lambda s: -s[0])[:k]]
+
+
 def similar_ids(conn: sqlite3.Connection, team: str, k: int = 3) -> list[dict]:
     """Project IDs spelled like one that does not exist: TS3099 gives TS3009, TS3008... (a typo, usually)."""
     import difflib

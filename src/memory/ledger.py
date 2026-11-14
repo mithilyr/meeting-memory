@@ -17,6 +17,7 @@ reads a stored status when a cutoff applies.
 
 from __future__ import annotations
 
+import json
 import sqlite3
 from collections import defaultdict
 
@@ -97,8 +98,16 @@ def recompute(conn: sqlite3.Connection, team: str) -> None:
 def render(conn: sqlite3.Connection, team: str, **visible) -> str:
     """Compact text form of the ledger, one event per line, for a model to read."""
     lines = []
-    for e in load(conn, team, **visible):
+    events = load(conn, team, **visible)
+    objections = [o for o in events if o["type"] == "objection"]
+    for e in events:
         extra = []
+        if e["type"] in ("decision", "number") and e.get("status") == "current":
+            # The latest word, but someone objected after it and nothing later settled it: say so,
+            # so an answer can report the disagreement instead of presenting it as settled (D-033).
+            after = [o["event_id"] for o in objections if o["topic"] == e["topic"] and _key(o) > _key(e)]
+            if after:
+                extra.append(f"objected to afterwards: {', '.join(after[:3])}")
         if e.get("owner"):
             extra.append(f"owner {e['owner']}")
         if e.get("value"):
@@ -107,6 +116,8 @@ def render(conn: sqlite3.Connection, team: str, **visible) -> str:
             extra.append(f"refers to {e['refers_to']}")
         if e.get("status"):
             extra.append(e["status"] + (f" by {e['superseded_by']}" if e.get("superseded_by") else ""))
+        if e.get("flags"):  # audit findings (src/memory/audit.py): do not repeat these details as fact
+            extra.append("UNVERIFIED: " + ", ".join(json.loads(e["flags"])))
         lines.append(
             f"{e['event_id']} | {e['type']} | {e['topic']} | Speaker {e.get('speaker')}: "
             f"{e['summary']}" + (f" [{'; '.join(extra)}]" if extra else "")

@@ -62,6 +62,8 @@
   .s-current { background: var(--navy); color: var(--white); border-color: var(--navy); }
   .s-open { background: var(--yellow); }
   .s-superseded { background: var(--line); color: var(--muted); border-color: var(--line); }
+  .s-conflict { background: var(--red); color: var(--white); border-color: var(--red); }
+  .t.flag { border-color: var(--red); color: var(--red); }
   .ev.superseded .sum { text-decoration: line-through; color: var(--muted); }
   .topic { color: var(--navy); font-weight: 600; }
   .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
@@ -329,9 +331,10 @@ class Progress {
   }
   update(step) {
     if (step.step === "route" && !step.team) {
-      const missing = (step.result || "").replace("no project", "").trim();
-      this.set("route", "done", missing ? `There is no project ${missing}: listing the closest matches`
-                                        : "No project named: listing the closest matches instead");
+      const missing = (step.result || "").startsWith("no project") ? step.result.replace("no project", "").trim() : "";
+      this.set("route", "done", step.result === "several projects" ? "Several projects named: one at a time"
+        : missing ? `There is no project ${missing}: listing the closest matches`
+        : "No project named: listing the closest matches instead");
     } else if (step.step === "route" && step.team) {
       const t = TEAMS.find(x => x.team === step.team);
       this.set("route", "done", t ? projectLabel(t) : step.team);
@@ -382,7 +385,9 @@ async function ask() {
 }
 function renderAnswer(r) {
     if (r.suggestions && !r.fallback) {  // no project, or one that does not exist
-      showSuggestions(r.suggestions, "Which project do you mean?", r.answer + " These projects talk about it most.");
+      const several = r.suggestions.every(s => s.reason === "Named in your question");
+      showSuggestions(r.suggestions, several ? "One project at a time" : "Which project do you mean?",
+                      several ? r.answer : r.answer + " These projects talk about it most.");
       return;
     }
     const cites = r.citations.map(c => `
@@ -408,10 +413,21 @@ function renderAnswer(r) {
       ${passages ? `<p class="kicker">What the search found (exact words from the transcripts)</p>${passages}` : ""}
       ${r.fallback === "no_model" ? `<div class="row" style="margin:10px 0"><button class="btn" id="retryBtn">Try again</button></div>` : ""}
       ${(r.suggestions || []).length ? `<p class="kicker" style="margin-top:18px">Wrong project? These also discuss it</p>${suggestionItems(r.suggestions)}` : ""}`;
+    // How sure the answer is, said plainly. "No" and "not confirmed" are answers too (D-033).
+    const STATUS = {
+      partial: ["Partly answered", "Part of this is not in the record.", "s-open"],
+      not_discussed: ["Not discussed in these meetings", "Nothing in the transcripts answers this. The nearest passages are below so you can check.", "s-superseded"],
+      not_found: ["Not found", "No statement in the transcripts could be checked against an answer.", "s-superseded"],
+      conflicting: ["The meetings disagree", "Nothing later settles it.", "s-conflict"],
+      premise_wrong: ["The question's assumption does not match the record", "", "s-open"],
+      unconfirmed: ["Not confirmed", "The draft went beyond its evidence, so it is not shown.", "s-conflict"],
+    }[r.status];
+    const badge = STATUS ? `<p style="margin:0 0 10px"><span class="t ${STATUS[2]}">${esc(STATUS[0])}</span>
+      <span class="muted">${esc(STATUS[1])}</span></p>` : "";
     const main = r.fallback === "no_model"
       ? `<p class="kicker">Search only, no AI model</p><p class="answer">${esc(r.answer)}</p>`
-      : `<p class="kicker">Answer</p><p class="answer">${esc(r.answer)}</p>
-         <p class="kicker">Evidence (checked word for word)</p>${cites}`;
+      : `${badge}<p class="kicker">Answer</p><p class="answer">${esc(r.answer)}</p>
+         ${r.citations.length ? `<p class="kicker">Evidence (checked word for word)</p>${cites}` : ""}`;
     $("#result").innerHTML = `<div class="card">${main}${fallback}
       <details class="how"><summary>How this answer was made (${esc(r.seconds)} s)</summary>
       <div class="trace">${steps}</div></details></div>`;
@@ -501,6 +517,10 @@ async function loadTimeline() {
   $("#tlRoles").textContent = Object.entries(LEDGER.roles).map(([s, r]) => `Speaker ${s}: ${r}`).join("  ·  ");
   renderTimeline();
 }
+// Audit findings (src/memory/audit.py): the event's quote is real, but a detail did not check out.
+const FLAG_LABELS = {figure_not_said: "a figure in it is not said in the transcripts", unit_not_said: "its currency is not used in the transcripts",
+  unit_differs: "its currency differs from the quoted words", speaker_mismatch: "its speaker differs from the quoted turn",
+  bad_link: "it points at a later or missing event"};
 function renderTimeline() {
   // One column per meeting in the series, so a meeting missing from the record shows as a gap, not silence.
   const last = LEDGER.letters[LEDGER.letters.length - 1] || "a";
@@ -511,7 +531,7 @@ function renderTimeline() {
     const evs = LEDGER.events.filter(e => e.letter === L && (FILTER === "all" || e.type === FILTER));
     return `<div class="col">${head}${evs.map(e => `
       <div class="ev ${e.status || ""}" data-m="${e.meeting_id}" data-i="${e.turn_idx}">
-        <div class="meta"><span class="t">${e.type.replace("_", " ")}</span>${e.status ? `<span class="t s-${e.status}">${e.status}</span>` : ""}</div>
+        <div class="meta"><span class="t">${e.type.replace("_", " ")}</span>${e.status ? `<span class="t s-${e.status}">${e.status}</span>` : ""}${e.flags ? `<span class="t flag" title="${esc(JSON.parse(e.flags).map(f => FLAG_LABELS[f] || f).join("; "))}">unverified</span>` : ""}</div>
         <div><span class="topic">${esc(e.topic.replaceAll("_", " "))}</span> · <span class="sum">${esc(e.summary)}</span></div>
       </div>`).join("") || `<p class="muted">Nothing extracted yet.</p>`}</div>`;
   }).join("");
@@ -592,6 +612,8 @@ $("#refreshBtn").onclick = async () => {
       <p>${r.ingest.new} new, ${r.ingest.changed} changed, ${r.ingest.unchanged} unchanged. ${r.embedded_chunks} chunks embedded.</p>
       <p class="kicker">Read by ${esc(r.backend)}</p>${list(r.extracted)}
       ${r.failed.length ? `<p class="kicker">Could not read (left pending)</p>${list(r.failed)}` : ""}
+      ${(r.held || []).length ? `<p class="kicker">Held for review</p>${list(r.held)}` : ""}
+      ${(r.unverified || []).length ? `<p class="kicker">Details that did not check out (kept, marked unverified)</p>${list(r.unverified)}` : ""}
       <p class="muted">${r.still_pending} meeting(s) still pending. Took ${r.seconds}s.</p></div>`;
     $("#files").value = "";
     loadTeams();

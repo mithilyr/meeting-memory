@@ -304,3 +304,56 @@ without swamping one precise match. Event topics are matched too, not only summa
 TS3008 now comes 3rd of 5 for the LCD question.
 **Also:** Enter sends the question; Shift+Enter adds a new line.
 
+## D-032: Truth audit on every ingest: the ledger is checked against the transcripts (2026-11-14)
+**Why:** the extractor is a model. Its quotes are checked word for word, but its summaries and values
+are paraphrase. A sample found "3 EUR per item" stored where the speaker said "three Francs".
+**Decision:** `src/memory/audit.py` checks every event after every import (the corpus rebuild and each
+new meeting alike) and stores flags. Nothing is deleted, because the quote is still real:
+- figure_not_said: a figure in the value or summary is said nowhere in the team's transcripts
+- unit_differs / unit_not_said: the stored currency differs from the quoted words, or is never used
+- speaker_mismatch: the event's speaker is not the speaker of the quoted turn (action items excepted)
+- bad_link: refers_to points at a later or missing event (ledger.compute already only follows links
+  backwards in time, so these change no status)
+Figures are read as people say them (`src/ingest/numbers.py`): "twelve fifty", "twelve Euros fifty",
+"nought point eight", "seventeen dot eight", "a quarter", "fifty million".
+**Measured on all 7,199 events:** speaker attribution matches the quoted turn in every case except 4
+action items, which are correct ("A asked B to ..."). 15 figures are never said anywhere in the team's
+meetings, mostly averages the extractor computed itself (2.67, 3.11, 1.75); 1 unit differs (16 "EUR"
+where the speaker said Francs); 7 backwards links.
+**Readers:** the answer and brief prompts see "UNVERIFIED: ..." on flagged lines and are told not to
+repeat those details; the timeline shows an "unverified" chip; Refresh lists flags for new meetings.
+Current decisions that someone objected to afterwards, with no later decision, are marked "objected to
+afterwards" in the ledger text (92 in the corpus), so answers report the challenge.
+
+## D-033: Saying no is better than making things up: answer statuses and grounding checks (2026-11-14)
+**Decision:** every answer now carries a status, and code checks the answer text, not only its quotes.
+1. Status from the model, shown on the page: answered, partial ("part of this is not in the record"),
+   not_discussed, conflicting ("the meetings disagree"), premise_wrong ("the question's assumption does
+   not match the record"). Code adds not_found (no checkable evidence) and unconfirmed (withheld).
+2. A "not discussed" reply is challenged once: if the team's ledger has events sharing two or more
+   topic words with the question, the model is shown them. A considered "no" is then accepted.
+3. Hard check: a figure in the answer that appears nowhere in the evidence the model was given cannot
+   have come from the meetings. After two repairs the answer is withheld and only its checked quotes
+   are shown.
+4. Soft checks, repaired but never withheld: every "Speaker X" and every figure should be in the cited
+   evidence; a cited decision that was later replaced, when the final word is not cited, is pointed out.
+5. The model may offer up to 5 citations; code keeps the 3 that back the most of the answer's people
+   and figures (the output format allows 3).
+6. The prompt states coverage ("Missing from the record: meeting 1 (IS1002a)"), so questions about
+   missing or non-existent meetings get a plain no.
+7. A question naming two projects is not answered from one: the page offers each.
+8. A transcript that repeats a meeting already in memory is refused on upload and held on Refresh.
+The brief applies the same check per point: a point naming people or figures its events do not show is
+replaced by those events' own summaries.
+**Measured:** `python -m eval.run_abstain`, 7 own questions that should be declined or corrected
+(supplier never named, salaries never discussed, Bluetooth never mentioned, "why did TS3008 include an
+LCD" when they skipped it, IS1002's missing first meeting, TS3012's non-existent fifth meeting, and a
+half-answerable question): 7/7.
+
+## D-034: The over-budget ledger is ranked by meaning, and final decisions are never dropped (2026-11-14)
+**Fix for F-008.** Each ledger event (topic + summary) is embedded by Voyage once (7,199 events,
+2.5 minutes, re-run only for new or changed events). When a team's ledger is over the 11K-character
+budget, code keeps every current decision and figure first (up to half the budget), then whole topics
+ranked by keyword overlap plus meaning. On E03 (TS3005, "interface"), microphone events now reach the
+model (2 of 13 kept, before 0).
+

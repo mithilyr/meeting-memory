@@ -34,6 +34,11 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
 11. Every derived fact (event, role, decision) stores the `meeting_id` and `turn_id`s it came from.
 12. "What is current" (supersession) is decided by code from meeting order, not by the model.
 13. The agent loops: retrieve, read, check timeline, answer, verify. It is not a single call.
+13a. Saying no beats making things up (D-033). Every answer has a status (answered, partial,
+    not_discussed, conflicting, premise_wrong; code adds not_found, unconfirmed). An answer stating a
+    figure found nowhere in its evidence is withheld. A "not discussed" reply is challenged once.
+13b. The truth audit (`src/memory/audit.py`) runs on every import, for the corpus and new meetings alike.
+    Flagged ledger lines reach every prompt marked UNVERIFIED (D-032).
 
 ### Cost: $0 build, low-cost production proposal (D-007)
 14. Build-time extraction runs through Claude Code (subscription, no API spend), using the SAME
@@ -78,6 +83,8 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
 10. Claude Code (the coding assistant) must not write `answers.json`, the brief, or any answer text.
     It may only fill extraction jobs that the pipeline generated (rule 14). The agent writes the answers.
 11. Do not put meeting text into a prompt without `screen.fence()` and the <transcript> markers (D-027).
+12. Do not add a path that shows model text to a user without `grounding` checks, or that stores
+    extracted events without `audit.check_team` (the same standard for old and new meetings).
 
 ## Model vs code line (summary, details in docs/decisions.md)
 
@@ -110,4 +117,6 @@ out/                   answers.json
 ```
 python -m src.ingest.parse --check      # parse all transcripts, print counts
 python -m pytest -q                     # tests
+python -m src.memory.audit              # truth checks on every ledger event
+python -m eval.run_abstain              # questions the agent must decline or correct
 ```

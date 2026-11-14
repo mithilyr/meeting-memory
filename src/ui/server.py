@@ -104,7 +104,7 @@ def team_ledger(team: str) -> dict:
         roles.setdefault(r["speaker"], r["role"])
     return {"team": team, "letters": letters, "roles": roles,
             "events": [{k: e[k] for k in ("event_id", "letter", "meeting_id", "turn_idx", "type", "topic", "summary",
-                                          "speaker", "owner", "value", "quote", "status", "superseded_by")}
+                                          "speaker", "owner", "value", "quote", "status", "superseded_by", "flags")}
                        for e in events]}
 
 
@@ -154,6 +154,9 @@ def save_upload(filename: str, content: str) -> dict:
         raise ValueError(f"{stem} is already in the corpus.")
     if len(content.encode("utf-8")) > screen.MAX_UPLOAD_BYTES:
         raise ValueError(f"{stem} is larger than {screen.MAX_UPLOAD_BYTES // 1_000_000} MB; a transcript is usually under 100 KB.")
+    copy_of = screen.duplicate_of(db(), content)
+    if copy_of and copy_of != stem:
+        raise ValueError(f"{stem} repeats meeting {copy_of}, which is already in memory.")
     flagged = screen.flags(content)
     folder = screen.held_dir() if flagged and not screen.is_approved(content) else get_settings().inbox_dir
     folder.mkdir(parents=True, exist_ok=True)
@@ -209,7 +212,7 @@ class Handler(BaseHTTPRequestHandler):
             elif url.path == "/api/turns":
                 self._json(turns_around(q["meeting"], int(q.get("idx", -1)), q.get("quote")))
             elif url.path == "/api/held":
-                self._json({"held": screen.held()})
+                self._json({"held": screen.held(db())})
             elif url.path == "/api/suggest":
                 self._json(suggest(q.get("q", "")[:300], conn=db(), k=5))
             elif url.path == "/api/transcript":
@@ -241,7 +244,7 @@ class Handler(BaseHTTPRequestHandler):
                 if body.get("action") not in ("approve", "discard") or not MEETING_ID.match(body.get("meeting", "")):
                     raise ValueError("action must be approve or discard, with a meeting id")
                 (screen.approve if body["action"] == "approve" else screen.discard)(body["meeting"])
-                self._json({"held": screen.held()})
+                self._json({"held": screen.held(db())})
             elif self.path == "/api/brief":
                 self._json(write_brief(body["team"], conn=db(), upto_letter=body.get("upto") or None))
             elif self.path == "/api/upload":

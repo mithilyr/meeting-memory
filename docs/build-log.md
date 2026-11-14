@@ -39,3 +39,11 @@ Append one entry per session: what changed, what was measured. For the video and
 - Prompt-injection defences (D-027): screening, fenced prompts, review queue, 2 MB cap. 0 of 138 real meetings flagged.
 - Tests: 9 pass (3 new for screening).
 
+## 2026-11-14: Session 5, saying no instead of guessing
+- Truth audit over all 7,199 events (D-032): spoken-number reader, figure/unit/speaker/link checks,
+  run on every import. 15 figures never said, 1 wrong currency, 7 backwards links; flags reach every prompt.
+- Answer statuses and grounding checks (D-033): withheld answers, challenged "no"s, coverage of missing
+  meetings, two-project questions, duplicate uploads refused.
+- Ledger ranked by meaning when over budget (D-034, fix for F-008). 7,199 events embedded in 2.5 minutes.
+- New eval: `eval/abstain_questions.json`, 7/7 declined or corrected. Tests: 14 pass.
+

@@ -9,6 +9,7 @@ from __future__ import annotations
 import re
 import sqlite3
 from collections import defaultdict
+from functools import lru_cache
 
 import numpy as np
 
@@ -51,8 +52,6 @@ def keyword_turns(conn: sqlite3.Connection, team: str, query: str, k: int = 12,
 
 def vector_chunks(conn: sqlite3.Connection, team: str, query: str, k: int = 6,
                   upto_letter: str | None = None) -> list[sqlite3.Row]:
-    from src.clients.voyage import embed
-
     rows = conn.execute(
         "SELECT c.*, m.letter FROM chunks c JOIN meetings m USING (meeting_id) "
         "WHERE c.team = ? AND c.vector IS NOT NULL" + (" AND m.letter <= ?" if upto_letter else ""),
@@ -60,8 +59,7 @@ def vector_chunks(conn: sqlite3.Connection, team: str, query: str, k: int = 6,
     ).fetchall()
     if not rows:
         return []
-    q = np.asarray(embed([query], input_type="query")[0], dtype=np.float32)
-    q /= np.linalg.norm(q) or 1.0
+    q = query_vector(query)
     matrix = np.stack([np.frombuffer(r["vector"], dtype=np.float32) for r in rows])
     order = np.argsort(-(matrix @ q))[:k]
     return [rows[i] for i in order]
@@ -126,28 +124,61 @@ def _words(text: str) -> set[str]:
     return {w[:6] for w in re.findall(r"[a-z]{3,}", text.lower()) if w not in STOPWORDS}
 
 
+@lru_cache(maxsize=128)
+def query_vector(text: str) -> np.ndarray:
+    """The question's embedding, made once per question and shared by every search that needs it."""
+    from src.clients.voyage import embed
+
+    q = np.asarray(embed([text], input_type="query")[0], dtype=np.float32)
+    return q / (np.linalg.norm(q) or 1.0)
+
+
+def _meaning_scores(conn: sqlite3.Connection, event_ids: list[str], query: str) -> dict[str, float]:
+    """Cosine similarity of each ledger event to the question. Empty if embeddings are unavailable."""
+    try:
+        q = query_vector(query)
+        marks = ",".join("?" * len(event_ids))
+        rows = conn.execute(f"SELECT event_id, vector FROM event_vectors WHERE event_id IN ({marks})", event_ids).fetchall()
+    except Exception:  # noqa: BLE001 - no embeddings: keyword ranking alone still works
+        return {}
+    return {r["event_id"]: float(np.frombuffer(r["vector"], dtype=np.float32) @ q) for r in rows}
+
+
 def ledger_text(conn: sqlite3.Connection, team: str, upto_letter: str | None = None,
                 query: str | None = None) -> str:
-    """The team's ledger; over budget, only the topics that best match the query (code, no model)."""
+    """The team's ledger. Over budget: every current decision and figure (the final word on each topic is
+    never dropped), then whole topics ranked by meaning and keywords together (F-008), in meeting order."""
     full = ledger.render(conn, team, upto_letter=upto_letter) if upto_letter else ledger.render(conn, team)
     if len(full) <= LEDGER_BUDGET or not query:
         return full
-    wanted = _words(query)
     lines = full.split("\n")
-    def score(line: str) -> int:
-        parts = line.split(" | ")
-        bonus = 1 if len(parts) > 1 and parts[1] in ("decision", "number") else 0
-        return len(wanted & _words(line)) * 2 + bonus
-    topic_of = lambda line: line.split(" | ")[2] if line.count(" | ") >= 3 else ""
-    keep_topics, size = [], 0
-    for line in sorted(lines, key=score, reverse=True):
-        topic = topic_of(line)
-        if topic in keep_topics:
+    parts = [line.split(" | ") for line in lines]
+    event_id = lambda i: parts[i][0]
+    topic = lambda i: parts[i][2] if len(parts[i]) >= 4 else ""
+    final_word = lambda i: len(parts[i]) >= 4 and parts[i][1] in ("decision", "number") and bool(
+        re.search(r"(?:\[|; )current[;\]]", lines[i]))
+    wanted = _words(query)
+    meaning = _meaning_scores(conn, [event_id(i) for i in range(len(lines))], query)
+    def line_score(i: int) -> float:
+        keyword = len(wanted & _words(lines[i]))
+        return 2 * keyword + 10 * max(meaning.get(event_id(i), 0.0), 0.0)
+    topic_score: dict[str, float] = defaultdict(float)
+    for i in range(len(lines)):
+        topic_score[topic(i)] = max(topic_score[topic(i)], line_score(i))
+    keep, size = set(), 0
+    finals = sorted((i for i in range(len(lines)) if final_word(i)), key=line_score, reverse=True)
+    for i in finals:  # the final word on every topic first, best-matching first, up to half the budget
+        if size + len(lines[i]) > LEDGER_BUDGET // 2:
+            break
+        keep.add(i)
+        size += len(lines[i]) + 1
+    for name in sorted(topic_score, key=topic_score.get, reverse=True):
+        members = [i for i in range(len(lines)) if topic(i) == name and i not in keep]
+        cost = sum(len(lines[i]) + 1 for i in members)
+        if size + cost > LEDGER_BUDGET:
             continue
-        topic_size = sum(len(l) + 1 for l in lines if topic_of(l) == topic)
-        if size + topic_size > LEDGER_BUDGET:
-            continue
-        keep_topics.append(topic)
-        size += topic_size
-    kept = [l for l in lines if topic_of(l) in keep_topics]
-    return "\n".join(kept) + f"\n(ledger filtered to the {len(keep_topics)} most relevant topics, {len(kept)} of {len(lines)} events)"
+        keep.update(members)
+        size += cost
+    kept = [lines[i] for i in sorted(keep)]
+    return "\n".join(kept) + (f"\n(ledger filtered to {len(kept)} of {len(lines)} events: every current decision and "
+                              "figure, plus the topics closest to the question)")

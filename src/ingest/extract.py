@@ -22,7 +22,7 @@ from pathlib import Path
 
 from src.ingest.screen import fence
 from src.ingest.verify import MIN_WORDS, normalise, quote_in_turn
-from src.memory import ledger
+from src.memory import audit, ledger
 from src.memory.store import connect
 from src.settings import get_settings
 
@@ -242,7 +242,8 @@ def store_events(conn: sqlite3.Connection, meeting_id: str, data: dict) -> int:
     for e in data["events"]:
         ref = e.get("refers_to")
         conn.execute(
-            "INSERT INTO events VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,NULL,NULL)",
+            "INSERT INTO events (event_id, team, meeting_id, letter, turn_idx, type, topic, summary, speaker, "
+            "owner, value, turn_id, quote, refers_to) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (id_map[e["id"]], meeting["team"], meeting_id, meeting["letter"], e["turn"],
              e["type"], e["topic"], e["summary"], e.get("speaker"), e.get("owner"), e.get("value"),
              f"{meeting_id}#{e['turn']:04d}", e["quote"], id_map.get(ref, ref)),
@@ -257,6 +258,7 @@ def store_events(conn: sqlite3.Connection, meeting_id: str, data: dict) -> int:
         "UPDATE meetings SET extracted_hash = content_hash WHERE meeting_id = ?", (meeting_id,)
     )
     ledger.recompute(conn, meeting["team"])
+    audit.check_team(conn, meeting["team"])  # same truth checks for every meeting, old or new (D-032)
     conn.commit()
     return len(data["events"])
 

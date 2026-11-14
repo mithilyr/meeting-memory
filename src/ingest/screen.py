@@ -54,6 +54,15 @@ def flags(text: str) -> list[str]:
     return found
 
 
+def duplicate_of(conn, text: str) -> str | None:
+    """The meeting already in memory that this transcript repeats, if any. The same meeting under a new
+    name would count twice, and as a "later" meeting it would supersede its own decisions."""
+    lines = sorted((l.strip() for l in text.splitlines() if len(l.strip()) > 80), key=len, reverse=True)[:5]
+    seen = [r[0] for l in lines for r in conn.execute("SELECT meeting_id FROM turns WHERE text = ? LIMIT 1", (l,))]
+    best = max(set(seen), key=seen.count) if seen else None
+    return best if best and seen.count(best) >= 2 else None
+
+
 def held_dir() -> Path:
     return get_settings().inbox_dir / "held"
 
@@ -93,19 +102,27 @@ def discard(meeting_id: str) -> Path:
     return target
 
 
-def held() -> list[dict]:
+def held(conn=None) -> list[dict]:
     folder = held_dir()
-    return [{"meeting_id": p.stem, "flags": flags(p.read_text(encoding="utf-8"))}
-            for p in sorted(folder.glob("*.txt"))] if folder.is_dir() else []
+    out = []
+    for p in sorted(folder.glob("*.txt")) if folder.is_dir() else []:
+        text = p.read_text(encoding="utf-8")
+        reasons = flags(text)
+        copy_of = duplicate_of(conn, text) if conn is not None else None
+        if copy_of and copy_of != p.stem:
+            reasons.insert(0, f"This file repeats meeting {copy_of}, which is already in memory.")
+        out.append({"meeting_id": p.stem, "flags": reasons})
+    return out
 
 
-def screen_inbox() -> list[str]:
-    """Files dropped straight into inbox/ (not through the page) get the same check before ingest."""
+def screen_inbox(conn=None) -> list[str]:
+    """Files dropped straight into inbox/ (not through the page) get the same checks before ingest."""
     inbox = get_settings().inbox_dir
     moved = []
     for path in sorted(inbox.glob("*.txt")) if inbox.is_dir() else []:
         text = path.read_text(encoding="utf-8")
-        if flags(text) and not is_approved(text):
+        copy_of = duplicate_of(conn, text) if conn is not None else None
+        if ((flags(text) or (copy_of and copy_of != path.stem)) and not is_approved(text)):
             held_dir().mkdir(parents=True, exist_ok=True)
             path.replace(held_dir() / path.name)
             moved.append(path.stem)
