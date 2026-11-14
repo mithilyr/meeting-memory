@@ -12,3 +12,4 @@ docs/video/*.mp4
 
 docs/audio/
 deploy/hf-space/build/
+deploy/memory-bundle.tar.gz
