@@ -52,4 +52,9 @@ Append one entry per session: what changed, what was measured. For the video and
   cut off) and now names speakers by letter, as the output contract asks; 2 points were replaced by
   their events' own summaries by the grounding check.
 - Tests: 15 pass, including one that a new meeting's import runs the audit.
+- Checked the build against the PDF line by line. One gap found and fixed: answers must be "a sentence
+  or two" (D-035); Q02, Q09 and Q24 re-run. Q10's re-run called a proposal a decision, so the earlier
+  agent answer is kept at three sentences (noted in out/run_log.json).
+- Write-up cut to one page (829 words). Decision index with statuses added to docs/decisions.md.
+- Video plan written (docs/video-plan.md).
 

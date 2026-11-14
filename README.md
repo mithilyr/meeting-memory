@@ -33,8 +33,8 @@ store from it re-runs only code (parse, index, validate, statuses) plus Voyage e
 
 ```
 python -m src.memory.store ingest
-python -m src.memory.store embed
-python -m src.ingest.extract import-all
+python -m src.ingest.extract import-all                  # also runs the truth audit on every event
+python -m src.memory.store embed                          # Voyage vectors for turns and ledger events (about 5 minutes)
 python -m src.memory.names                                # project names for the picker (35 free model calls)
 python -m src.agent.route                                 # project profiles, for questions that name no project (1 Voyage call)
 ```
@@ -74,15 +74,22 @@ Claude API. That path is written but was not run during the build.
 | Keyword (BM25) search; vectors come from Voyage AI | Asking for more searches when evidence is thin |
 | What is current / superseded / open (rules on meeting order) | |
 | Quote verification and repair, output format, eval scoring | |
+| Truth audit: figures, currencies, speakers checked against the transcripts | |
+| Answer checks: figures and people in the answer must be in the evidence | |
+| Prompt-injection screening of uploads; project suggestions when none is named | |
 
 ## Layout
 ```
 run.py                 answers.json for the 25 questions + TS3012 brief
-src/ingest/            parse.py (files -> turns), verify.py (quote rule), extract.py (jobs, validation, API path)
-src/memory/            store.py (SQLite, FTS5, vectors), ledger.py (status rules)
-src/agent/             retrieve.py (search), answer.py (question loop), brief.py
+src/ingest/            parse.py (files -> turns), verify.py (quote rule), extract.py (jobs, validation, API path),
+                       numbers.py (spoken figures), screen.py (prompt-injection screening)
+src/memory/            store.py (SQLite, FTS5, vectors), ledger.py (status rules), audit.py (truth checks),
+                       refresh.py (one-step update), names.py (project names)
+src/agent/             retrieve.py (search), answer.py (question loop), grounding.py (answer checks),
+                       route.py (project suggestions), brief.py
 src/clients/           openrouter.py + retry.py (from CodeFest), groq.py, voyage.py, llm.py (provider chain)
 src/ui/                server.py + index.html (demo page)
-eval/                  own_questions.json (10, unseen teams), run_eval.py, results/
+eval/                  own_questions.json (10, unseen teams), abstain_questions.json (7 that need a no),
+                       route_check.py, run_eval.py, run_abstain.py, results/
 docs/                  idea, architecture, write-up, decisions, failures, build log
 ```

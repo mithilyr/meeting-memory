@@ -1,7 +1,47 @@
 # Decisions
 
-One entry per design decision: what, why, what was rejected. Newest at the bottom.
-This file feeds the write-up and the video.
+One entry per design decision (an ADR: what, why, what was rejected). Newest at the bottom.
+This file feeds the write-up and the video. The index below says which decisions still stand.
+
+## Index
+
+| ID | Decision | Status |
+|---|---|---|
+| D-001 | Event ledger + retrieval, not a knowledge graph | Active |
+| D-002 | Local models via Ollama for $0 | Superseded by D-007, D-021 |
+| D-003 | Parsing and quote verification are code, never a model | Active |
+| D-004 | TS3012 brief uses meetings a to c only (cutoff in code) | Active |
+| D-005 | Reuse parts of the CodeFest project | Active |
+| D-006 | SQLite FTS5 + numpy, no vector DB, no framework | Active |
+| D-007 | Build-time extraction by Claude Code; production pitch Haiku 5.5 Batch | Active |
+| D-008 | Three deployment tiers, one codebase | Active |
+| D-009 | Extract each team's meetings in order, with the ledger so far | Active |
+| D-010 | Build-time extraction by Haiku subagents | Active |
+| D-011 | Citations by ledger event id, quote swapped in by code | Active |
+| D-012 | Own eval uses only teams not in questions.json | Active |
+| D-013 | Free answer models: OpenRouter, then local qwen3:4b | Local part superseded by D-021, D-023 |
+| D-014 | Demo UI: one HTML page on Python's http.server | Active |
+| D-015 | Project picker; multi-project meetings designed, not built | Picker superseded by D-028; multi-project design active |
+| D-016 | Model calls run on the server; page shows what it can run | Active (local-model check removed by D-021) |
+| D-017 | Refresh: one command or button brings memory up to date | Active |
+| D-018 | Subagents run on Haiku or Sonnet, never Opus | Active |
+| D-019 | All prose checked against the ai-writing-signs catalogue | Active |
+| D-020 | Measured extraction run; cost estimate corrected | Active |
+| D-021 | No local models | Active |
+| D-022 | Search embeddings from Voyage AI | Active |
+| D-023 | Groq as the second free answer provider | Active |
+| D-024 | Project picker removed; team named in the question | Reversed by D-025 |
+| D-025 | Generated project names; whole transcript and original file from any quote | Active (picker form replaced by D-028) |
+| D-026 | Ask page streams the agent's real steps | Active |
+| D-027 | Uploads screened, fenced and reviewed (prompt injection) | Active |
+| D-028 | Searchable project picker; quotes shown with speaker and context | Active |
+| D-029 | No project named: offer the closest projects, never guess | Active |
+| D-030 | No dead ends: every failed path offers the next step | Active |
+| D-031 | Project suggestions read the kind of event asked for | Active |
+| D-032 | Truth audit on every ingest | Active |
+| D-033 | Saying no beats making things up: statuses and grounding checks | Active |
+| D-034 | Over-budget ledger ranked by meaning; final decisions never dropped | Active |
+| D-035 | Answers are a sentence or two, as the brief requires | Active |
 
 ## D-001: Event ledger + retrieval, not a knowledge graph (2026-11-13)
 **Decision:** Store raw turns as the source of truth. Extract typed events (decision, proposal,
@@ -356,4 +396,9 @@ half-answerable question): 7/7.
 budget, code keeps every current decision and figure first (up to half the budget), then whole topics
 ranked by keyword overlap plus meaning. On E03 (TS3005, "interface"), microphone events now reach the
 model (2 of 13 kept, before 0).
+
+## D-035: Answers are a sentence or two, as the brief requires (2026-11-14)
+**Found in the final check against the PDF:** it asks for each answer "in a sentence or two"; our rule
+said 1 to 3 sentences, and 4 of 25 answers had three. **Decision:** the prompt asks for 1 or 2 sentences
+and code repairs, then ranks attempts by, that limit. The 4 answers were re-run with the new rule.
 

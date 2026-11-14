@@ -20,7 +20,7 @@
     },
     {
       "question_id": "Q02",
-      "answer": "The team first leaned toward a flexible, spongy rubber case (Speaker B said the group had pretty much decided on some kind of flexible rubber –). In the last meeting they switched to a solid plastic single-curve case (Speaker B recorded the decision to go ahead with a plastic solid case –). The switch was made for cost reasons: plastic incurs no material cost and let the design stay within the budget and retain the LCD display (plastic incurs no cost –; the change was to come back within the proposed costs –).",
+      "answer": "The team initially leaned towards rubber (specifically a spongy, stress-ball type material) for ergonomic and fashion reasons, but switched to a solid plastic case to reduce costs and keep the LCD display within the proposed budget.",
       "citations": [
         {
           "meeting_id": "ES2003c",
@@ -29,10 +29,6 @@
         {
           "meeting_id": "ES2003d",
           "quote": "going for a plastic solid case, to keep the L_C_D_"
-        },
-        {
-          "meeting_id": "ES2003d",
-          "quote": "Plastic for some reason incurs no cost"
         }
       ]
     },
@@ -142,7 +138,7 @@
     },
     {
       "question_id": "Q09",
-      "answer": "The team initially worked with a selling price of 25 Euros (Speaker A). Later they settled on a sales bracket of 35 to 50 Euros. Speaker D was the most forceful advocate for a higher, exclusive price, proposing an 89-Euro premium and later a 50-60 Euro wholesale price.",
+      "answer": "The team initially worked with a selling price of 25 Euros, which they later settled on a range of 35 to 50 Euros. Speaker D pushed hardest for a higher, more exclusive price, proposing 89 Euros and later advocating for a 50 to 60 Euro wholesale price to position the product as exclusive.",
       "citations": [
         {
           "meeting_id": "IS1002b",
@@ -154,7 +150,7 @@
         },
         {
           "meeting_id": "IS1002b",
-          "quote": "I would market this product it at eighty-nine Euros"
+          "quote": "I want to market it as exclusive. So I would market this product it at eighty-nine Euros"
         }
       ]
     },
@@ -408,7 +404,7 @@
     },
     {
       "question_id": "Q24",
-      "answer": "Team ES2002 first agreed to use regular batteries as the power source in meeting 2, after Speaker A objected to a rechargeable unit. Speaker B, the project manager, expressed liking for the idea of kinetic power with a battery backup in meeting 3. The final design confirmed in meeting 4 used battery only, with no kinetic power.",
+      "answer": "Team ES2002 first agreed on regular batteries as the power source in meeting 2, after Speaker A objected to a rechargeable unit. Speaker B, the project manager, liked the idea of adding kinetic power with a battery backup in meeting 3, but the final design in meeting 4 used battery only with no kinetic power.",
       "citations": [
         {
           "meeting_id": "ES2002b",

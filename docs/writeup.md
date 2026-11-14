@@ -1,75 +1,66 @@
 # Meeting Memory: write-up
 
-## What it does
-Each meeting is read once and turned into a ledger of decisions, proposals, actions, report-backs,
-figures and objections. Every entry points at the turn it came from. Code orders the ledger by
-meeting and marks what is current and what was replaced. Questions and briefs are answered from
-the ledger plus keyword and vector search over the raw turns, and every quote is checked against
-the transcript word for word before it's shown. The architecture diagram is in `docs/architecture.md`.
+## Architecture
+Each meeting is read once and turned into a ledger: decisions, proposals, actions, report-backs,
+figures and objections, each pointing at the turn it came from. Turns sit in SQLite with a full-text
+index and Voyage AI vectors. A question is routed to one project, and only that project's ledger and
+search hits go to the model, so a question costs the same at 138 meetings or 10,000. The model can ask
+for up to 2 more searches. Code then checks the answer and sends up to 2 repair rounds. The diagram is
+in `docs/architecture.md`; every design decision is in `docs/decisions.md` (D-001 to D-035).
 
-## Architecture in one paragraph
-Ingest is code: the parser turns files into turns, SQLite stores them with a full-text index, and
-Voyage AI embeddings cover search by meaning. No model runs locally. A content hash skips files already stored. Extraction is one model call per meeting, in meeting
-order per team, with the team's ledger so far in the prompt, so "the other one" can be linked to an
-earlier option. The answer agent routes to one project, gathers ledger + search hits, and asks the
-model. The model may ask for more searches (up to 2 rounds). Code then verifies citations and sends
-up to two repair rounds if quotes fail, all come from one meeting, the answer runs past 3 sentences
-or it repeats the question. The best attempt is kept.
-The brief is grouped by code (current, replaced, open actions, open objections) and written by the model.
+**What is current** is decided by code from meeting order: the latest decision or figure on a topic is
+current and earlier ones are marked replaced. Extraction runs each team's meetings in order with the
+ledger so far in the prompt, so "the other one" in meeting c can be linked to an option from meeting a.
 
-## Where the line between model and code sits, and why
-Code handles everything that has one right answer or is graded by a machine: parsing, ids, the
-project filter, the cutoff that keeps TS3012's meeting d out of its brief, meeting order, the
-"replaced by" rule, quote checks, the JSON format and our eval scoring. A model in those places
-could only add mistakes, and some of them (a leaked future meeting, a paraphrased quote) would be
-silent. The model handles what rules can't: reading disfluent speech into events, writing two
-clear sentences from evidence, and deciding it needs another search. Citing a ledger event by id
-reuses a quote that code already verified, so the hardest part for a model (copying six exact
-words of "um, uh" speech) is avoided.
+## Model or code
+Code does everything with one right answer: parsing, ids, the project filter, meeting order, the
+"replaced by" rule, the cutoff that keeps TS3012's meeting d out of its brief, quote checks, the JSON
+format, eval scoring, and the truth checks below. A model there could only add errors, and some would
+be silent (a leaked future meeting, a paraphrased quote). The model does what rules can't: reading
+disfluent speech into events, writing a sentence or two from evidence, and deciding it needs another
+search. It may cite a ledger event by id, and code swaps in that event's already-checked quote.
+
+**Saying no beats guessing.** Code checks every stored figure, currency and speaker against the
+transcripts on each import, old meetings and new alike, and flags what doesn't match (16 figures nobody
+said, 1 currency stored as Euros where the speaker said Francs, out of 7,199 events). Every answer
+carries a status (answered, partial, not discussed, conflicting, wrong premise). An answer that keeps a
+figure found nowhere in its evidence is withheld, and a "not discussed" reply is challenged once with
+any matching ledger events before it is accepted.
 
 ## Tools, and where they broke
-- qwen3:8b (local) needs 6.6 GB with context, so on a 6 GB laptop GPU it ran at 5.9 tokens/s. That would mean about 9 hours for the corpus. Rejected.
-- qwen3:4b (local) was fast, but in extraction it invented turn ids (1, 2, 3...), and provenance is what citations depend on. As an answer fallback it scored 5/10 when checked by hand. Local models were then removed (D-021): staff work remotely, so the tool has to run on a server with no GPU.
-- Claude Haiku 5.5 did the extraction, as 7 Claude Code subagents, to keep the build at $0. The plan's session limit stopped them at 111 of 138 meetings, and they resumed after the reset. The validator dropped 40 of 7,239 events (0.6%).
-- OpenRouter free models answer in 2 to 30 s. The free tier allows 50 requests a day, and the first full run plus one re-run used them up. A free model also returned an empty reply on a 55K-character prompt, and that empty reply was cached. Both are fixed: daily-limit detection, no caching of empty replies, and a ledger budget (F-001).
-- Groq (second free provider) rejected Python's default user agent (Cloudflare error 1010), caps a free request at 8K tokens, and caps gpt-oss-120b at 200K tokens a day. The 8K cap forced prompt budgets (ledger 11K characters, turns 8K), and that budget caused one of the three wrong answers (F-008).
-- Voyage AI embedded all 15,868 chunks; the corpus used about 3M of the 200M free tokens.
-- The Gemini key reused from an earlier project was revoked (401), so Gemini isn't used.
-- SQLite FTS5 + numpy held up. Ingest takes 1.6 s for 138 meetings; rebuilding the store from the committed extraction snapshot takes 26 s.
+- Local models (qwen3:8b, qwen3:4b) were too slow on a 6 GB GPU or invented turn ids. Removed (D-021):
+  staff work remotely, so the tool has to run on a server.
+- Claude Haiku 5.5 did the extraction as Claude Code subagents, keeping the build at $0. The plan's
+  session limit stopped them at 111 of 138 meetings; they resumed after the reset.
+- OpenRouter's free tier allows 50 requests a day and returned an empty reply on a 55K-character prompt.
+  Groq's free tier caps a request at 8K tokens, which forced prompt budgets, and cut off long JSON until
+  the output cap was raised. Both ran out of daily quota during testing.
+- Voyage AI embedded 15,868 chunks and 7,199 ledger events inside the free allowance.
+- SQLite FTS5 and numpy held up: ingest takes 1.6 s, a full rebuild from the saved extraction 30 s.
 
 ## Proof it works
-Ten questions of our own (`eval/own_questions.json`), on 7 teams that are not in questions.json,
-each checked against the transcript. Scored by code and again by hand, because keyword scoring can
-be fooled (`eval/results/summary.md`).
-
-| Run | Right (hand check) | All quotes verified | Cited 2+ meetings |
-|---|---|---|---|
-| Hosted, with truth checks | 8/10 | 10/10 | 7/10 |
-| Hosted, Groq | 7/10 | 10/10 | 10/10 |
-| Local qwen3:4b (since removed) | 5/10 | 10/10 | 5/10 |
-
-The wrong answers, with causes checked in the ledger (`docs/failures.md`):
-- E03: incomplete, not invented. It names the LCD but not the microphone; the meaning-ranked ledger now
-  shows the model 2 of the 13 microphone events, and it still leaves them out.
-- E08: the evidence was there, but the model named the wrong dropped feature.
-
-Saying no is tested too: 7 questions about things never discussed, meetings that don't exist, or a false
-premise ("why did TS3008 include an LCD?" when they skipped it) all got a plain no or a correction (7/7).
-Code also audits the stored ledger against the transcripts: 16 figures nobody said and 1 wrong currency
-are flagged out of 7,199 events, and no prompt repeats them as fact.
-
+Ten questions of our own on 7 teams not in questions.json, checked by hand against the transcripts
+(`eval/results/summary.md`): **8/10 right**, every quote verified. Seven more questions that should get
+a no (never discussed, a meeting that doesn't exist, a false premise): **7/7** declined or corrected.
 On the 25 graded questions every citation passes the word-for-word check and all 25 cite two or more
-meetings. `out/run_log.json` has each answer's full trace and status.
+meetings.
+
+**Three it got wrong** (`docs/failures.md`):
+- E03: names the LCD but not the microphone. The microphone events were cut by the prompt budget;
+  ranking the ledger by meaning now brings 2 of 13 into the prompt, and the model still leaves them out.
+- E08: the evidence was there, but the model named "the advanced chip" instead of the LCD as dropped.
+- E04: said "spongy rubber" when the final meeting says "hard rubber", because that line was never
+  extracted. It came out right in the latest run, but the cause (a missed extraction) is still there.
 
 ## Cost and time for 1,000 meetings
-Measured on the real run: about 10.6K input and 4.3K output tokens per meeting.
-- Claude Haiku 5.5 via the Batch API: about **$1.60** (about $3.20 without batch). Sonnet 5.5: about $32 batched.
-- Time: teams run in parallel and a team's meetings run in order, so it's 4 batch rounds (a, b, c, d), each usually under an hour. Voyage embeddings for 1,000 meetings (about 115K chunks, 22M tokens) take minutes and fit in the free allowance.
-- A question costs one to three model calls on one project's evidence, so its cost doesn't grow with the archive.
+Measured: about 10.6K input and 4.3K output tokens per meeting. With Claude Haiku 5.5 on the Batch API
+that is about **$1.60** ($3.20 without batch). Teams run in parallel and each team's meetings in order,
+so it is 4 batch rounds, each usually under an hour. Embeddings take minutes and fit the free allowance.
 
 ## What production would need
-1. The API extraction path run for real (`extract.py api`, written but not exercised), switched to the Batch API.
-2. Postgres + pgvector in place of SQLite, and a paid model tier: free quotas (OpenRouter 50 requests a day, Groq 200K tokens a day) ran out during a single day of testing.
-3. Project tagging per event and a meeting-to-projects table for meetings that cover several projects (designed in architecture.md section 6).
-4. Better action follow-up matching: only 15 of 220 actions are linked to a report-back today (F-003).
-5. Refresh on a schedule or a folder watcher, a calendar hook that posts each brief before the meeting, access control per project, and the eval set run in CI on every prompt change.
+1. The API extraction path run for real on the Batch API (written, not exercised).
+2. A paid answer model and Postgres with pgvector: free quotas ran out within one day of testing.
+3. Login, a record of who uploaded each meeting, and review before uploaded meetings count.
+4. A check for missed extractions (E04), better action follow-up matching (F-003), and project tags
+   for meetings that cover several projects.
+5. Refresh on a schedule, briefs posted before each meeting, and the eval run on every prompt change.

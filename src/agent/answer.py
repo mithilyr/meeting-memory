@@ -54,7 +54,7 @@ HOW TO READ THE EVIDENCE
 - COVERAGE: {coverage}
 
 ANSWER RULES
-- 1 to 3 plain sentences. Give speakers by letter, plus role when known ("Speaker C, the Industrial Designer").
+- 1 or 2 plain sentences ("a sentence or two" is the requirement). Give speakers by letter, plus role when known ("Speaker C, the Industrial Designer").
 - Most questions span meetings: check the ledger for what changed and say what was current at the end.
 - Say only what the evidence says. Every person, figure and reason in your answer must appear in the
   evidence you cite. Do not fill a gap with what is likely, typical or implied.
@@ -265,7 +265,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
             break
 
         grounded = not ungrounded
-        too_long = len(re.findall(r"[.!?](?:\s|$)", text)) > 3  # the output contract allows 1 to 3 sentences
+        too_long = len(re.findall(r"[.!?](?:\s|$)", text)) > 2  # the PDF asks for "a sentence or two"
         echoed = question.lower()[:60] in text.lower()  # seen in testing (E01)
         score = (not invented, not echoed, not too_long, grounded, len(meetings), len(citations))
         if best is None or score > best[0]:
@@ -283,7 +283,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
         elif len(meetings) < 2 and status == "answered":
             issues.append("All citations come from one meeting; cite evidence from at least two meetings if the answer spans them.")
         if too_long:
-            issues.append("The answer is longer than 3 sentences; shorten it to 1 to 3 sentences.")
+            issues.append("The answer is longer than 2 sentences; shorten it to 1 or 2 sentences.")
         if echoed:
             issues.append("The answer repeats the question instead of answering it.")
         feedback = ("\nYOUR PREVIOUS ANSWER: " + json.dumps(reply)[:1500] +

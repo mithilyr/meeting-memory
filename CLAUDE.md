@@ -15,7 +15,7 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
 ### Output contract (graded automatically)
 1. `out/answers.json` has this exact shape:
    `{"answers": [{"question_id", "answer", "citations": [{"meeting_id", "quote"}]}], "brief": "plain text"}`
-2. Every answer is 1 to 3 plain sentences, with 1 to 3 citations.
+2. Every answer is a sentence or two (1 or 2 plain sentences), with 1 to 3 citations. The PDF says "each in a sentence or two".
 3. Every quote is at least 6 words, copied exactly from ONE speaker turn of the cited meeting.
    The grader ignores case and spacing only. Punctuation, "um", "uh" and word order must match.
 4. Every quote passes `src/ingest/verify.py` before it is written. A quote that fails is
@@ -57,7 +57,7 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
 - [x] 3 questions the agent got wrong, with reasons (`docs/failures.md`)
 - [x] Cost and time to ingest 1,000 meetings
 - [x] One-page write-up: architecture, model-vs-code line, tools, where they broke, production needs
-- [ ] 3 to 5 minute walkthrough video (after the build, user's call)
+- [ ] 3 to 5 minute walkthrough video (plan: docs/video-plan.md)
 
 ### Record keeping (for the video and write-up)
 19. Every design decision gets an entry in `docs/decisions.md` (D-NNN: decision, why, alternatives rejected).

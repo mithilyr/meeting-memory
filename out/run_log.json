@@ -56,8 +56,8 @@
     {
       "question_id": "Q02",
       "status": "answered",
-      "seconds": 50.2,
-      "citations_valid": "3/3",
+      "seconds": 27.4,
+      "citations_valid": "2/2",
       "trace": [
         {
           "step": "route",
@@ -72,9 +72,9 @@
         },
         {
           "step": "answer",
-          "model": "groq/openai/gpt-oss-120b",
+          "model": "groq/qwen/qwen3.8-27b",
           "status": "answered",
-          "citations": 3,
+          "citations": 2,
           "meetings": [
             "ES2003c",
             "ES2003d"
@@ -277,7 +277,7 @@
     {
       "question_id": "Q09",
       "status": "answered",
-      "seconds": 146.3,
+      "seconds": 169.0,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -293,7 +293,7 @@
         },
         {
           "step": "answer",
-          "model": "groq/openai/gpt-oss-120b",
+          "model": "groq/qwen/qwen3.8-27b",
           "status": "answered",
           "citations": 3,
           "meetings": [
@@ -306,7 +306,7 @@
         },
         {
           "step": "answer",
-          "model": "groq/openai/gpt-oss-120b",
+          "model": "groq/qwen/qwen3.8-27b",
           "status": "answered",
           "citations": 3,
           "meetings": [
@@ -314,12 +314,12 @@
             "IS1002c"
           ],
           "problems": [
-            "The answer states 60, which no cited evidence says. Cite where each figure is said, or leave it out."
+            "The answer states 89, which no cited evidence says. Cite where each figure is said, or leave it out."
           ]
         },
         {
           "step": "answer",
-          "model": "groq/openai/gpt-oss-120b",
+          "model": "groq/qwen/qwen3.8-27b",
           "status": "answered",
           "citations": 3,
           "meetings": [
@@ -327,7 +327,7 @@
             "IS1002c"
           ],
           "problems": [
-            "The answer states 60, which no cited evidence says. Cite where each figure is said, or leave it out."
+            "The answer states 89, which no cited evidence says. Cite where each figure is said, or leave it out."
           ]
         }
       ]
@@ -855,7 +855,7 @@
     {
       "question_id": "Q24",
       "status": "answered",
-      "seconds": 48.3,
+      "seconds": 47.6,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -1156,6 +1156,7 @@
   "notes": [
     "2026-11-14 run with the truth checks (D-032 to D-034).",
     "Q10 kept from the 2026-11-13 agent run: the new answer cited one meeting and blurred which speaker said what.",
-    "Brief re-run separately after a Groq output cap fix; the run's own brief call returned cut-off JSON."
+    "Brief re-run separately after a Groq output cap fix; the run's own brief call returned cut-off JSON.",
+    "Q02, Q09, Q24 re-run under D-035 (a sentence or two). Q10 re-run too, but the new answer called a proposal ('above sixty') a decision and the topic unsettled, while the ledger's current decision is forty plus (TS3003b-E32); the earlier agent answer is kept, at three sentences."
   ]
 }
