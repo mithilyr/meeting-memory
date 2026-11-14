@@ -144,6 +144,8 @@ INTERNAL_ID = re.compile(r"\b[A-Z]{2}\d{4}[a-d](?:#\d+|[-‐‑]E\d+)\b")
 def clean_answer(text: str) -> str:
     """Strip internal ids the model sometimes copies into prose, keeping the words around them:
     "(Speaker C, ES2005d-E07)" becomes "(Speaker C)". The citations carry the evidence."""
+    # models like typographic spaces and hyphens (U+202F, U+2011); plain ones keep answers searchable
+    text = text.translate({0x00A0: " ", 0x202F: " ", 0x2009: " ", 0x2007: " ", 0x2010: "-", 0x2011: "-"})
     text = INTERNAL_ID.sub("", text)
     text = re.sub(r"\(\s*[,;\s]*\)", "", text)            # brackets left empty
     text = re.sub(r"[,;]\s*\)", ")", text)                 # "(Speaker C, )"
@@ -259,15 +261,15 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
                 continue
             result["citations"] = []  # a "no" stands on its own; nothing is cited for it
             if best is None or not best[0][0] or not best[1]["citations"]:
-                best = ((True, True, 0, 0), result)
+                best = ((True, True, True, True, 0, 0), result)
             break
 
         grounded = not ungrounded
-        score = (not invented, grounded, len(meetings), len(citations))
+        too_long = len(re.findall(r"[.!?](?:\s|$)", text)) > 3  # the output contract allows 1 to 3 sentences
+        echoed = question.lower()[:60] in text.lower()  # seen in testing (E01)
+        score = (not invented, not echoed, not too_long, grounded, len(meetings), len(citations))
         if best is None or score > best[0]:
             best = (score, result)  # a repair can make things worse; keep the best attempt
-        too_long = len(re.findall(r"[.!?](?:\s|$)", text)) > 3
-        echoed = question.lower()[:60] in text.lower()  # seen in testing (E01)
         if citations and grounded and not stale_notes and len(meetings) >= 2 and not too_long and not echoed:
             break
         if repairs >= MAX_REPAIRS:

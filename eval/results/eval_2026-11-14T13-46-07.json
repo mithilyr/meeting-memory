@@ -1,0 +1,688 @@
+{
+  "summary": {
+    "correct": "5/10",
+    "all_citations_valid": "10/10",
+    "multi_meeting": "7/10",
+    "gold_meeting_cited": "10/10",
+    "avg_seconds": 57.1
+  },
+  "rows": [
+    {
+      "id": "E01",
+      "team": "ES2005",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 1.5,
+      "answer": "The first costing of the final design came to 14.60 Euros, which was over the 12.50 Euro target set earlier. The team fixed it by removing three parts — notably reducing from two double-curved parts to one — which brought the unit cost down to 11.60 Euros, under budget.",
+      "gold": "Speaker C's spreadsheet first gave 14.6 Euros against the 12.50 Euro target. A curved case part had been entered twice; with one, the cost dropped to 11.60 Euros, under budget, though still not enough to add the scroll wheel.",
+      "citations": [
+        {
+          "meeting_id": "ES2005a",
+          "quote": "we're trying to make it for twelve Euros fifty"
+        },
+        {
+          "meeting_id": "ES2005d",
+          "quote": "It's meant to be one, yeah, I don't know why I put two in there"
+        },
+        {
+          "meeting_id": "ES2005d",
+          "quote": "that would take away three, which would give us"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2005"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2005's first costing of their final design came out over budget. What was the first figure, what was found to fix it, and what did the cost come to?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2005d"
+          ],
+          "problems": [
+            "The answer states 12.5, which no cited evidence says. Cite where each figure is said, or leave it out."
+          ]
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2005a",
+            "ES2005d"
+          ],
+          "problems": [
+            "The answer states 14.6, which no cited evidence says. Cite where each figure is said, or leave it out.",
+            "Cited event ES2005a-E14 was later replaced; the final word on that topic is ES2005d-E17: \"Speaker C said the product is under the 12.50 Euro target.\". If the question asks what was current or final, use and cite that one."
+          ]
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2005a",
+            "ES2005d"
+          ],
+          "problems": [
+            "The answer states 14.6, which no cited evidence says. Cite where each figure is said, or leave it out."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E02",
+      "team": "ES2005",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 15.4,
+      "answer": "The team voted to adopt speech recognition and reject a TFT screen. The final design includes speech recognition (requiring a microphone) but no screen.",
+      "gold": "Speaker C first suggested scratching speech recognition, but the vote went for speech recognition with limited buttons and an organic design; nobody wanted the TFT screen. The final design kept speech technology but had no screen.",
+      "citations": [
+        {
+          "meeting_id": "ES2005b",
+          "quote": "Decisions. Uh, votes, let's vote. Who wants T_F_T_? No-one does. Excellent, so we'll go with speech recognition, yeah? Um, speech recognition, limited buttons, organic design."
+        },
+        {
+          "meeting_id": "ES2005c",
+          "quote": "Uh speech recognition, I think, so we need a microphone presumably"
+        },
+        {
+          "meeting_id": "ES2005c",
+          "quote": "and keeping the L_C_D_ screen out"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2005"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2005 nearly scratched speech recognition. What did their vote decide, and did the final design have speech recognition and a screen?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2005b",
+            "ES2005c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E03",
+      "team": "TS3005",
+      "correct": false,
+      "missing": [
+        [
+          "microphone",
+          "speech"
+        ]
+      ],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 14.1,
+      "answer": "The team settled on an LCD touch screen operated by fingers with a side scroll wheel, and no physical buttons. The final remote included an LCD touch screen, a normal scroll wheel, a physical on/off button, chargeable batteries with a docking station, and functions for volume, channel, digits, mute, teletext menu, and battery indicator.",
+      "gold": "By the third meeting they had decided on no buttons, only an LCD screen (Speaker B, the User Interface Designer, designed it). The final remote had the LCD screen plus a microphone for speech recognition.",
+      "citations": [
+        {
+          "meeting_id": "TS3005b",
+          "quote": "it always should jump to the screen which has the volume"
+        },
+        {
+          "meeting_id": "TS3005c",
+          "quote": "we uh determined that will not be no buttons, but only an L_C_D_ screen"
+        },
+        {
+          "meeting_id": "TS3005d",
+          "quote": "Yeah, I think that will be our best bet"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3005"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3005 discussed an LCD screen in their second meeting despite cost worries. What interface did they settle on, and what did the final remote include?"
+          ],
+          "turns": 29
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3005b",
+            "TS3005c",
+            "TS3005d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E04",
+      "team": "TS3005",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 120.8,
+      "answer": "In their third meeting (meeting c), the team settled on a rubber case with a spongy feel after debating soft/spongy rubber versus hard rubber. Speaker C and Speaker D favored soft rubber that feels spongy and can be pressed in, while Speaker B objected that the rubber should not be mouldable and proposed hard rubber as better because it bounces back when dropped. Speaker A decided the remote needs a spongy feel. In their final meeting (meeting d), Speaker D described the settled material as \"spongy... that's rubber.\"",
+      "gold": "In the third meeting they settled on rubber (younger people like soft, spongy materials, older people like wood) and debated soft rubber (Speakers C and D) against hard rubber (Speaker B: it bounces back when dropped). In the final meeting it was described as hard rubber, not very spongy, with the idea of printing a wood-like look on it.",
+      "citations": [
+        {
+          "meeting_id": "TS3005c",
+          "quote": "the case was is made from rubber, I suppose"
+        },
+        {
+          "meeting_id": "TS3005c",
+          "quote": "I don't think you should be able to mould it"
+        },
+        {
+          "meeting_id": "TS3005d",
+          "quote": "The material used is spongy, that that's uh that's a one, that's m rubber."
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3005"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "What case material did Team TS3005 settle on in their third meeting, which two versions of it were debated, and how was it described in their final meeting?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3005c",
+            "TS3005d"
+          ],
+          "problems": [
+            "The answer names Speaker A, but no cited evidence shows that speaker saying or doing it. Cite evidence for every person you name, or leave them out."
+          ]
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3005c",
+            "TS3005d"
+          ],
+          "problems": [
+            "The answer names Speaker A, but no cited evidence shows that speaker saying or doing it. Cite evidence for every person you name, or leave them out."
+          ]
+        },
+        {
+          "step": "search",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "queries": [
+            "TS3005c Speaker A spongy feel",
+            "TS3005c decision case material spongy",
+            "TS3005c meeting transcript Speaker A rubber"
+          ],
+          "new_turns": 43
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3005c",
+            "TS3005d"
+          ],
+          "problems": [
+            "The answer names Speaker A, but no cited evidence shows that speaker saying or doing it. Cite evidence for every person you name, or leave them out."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E05",
+      "team": "TS3008",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": false,
+      "gold_overlap": true,
+      "seconds": 75.7,
+      "answer": "Speaker A, Speaker B, and Speaker D all pushed back on adding an LCD display. Speaker B objected that an LCD would exceed the 12.50 Euro cost limit; Speaker A objected that it would be redundant with the base station and TV, and that it did not fit the sturdy plastic-and-rubber design image or the team’s simplicity philosophy; Speaker D objected that the team did not know what to show on the display and that an LCD would be fragile. The final design did not include an LCD display, as Speaker A decided to skip it.",
+      "gold": "Speaker A objected that an LCD did not fit the sturdy, throwable plastic-and-soft-rubber design they were after (Speaker D agreed it is fragile), while Speaker B argued it was up to the market if it was trendy. The final design had no LCD.",
+      "citations": [
+        {
+          "meeting_id": "TS3008c",
+          "quote": "maybe it's a little bit too much for twelve and a half"
+        },
+        {
+          "meeting_id": "TS3008c",
+          "quote": "I don't think a L_C_D_ display fits in that image"
+        },
+        {
+          "meeting_id": "TS3008c",
+          "quote": "I don't know what to display on it"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3008"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "In Team TS3008, who pushed back on adding an LCD display, what was the objection, and did the final design have one?"
+          ],
+          "turns": 30
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3008c"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3008c"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3008c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E06",
+      "team": "IS1000",
+      "correct": false,
+      "missing": [
+        [
+          "13",
+          "thirteen",
+          "3 euro",
+          "three euro"
+        ]
+      ],
+      "citations_valid": "3/3",
+      "multi_meeting": false,
+      "gold_overlap": true,
+      "seconds": 52.0,
+      "answer": "In the final meeting the advanced (feature‑rich) design was costed at about €16, with €3 of that attributed to the speech‑recognition system; this exceeded the €12.50 per‑remote budget.",
+      "gold": "The basic design cost about 8 Euros and the advanced one 16 Euros, of which speech recognition was about 3 Euros; without it the advanced design was 13 Euros, still above the 12.50 Euro production budget.",
+      "citations": [
+        {
+          "meeting_id": "IS1000d",
+          "quote": "they told me this could be possible for sixteen Fr Euros"
+        },
+        {
+          "meeting_id": "IS1000d",
+          "quote": "the S_R_ system would be uh something like three Francs per item"
+        },
+        {
+          "meeting_id": "IS1000d",
+          "quote": "we really should stay within the budget of the uh twelve Euro and fifty cents"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1000"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team IS1000 costed two designs in their final meeting. What did the advanced design cost, how much of that was speech recognition, and how did that compare with the budget?"
+          ],
+          "turns": 23
+        },
+        {
+          "step": "answer",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "IS1000d"
+          ],
+          "problems": [
+            "The answer states 12.5, which no cited evidence says. Cite where each figure is said, or leave it out."
+          ]
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "IS1000d"
+          ],
+          "problems": [
+            "Cited event IS1000d-E01 was later replaced; the final word on that topic is IS1000d-E80: \"Speaker B said the supervisor will be glad the price is fifty cents cheaper than expected.\". If the question asks what was current or final, use and cite that one."
+          ]
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "IS1000c",
+            "IS1000d"
+          ],
+          "problems": [
+            "The answer states 12.5, which no cited evidence says. Cite where each figure is said, or leave it out."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E07",
+      "team": "IS1004",
+      "correct": false,
+      "missing": [
+        [
+          "drop",
+          "against",
+          "removed",
+          "not kept",
+          "no solar",
+          "said no",
+          "excluded",
+          "were not",
+          "decided against",
+          "not included"
+        ]
+      ],
+      "citations_valid": "2/2",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 39.8,
+      "answer": "Speaker C, the industrial designer, proposed using solar cells together with rechargeable batteries. Speaker B, the user‑interface designer, objected that the solar cells were unnecessary because the base‑station could recharge the batteries, making them redundant. The team later rejected the solar‑cell idea and kept only rechargeable batteries.",
+      "gold": "Speaker B (User Interface Designer) said solar cells were no longer necessary with a recharging base station. The team decided against them; the final costing excluded solar cells.",
+      "citations": [
+        {
+          "meeting_id": "IS1004c",
+          "quote": "we can have two kind of power supplies,"
+        },
+        {
+          "meeting_id": "IS1004d",
+          "quote": "Well we decided against the solar cells so"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1004"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team IS1004's industrial designer planned solar cells plus rechargeable batteries. Who questioned the solar cells, why, and were they kept?"
+          ],
+          "turns": 21
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 2,
+          "meetings": [
+            "IS1004c",
+            "IS1004d"
+          ],
+          "problems": [
+            "quote not found in IS1004d#0078: 'solar cells may not be needed when there is a recharging base station'",
+            "quote not found in IS1004d#0359: 'Solar cells ... we said no to that'"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E08",
+      "team": "IS1004",
+      "correct": false,
+      "missing": [
+        [
+          "lcd",
+          "l_c_d_"
+        ]
+      ],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 82.6,
+      "answer": "Team IS1004 dropped speech‑recognition technology (decision) and the advanced chip (decision). In the final design, the industrial designer (Speaker C) said the locator is the most important feature (report).",
+      "gold": "They dropped speech recognition (decided by the second meeting) and the LCD screen (dropped in the third). In the final meeting Speaker C called the locator the most important feature, with the scroll buttons.",
+      "citations": [
+        {
+          "meeting_id": "IS1004b",
+          "quote": "we don't go for speech recognition technology"
+        },
+        {
+          "meeting_id": "IS1004d",
+          "quote": "Pricing is was a factor so that's why we have gone for a regular chip only"
+        },
+        {
+          "meeting_id": "IS1004d",
+          "quote": "the most important feature which I felt was the locator which is a cool feature"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1004"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Which two advanced features did Team IS1004 drop across their meetings, and which feature did their industrial designer call the most important in the final design?"
+          ],
+          "turns": 24
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "IS1004b",
+            "IS1004d"
+          ],
+          "problems": [
+            "Cited event IS1004b-E66 was later replaced; the final word on that topic is IS1004c-E79: \"Speaker A decided keyword spotting is not possible for the next prototype, so it is skipped for now.\". If the question asks what was current or final, use and cite that one."
+          ]
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "IS1004c",
+            "IS1004d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E09",
+      "team": "ES2015",
+      "correct": false,
+      "missing": [
+        [
+          "speaker b"
+        ]
+      ],
+      "citations_valid": "3/3",
+      "multi_meeting": false,
+      "gold_overlap": true,
+      "seconds": 127.3,
+      "answer": "Team ES2015 ended up using kinetic energy as the power source, a proposal originally made by Speaker B, and the remote’s case is a plastic core coated with rubber.",
+      "gold": "Kinetic energy, proposed by Speaker B (Industrial Designer) in the third meeting and still in the final design. The remote is hard plastic with a rubber casing or coating, chosen for comfort and anti-RSI.",
+      "citations": [
+        {
+          "meeting_id": "ES2015c",
+          "quote": "kinetic energy is a new idea that's being used by some watches and other devices"
+        },
+        {
+          "meeting_id": "ES2015c",
+          "quote": "Energy, we've decided on kinetic, right?"
+        },
+        {
+          "meeting_id": "ES2015c",
+          "quote": "I guess plastic and coated in rubber"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2015"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "What energy source did Team ES2015 end up with, who proposed it, and what was the case made of?"
+          ],
+          "turns": 24
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2015c"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2015c"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2015c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "id": "E10",
+      "team": "ES2013",
+      "correct": true,
+      "missing": [],
+      "citations_valid": "3/3",
+      "multi_meeting": true,
+      "gold_overlap": true,
+      "seconds": 41.5,
+      "answer": "Speaker C advocated titanium for the case. By the final meeting the case‑material options on the table were plastic and rubber (including a combined plastic‑rubber option).",
+      "gold": "Speakers B and C both said they were thinking titanium (C was influenced by iPods: minimalist and shiny). By the final meeting the case was either spongy rubber or hard plastic, with B still liking a plastic and rubber combination depending on cost.",
+      "citations": [
+        {
+          "meeting_id": "ES2013c",
+          "quote": "I have been influenced by pictures of iPods, and they're also minimalist and shiny"
+        },
+        {
+          "meeting_id": "ES2013c",
+          "quote": "I was thinking titanium, I was thinking it's just I have been influenced by pictures of iPods"
+        },
+        {
+          "meeting_id": "ES2013d",
+          "quote": "I I just wanna say plastic"
+        }
+      ],
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2013"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2013 was drawn to titanium for the case. Who favoured it, and what case materials were on the table by the final meeting?"
+          ],
+          "turns": 29
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2013c",
+            "ES2013d"
+          ],
+          "problems": []
+        }
+      ]
+    }
+  ]
+}

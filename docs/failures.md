@@ -81,3 +81,19 @@ decision, and the final meeting's "it's hard rubber" was not extracted as an eve
 "replaced by" rule had nothing to link. This is an extraction gap, not a ranking problem.
 **Also:** writing this up showed our own gold answer was too sure that c "chose soft rubber". It was
 rewritten to say the two versions were debated. The question changed with it, so this miss was found by re-reading the transcript.
+
+### Update 2026-11-14 (truth checks, D-032 to D-034)
+- F-008: partly fixed. The ledger is now ranked by meaning and keeps every current decision; microphone
+  events reach the model (2 of 13, before 0), but the answer still leaves the microphone out. It no
+  longer invents anything; it is incomplete.
+- F-009: E04 is now answered right (hard rubber in the final meeting).
+- F-010: unchanged.
+
+### F-011: Sixteen stored figures did not check out against the transcripts (found by the audit)
+The audit (D-032) read every figure in every event against what the team actually said. 15 are said
+nowhere in the team's meetings, mostly averages the extractor computed itself (2.67, 3.11, 1.75), and
+one value was stored as "16 EUR" where the speaker said "sixteen Francs". **Cause:** the extractor writes
+summaries and values in its own words; only the quote is checked word for word. **Fix:** the events are
+kept (their quotes are real) but flagged; every prompt sees "UNVERIFIED" and is told not to repeat the
+detail, and the timeline marks them.
+

@@ -16,7 +16,7 @@ import json
 import time
 from pathlib import Path
 
-from src.agent.answer import answer
+from src.agent.answer import answer, clean_answer
 from src.ingest.verify import quote_in_turn
 from src.memory.store import connect
 
@@ -46,7 +46,7 @@ def main(argv: list[str] | None = None) -> int:
     for q in spec["questions"]:
         result = answer(q["question"] if q["team"] in q["question"] else f"{q['team']}: {q['question']}",
                         conn=conn)
-        text = result["answer"].lower()
+        text = clean_answer(result["answer"]).lower()  # same space and hyphen normalisation as the agent
         missing = [g for g in q["must_include"] if not any(alt.lower() in text for alt in g)]
         valid = [quote_ok(conn, c["meeting_id"], c["quote"]) for c in result["citations"]]
         meetings = {c["meeting_id"] for c in result["citations"]}
