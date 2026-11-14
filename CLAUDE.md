@@ -77,6 +77,7 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
 9. Do not commit `.env`, API keys or `.cache/`.
 10. Claude Code (the coding assistant) must not write `answers.json`, the brief, or any answer text.
     It may only fill extraction jobs that the pipeline generated (rule 14). The agent writes the answers.
+11. Do not put meeting text into a prompt without `screen.fence()` and the <transcript> markers (D-027).
 
 ## Model vs code line (summary, details in docs/decisions.md)
 
@@ -92,9 +93,10 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
 
 ```
 src/settings.py        paths, env, model names
-src/clients/           retry.py (from CodeFest), ollama.py (local LLM + embeddings), openrouter.py (free tier, optional)
+src/clients/           retry.py (from CodeFest), llm.py (cache + provider order), openrouter.py, groq.py, voyage.py
 src/ingest/parse.py    transcript -> Turn rows (code only)
 src/ingest/verify.py   quote verification (code only)
+src/ingest/screen.py   prompt-injection screening and the <transcript> fence (code only)
 src/ingest/extract.py  per-meeting event extraction (model)            [TODO]
 src/memory/            SQLite store, FTS5, vectors, event ledger      [TODO]
 src/agent/             question loop + brief                          [TODO]

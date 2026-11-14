@@ -10,6 +10,7 @@
   4. Validate (code)    same validator as always; a rejected meeting is reported and left pending
   5. Name (model)       readable project names, rewritten only for teams whose decisions changed
 
+Before step 1, files that read like instructions to a model are held for review (src/ingest/screen.py).
 Run it from the UI's Refresh button, a scheduled task, or a folder watcher.
 """
 
@@ -21,7 +22,7 @@ import sqlite3
 import time
 
 from src.clients.llm import complete, parse_json
-from src.ingest import extract
+from src.ingest import extract, screen
 from src.memory import names
 from src.memory.store import connect, embed_missing, ingest
 
@@ -44,7 +45,8 @@ def _extract_free(conn: sqlite3.Connection, meeting_id: str) -> str:
 def refresh(conn: sqlite3.Connection | None = None) -> dict:
     conn = conn or connect()
     started = time.time()
-    report: dict = {"ingest": ingest(conn)}
+    report: dict = {"held": screen.screen_inbox()}  # files dropped straight into inbox/ get screened too
+    report["ingest"] = ingest(conn)
     report["embedded_chunks"] = embed_missing(conn)
     use_api = bool(os.getenv("ANTHROPIC_API_KEY"))
     report["backend"] = "claude-haiku-5-5" if use_api else "free OpenRouter models"

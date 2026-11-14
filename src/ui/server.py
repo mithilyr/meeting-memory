@@ -8,11 +8,13 @@ Endpoints (JSON):
   GET  /api/turns?meeting=X&idx=N      the turn and its neighbours, for "show in transcript"
   GET  /api/transcript?meeting=X       every turn of the meeting, for "whole meeting"
   GET  /api/raw?meeting=X              the original .txt file, unchanged, as a download
+  GET  /api/held                       uploads held for review because they read like instructions to a model
   GET  /api/health                     which model backends this machine can use
-  POST /api/ask     {"question"}         the question agent (answer.py), streamed as one JSON line per
+  POST /api/ask     {"question", "team"} the question agent (answer.py), streamed as one JSON line per
                                        step so the page can show progress; the last line holds the answer
   POST /api/brief   {"team", "upto"}     the brief writer (brief.py)
-  POST /api/upload  {"filename", "content"}  save a transcript to inbox/
+  POST /api/upload  {"filename", "content"}  save a transcript to inbox/, or inbox/held/ if screening flags it
+  POST /api/held    {"meeting", "action"}    approve (move into inbox/) or discard a held upload
   POST /api/refresh                     ingest + embed + extract anything new (refresh.py)
 """
 
@@ -28,6 +30,7 @@ from urllib.parse import parse_qs, urlparse
 
 from src.agent.answer import answer
 from src.agent.brief import write_brief
+from src.ingest import screen
 from src.ingest.parse import MEETING_ID, TURN_HEADER
 from src.memory import ledger, names
 from src.memory.refresh import refresh
@@ -47,12 +50,47 @@ def db() -> sqlite3.Connection:
 
 
 def teams() -> list[dict]:
+    """Every team with its name, meetings and last activity, most recently active first.
+    Activity is when the team's newest transcript file arrived: the corpus has no meeting dates."""
     rows = db().execute(
-        "SELECT team, COUNT(*) n, SUM(extracted_hash = content_hash) done FROM meetings GROUP BY team ORDER BY team"
+        "SELECT team, COUNT(*) n, SUM(extracted_hash = content_hash) done, MAX(letter) last "
+        "FROM meetings GROUP BY team"
     ).fetchall()
     named = names.names(db())
-    return [{"team": r["team"], "name": named.get(r["team"]), "meetings": r["n"], "extracted": r["done"] or 0}
-            for r in rows]
+    out = []
+    for r in rows:
+        try:
+            active = raw_file(f"{r['team']}{r['last']}").stat().st_mtime
+        except (FileNotFoundError, ValueError):
+            active = 0
+        out.append({"team": r["team"], "name": named.get(r["team"]), "meetings": r["n"],
+                    "extracted": r["done"] or 0, "last": r["last"], "active": active})
+    return sorted(out, key=lambda t: (-t["active"], t["name"] or t["team"]))
+
+
+def cite_context(citations: list[dict]) -> list[dict]:
+    """Add who said each quote, their role, the turn before it, and which meeting of the series it is,
+    so a short quote like "Okay we put it on top" can be read in context."""
+    from src.ingest.verify import normalise
+
+    out = []
+    for c in citations:
+        c = dict(c)
+        team, letter = c["meeting_id"][:-1], c["meeting_id"][-1]
+        rows = db().execute("SELECT idx, speaker, text FROM turns WHERE meeting_id = ? ORDER BY idx",
+                            (c["meeting_id"],)).fetchall()
+        hit = next((r for r in rows if normalise(c["quote"]) in normalise(r["text"])), None)
+        if hit:
+            role = db().execute("SELECT s.role FROM speakers s JOIN meetings m USING (meeting_id) "
+                                "WHERE m.team = ? AND s.speaker = ? AND s.role IS NOT NULL ORDER BY m.letter LIMIT 1",
+                                (team, hit["speaker"])).fetchone()
+            before = next((r for r in reversed(rows) if r["idx"] < hit["idx"] and len(r["text"]) > 15), None)
+            c.update(idx=hit["idx"], speaker=hit["speaker"], role=role["role"] if role else None,
+                     before={"speaker": before["speaker"], "text": before["text"][:240]} if before else None)
+        last = db().execute("SELECT MAX(letter) FROM meetings WHERE team = ?", (team,)).fetchone()[0] or letter
+        c.update(number=ord(letter) - 96, of=ord(last) - 96)
+        out.append(c)
+    return out
 
 
 def team_ledger(team: str) -> dict:
@@ -112,9 +150,14 @@ def save_upload(filename: str, content: str) -> dict:
         raise ValueError("No turns found. Each turn needs a line like '00:01:06 Speaker B' followed by the words.")
     if (get_settings().transcripts_dir / f"{stem}.txt").exists():
         raise ValueError(f"{stem} is already in the corpus.")
-    inbox = get_settings().inbox_dir
-    inbox.mkdir(exist_ok=True)
-    (inbox / f"{stem}.txt").write_text(content, encoding="utf-8")
+    if len(content.encode("utf-8")) > screen.MAX_UPLOAD_BYTES:
+        raise ValueError(f"{stem} is larger than {screen.MAX_UPLOAD_BYTES // 1_000_000} MB; a transcript is usually under 100 KB.")
+    flagged = screen.flags(content)
+    folder = screen.held_dir() if flagged and not screen.is_approved(content) else get_settings().inbox_dir
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / f"{stem}.txt").write_text(content, encoding="utf-8")
+    if folder == screen.held_dir():
+        return {"held": stem, "flags": flagged}
     return {"saved": f"inbox/{stem}.txt"}
 
 
@@ -129,7 +172,7 @@ class Handler(BaseHTTPRequestHandler):
     def _json(self, data, status: int = 200) -> None:
         self._send(status, json.dumps(data, ensure_ascii=False).encode("utf-8"))
 
-    def _stream_answer(self, question: str) -> None:
+    def _stream_answer(self, question: str, team: str | None) -> None:
         self.send_response(200)
         self.send_header("Content-Type", "application/x-ndjson; charset=utf-8")
         self.send_header("Cache-Control", "no-cache")
@@ -140,7 +183,8 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.flush()
 
         try:
-            result = answer(question, conn=db(), on_step=line)
+            result = answer(question, conn=db(), team=team, on_step=line)
+            result["citations"] = cite_context(result["citations"])
             line({"step": "done", "result": result})
         except Exception as error:  # noqa: BLE001 - headers are sent; report the error as the last line
             line({"step": "error", "error": str(error)})
@@ -162,6 +206,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(team_ledger(q["team"]))
             elif url.path == "/api/turns":
                 self._json(turns_around(q["meeting"], int(q.get("idx", -1)), q.get("quote")))
+            elif url.path == "/api/held":
+                self._json({"held": screen.held()})
             elif url.path == "/api/transcript":
                 self._json(transcript(q["meeting"]))
             elif url.path == "/api/raw":
@@ -180,10 +226,18 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         length = int(self.headers.get("Content-Length", 0))
+        if length > screen.MAX_UPLOAD_BYTES * 2:  # JSON escaping can double a file's size
+            self._json({"error": f"Request too large (limit {screen.MAX_UPLOAD_BYTES // 1_000_000} MB per file)."}, 413)
+            return
         body = json.loads(self.rfile.read(length) or b"{}")
         try:
             if self.path == "/api/ask":
-                self._stream_answer(body["question"])
+                self._stream_answer(body["question"], body.get("team") or None)
+            elif self.path == "/api/held":
+                if body.get("action") not in ("approve", "discard") or not MEETING_ID.match(body.get("meeting", "")):
+                    raise ValueError("action must be approve or discard, with a meeting id")
+                (screen.approve if body["action"] == "approve" else screen.discard)(body["meeting"])
+                self._json({"held": screen.held()})
             elif self.path == "/api/brief":
                 self._json(write_brief(body["team"], conn=db(), upto_letter=body.get("upto") or None))
             elif self.path == "/api/upload":
@@ -193,6 +247,8 @@ class Handler(BaseHTTPRequestHandler):
                     self._json(refresh(db()))
             else:
                 self._json({"error": "not found"}, 404)
+        except ValueError as error:  # the request was wrong, not the server
+            self._json({"error": str(error)}, 400)
         except Exception as error:  # noqa: BLE001
             self._json({"error": str(error)}, 500)
 

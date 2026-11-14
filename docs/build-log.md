@@ -30,3 +30,12 @@ Append one entry per session: what changed, what was measured. For the video and
 - Local models removed (D-021). Embeddings moved to Voyage AI (D-022), 15,868 chunks re-embedded.
 - Groq added (D-023). Groq rejects Python's default user agent (Cloudflare 1010) and caps a free request at 8K tokens,
   so prompts were cut to about 16 to 22K characters (ledger 11K, turns 8K).
+
+## 2026-11-14: Session 4, usability and prompt-injection defences
+- Ask page streams the agent's real steps (D-026). Run details folded under "How this answer was made".
+- Project names generated per team (D-025), then a searchable picker on all three tabs (D-028).
+- Whole transcript and the original .txt are one click from any quote; the download matches the file byte for byte.
+- Screenshot review with headless Edge at 1366 px and 390 px: no sideways scroll on a phone.
+- Prompt-injection defences (D-027): screening, fenced prompts, review queue, 2 MB cap. 0 of 138 real meetings flagged.
+- Tests: 9 pass (3 new for screening).
+

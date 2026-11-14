@@ -30,6 +30,7 @@
   .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; }
   textarea, select, input { font: inherit; color: var(--ink); background: var(--white); border: 2px solid var(--ink); border-radius: 0; padding: 10px 12px; }
   textarea { width: 100%; min-height: 84px; resize: vertical; }
+  textarea:focus, input:focus { outline: 3px solid var(--yellow); outline-offset: 0; }
   .btn { font: 18px Anton, sans-serif; letter-spacing: 1px; text-transform: uppercase; background: var(--yellow); color: var(--ink);
          border: 2px solid var(--ink); padding: 10px 22px; cursor: pointer; box-shadow: 4px 4px 0 var(--ink); transition: transform .08s, box-shadow .08s; }
   .btn:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 var(--ink); }
@@ -41,8 +42,8 @@
   .card { background: var(--white); border: 2px solid var(--ink); padding: 22px; margin-top: 24px; }
   .answer { font-size: 21px; line-height: 1.5; color: var(--ink); margin: 0 0 18px; }
   .kicker { font: 13px Anton, sans-serif; letter-spacing: 1.2px; text-transform: uppercase; color: var(--navy); margin: 0 0 8px; }
-  .cite { border-left: 6px solid var(--yellow); padding: 8px 12px; margin: 10px 0; background: #FBFAF7; display: flex; gap: 12px; align-items: flex-start; }
-  .cite q { font-style: italic; flex: 1; }
+  .cite { border-left: 6px solid var(--yellow); padding: 10px 14px; margin: 10px 0; background: #FBFAF7; }
+  .cite q { font-style: italic; color: var(--ink); }
   .badge { font: 12px Anton, sans-serif; letter-spacing: 1px; background: var(--navy); color: var(--white); padding: 3px 8px; white-space: nowrap; }
   .link { background: none; border: 0; color: var(--navy); text-decoration: underline; cursor: pointer; font: inherit; font-size: 14px; padding: 0; white-space: nowrap; }
   .how { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
@@ -92,9 +93,27 @@
   .stages .detail { display: block; font-size: 13px; color: var(--muted); }
   .elapsed { font-size: 13px; color: var(--muted); margin: 14px 0 0; }
   @media (prefers-reduced-motion: reduce) { .stages li.active .mark { animation: none; border-right-color: var(--ink); } }
+  /* project picker: type any word or the id to narrow the list */
+  .picker { position: relative; width: min(560px, 100%); }
+  .picker label { display: block; font: 13px Anton, sans-serif; letter-spacing: 1.2px; text-transform: uppercase; color: var(--navy); margin-bottom: 4px; }
+  .picker input { width: 100%; padding-right: 40px; }
+  .picker .clear { position: absolute; right: 2px; bottom: 2px; width: 40px; height: 44px; border: 0; background: none; font-size: 20px; cursor: pointer; color: var(--muted); }
+  .picker ul { position: absolute; z-index: 5; left: 0; right: 0; top: 100%; max-height: 360px; overflow-y: auto; margin: 0; padding: 0; list-style: none;
+               background: var(--white); border: 2px solid var(--ink); border-top: 0; box-shadow: 4px 4px 0 var(--ink); }
+  .picker li { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid var(--line); }
+  .picker li .sub { display: block; font-size: 13px; color: var(--muted); }
+  .picker li.active, .picker li:hover { background: var(--yellow); }
+  .picker li.active .sub, .picker li:hover .sub { color: var(--ink); }
+  .picker li.none { cursor: default; color: var(--muted); background: none; }
+  /* citations with context */
+  .cite .who { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin-bottom: 4px; font-size: 14px; color: var(--ink); }
+  .cite .before { display: block; font-size: 14px; color: var(--muted); margin: 2px 0 4px; }
+  .col h3 small { font: 13px Archivo, sans-serif; text-transform: none; color: var(--muted); letter-spacing: 0; }
+  .held { border-left: 6px solid var(--red); padding: 8px 12px; margin: 10px 0; background: #FBFAF7; }
+  .held code { display: block; white-space: pre-wrap; font-size: 13px; background: var(--paper); padding: 4px 8px; margin: 4px 0; }
   footer { max-width: 1180px; margin: 0 auto; padding: 0 20px 30px; font-size: 13px; color: var(--muted); }
   @media (max-width: 800px) { .cols { grid-template-columns: 1fr; } h2 { font-size: 32px; }
-    .cite { flex-wrap: wrap; } .cite q { flex-basis: 100%; order: 2; } }
+    .chip { min-height: 44px; } }
 </style>
 </head>
 <body>
@@ -111,8 +130,9 @@
 <main>
   <section id="ask">
     <h2 class="display">Ask the meetings</h2>
-    <p class="lede">Ask in plain English and name the team (for example ES2015). Every quote in the answer is checked against the transcript before it is shown.</p>
-    <textarea id="q" placeholder="e.g. What energy source did Team ES2015 end up with, and who proposed it?"></textarea>
+    <p class="lede">Pick a project, or name its ID in the question (for example ES2015). Every quote in the answer is checked against the transcript before it is shown.</p>
+    <div class="picker" id="askPick" style="margin-bottom:12px"></div>
+    <textarea id="q" placeholder="e.g. What energy source did they end up with, and who proposed it?"></textarea>
     <div class="row" style="margin-top:12px">
       <button class="btn" id="askBtn">Ask</button>
     </div>
@@ -123,7 +143,7 @@
   <section id="timeline" hidden>
     <h2 class="display">Team timeline</h2>
     <p class="lede">Everything the memory holds for one team, meeting by meeting. Code works out what is current and what was replaced from the meeting order.</p>
-    <div class="row"><select id="tlTeam"></select></div>
+    <div class="picker" id="tlPick"></div>
     <div class="filters" id="tlFilters"></div>
     <div class="roles muted" id="tlRoles"></div>
     <div class="cols" id="tlCols"></div>
@@ -132,9 +152,9 @@
   <section id="brief" hidden>
     <h2 class="display">Pre-meeting brief</h2>
     <p class="lede">Built only from meetings that have already happened. Every point carries its source.</p>
+    <div class="picker" id="brPick" style="margin-bottom:12px"></div>
     <div class="row">
-      <select id="brTeam"></select>
-      <select id="brUpto"><option value="">before the last meeting</option><option value="a">after meeting a</option><option value="b">after meeting b</option><option value="c">after meeting c</option></select>
+      <select id="brUpto" aria-label="Brief covers"><option value="">before the last meeting</option><option value="a">after meeting 1</option><option value="b">after meeting 2</option><option value="c">after meeting 3</option></select>
       <button class="btn" id="brBtn">Write brief</button>
     </div>
     <div id="brOut"></div>
@@ -148,6 +168,7 @@
     </div>
     <p class="muted">File names must be the meeting id: team id plus meeting letter, for example TS3013a.txt. Each turn is a line like "00:01:06 Speaker B" followed by the words.</p>
     <div id="refreshOut"></div>
+    <div id="heldOut"></div>
     <div class="card"><p class="kicker">This machine</p><div id="health" class="muted">Checking…</div></div>
   </section>
 </main>
@@ -176,11 +197,71 @@ const api = async (path, body) => {
   return data;
 };
 
+// Project picker. Names are model-written summaries, so the ID always shows beside them.
+const shortName = t => (t.name || t.team).replace(/\s*\bremotes?\b/i, "").trim() || t.team;
+const projectLabel = t => `${shortName(t)} · ${t.team}`;
+const meetingNo = letter => letter.charCodeAt(0) - 96;
+class Picker {
+  constructor(el, {label, anyText = null, onChange = () => {}}) {
+    this.el = el; this.anyText = anyText; this.onChange = onChange; this.value = ""; this.active = 0;
+    const id = el.id + "List";
+    el.innerHTML = `<label for="${el.id}In">${esc(label)}</label>
+      <input id="${el.id}In" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="${id}"
+             autocomplete="off" placeholder="Search by any word or ID">
+      <button class="clear" type="button" aria-label="Clear project" hidden>&times;</button>
+      <ul id="${id}" role="listbox" hidden></ul>`;
+    this.input = el.querySelector("input"); this.list = el.querySelector("ul"); this.clearBtn = el.querySelector(".clear");
+    this.input.addEventListener("focus", () => { this.input.select(); this.open(""); });
+    this.input.addEventListener("input", () => this.open(this.input.value));
+    this.input.addEventListener("keydown", e => this.key(e));
+    this.input.addEventListener("blur", () => setTimeout(() => this.close(), 150));
+    this.list.addEventListener("mousedown", e => { const li = e.target.closest("li[data-v]"); if (li) { e.preventDefault(); this.pick(li.dataset.v); } });
+    this.clearBtn.onclick = () => { this.pick(""); this.input.focus(); };
+  }
+  matches(query) {
+    const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+    const teams = TEAMS.filter(t => words.every(w => `${t.name || ""} ${t.team}`.toLowerCase().includes(w)));
+    return (this.anyText && !words.length ? [{team: "", any: true}] : []).concat(teams);
+  }
+  open(query) {
+    this.items = this.matches(query); this.active = 0;
+    this.list.innerHTML = this.items.map((t, i) => t.any
+      ? `<li role="option" data-v="" id="${this.el.id}o${i}"><b>${esc(this.anyText)}</b></li>`
+      : `<li role="option" data-v="${t.team}" id="${this.el.id}o${i}"><b>${esc(shortName(t))}</b>
+         <span class="sub">${t.team} · ${t.meetings} meetings · last: meeting ${meetingNo(t.last)}</span></li>`).join("")
+      || `<li class="none">No project matches "${esc(query)}"</li>`;
+    this.list.hidden = false; this.input.setAttribute("aria-expanded", "true"); this.highlight();
+  }
+  close() { this.list.hidden = true; this.input.setAttribute("aria-expanded", "false"); this.show(); }
+  highlight() {
+    [...this.list.children].forEach((li, i) => li.classList.toggle("active", i === this.active));
+    const li = this.list.children[this.active];
+    if (li) { li.scrollIntoView({block: "nearest"}); this.input.setAttribute("aria-activedescendant", li.id); }
+  }
+  key(e) {
+    if (this.list.hidden && e.key === "ArrowDown") return this.open(this.input.value);
+    const n = (this.items || []).length;
+    if (e.key === "ArrowDown") { e.preventDefault(); this.active = Math.min(this.active + 1, n - 1); this.highlight(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); this.active = Math.max(this.active - 1, 0); this.highlight(); }
+    else if (e.key === "Enter" && !this.list.hidden && n) { e.preventDefault(); this.pick(this.items[this.active].team); }
+    else if (e.key === "Escape") { this.close(); }
+  }
+  pick(team) {
+    this.value = team; this.list.hidden = true; this.input.setAttribute("aria-expanded", "false"); this.show(); this.onChange(team);
+  }
+  show() {
+    const t = TEAMS.find(x => x.team === this.value);
+    this.input.value = t ? projectLabel(t) : "";
+    this.clearBtn.hidden = !t || !this.anyText;
+  }
+}
+
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
   history.replaceState(null, "", "#" + b.dataset.tab);  // a tab can be linked to directly
   document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
   document.querySelectorAll("main section").forEach(s => s.hidden = s.id !== b.dataset.tab);
   if (b.dataset.tab === "timeline" && !$("#tlCols").innerHTML) loadTimeline();
+  if (b.dataset.tab === "library") loadHeld();
 });
 
 const EXAMPLES = [
@@ -193,7 +274,8 @@ $("#examples").onclick = e => { if (e.target.matches(".chip")) { $("#q").value =
 
 // The server sends one JSON line per agent step; the last line holds the answer.
 async function askStream(question, onStep) {
-  const res = await fetch("/api/ask", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({question})});
+  const res = await fetch("/api/ask", {method: "POST", headers: {"Content-Type": "application/json"},
+                                       body: JSON.stringify({question, team: PICK.ask.value})});
   const reader = res.body.getReader(), decoder = new TextDecoder();
   let buffer = "";
   for (;;) {
@@ -235,7 +317,7 @@ class Progress {
   update(step) {
     if (step.step === "route" && step.team) {
       const t = TEAMS.find(x => x.team === step.team);
-      this.set("route", "done", t && t.name ? `${t.name} · ${step.team}` : step.team);
+      this.set("route", "done", t ? projectLabel(t) : step.team);
       this.set("gather", "active", "Keyword and meaning search over the transcripts");
     } else if (step.step === "gather") {
       this.set("gather", "done", `${step.turns} passages found`);
@@ -275,8 +357,12 @@ async function ask() {
     const r = await askStream(question, step => progress.update(step));
     progress.stop();
     const cites = r.citations.map(c => `
-      <div class="cite"><span class="badge">${esc(c.meeting_id)}</span><q>${esc(c.quote)}</q>
-      <button class="link" data-m="${esc(c.meeting_id)}" data-q="${esc(c.quote)}">show in transcript</button></div>`).join("")
+      <div class="cite">
+        <div class="who"><span class="badge" title="${esc(c.meeting_id)}">Meeting ${c.number} of ${c.of}</span>
+          ${c.speaker ? `<span>Speaker ${esc(c.speaker)}${c.role ? `, ${esc(c.role)}` : ""}</span>` : ""}
+          <button class="link" data-m="${esc(c.meeting_id)}" data-i="${c.idx ?? ""}" data-q="${esc(c.quote)}">show in transcript</button></div>
+        ${c.before ? `<span class="before">Just before, Speaker ${esc(c.before.speaker)}: “${esc(c.before.text)}”</span>` : ""}
+        <q>${esc(c.quote)}</q></div>`).join("")
       || `<p class="muted">No citation could be verified.</p>`;
     const steps = (r.trace || []).map(s => {
       const bits = Object.entries(s).filter(([k]) => k !== "step" && k !== "problems")
@@ -301,11 +387,11 @@ const renderTurns = turns => $("#drBody").innerHTML = turns.map(t => `<div class
     <b>Speaker ${esc(t.speaker)}</b> <span class="muted">#${t.idx}</span><br>${esc(t.text)}</div>`).join("");
 async function showTurns(meeting, idx, quote) {
   $("#drawer").classList.add("open");
-  $("#drTitle").textContent = meeting;
+  $("#drTitle").textContent = `${meeting} · meeting ${meetingNo(meeting.slice(-1))}`;
   $("#drRaw").href = `/api/raw?meeting=${encodeURIComponent(meeting)}`;
   $("#drWhole").hidden = false;
   $("#drBody").innerHTML = `<span class="spin"></span>`;
-  const qs = new URLSearchParams({meeting, idx: idx ?? -1, quote: quote || ""});
+  const qs = new URLSearchParams({meeting, idx: idx === "" || idx == null ? -1 : idx, quote: quote || ""});
   const r = await api(`/api/turns?${qs}`);
   FOCUS = {meeting, idx: r.focus};
   renderTurns(r.turns);
@@ -322,41 +408,50 @@ document.body.addEventListener("click", e => {
 });
 $("#drClose").onclick = () => $("#drawer").classList.remove("open");
 
-let TEAMS = [];
+let TEAMS = [];  // most recently active first (server order)
 let LEDGER = null, FILTER = "all";
+const PICK = {
+  ask: new Picker($("#askPick"), {label: "Project (optional)", anyText: "Any project: name its ID in the question"}),
+  timeline: new Picker($("#tlPick"), {label: "Project", onChange: () => loadTimeline()}),
+  brief: new Picker($("#brPick"), {label: "Project"}),
+};
 async function loadTeams() {
   TEAMS = await api("/api/teams");
-  const label = t => t.name ? `${esc(t.name)} · ${t.team}` : t.team;
-  const sorted = [...TEAMS].sort((a, b) => (a.name || a.team).localeCompare(b.name || b.team));
-  const opts = sorted.map(t => `<option value="${t.team}">${label(t)}</option>`).join("");
-  $("#tlTeam").innerHTML = opts; $("#brTeam").innerHTML = opts;
-  $("#brTeam").value = "TS3012";
+  if (!PICK.timeline.value && TEAMS.length) PICK.timeline.value = TEAMS[0].team;
+  if (!PICK.brief.value) PICK.brief.value = TEAMS.some(t => t.team === "TS3012") ? "TS3012" : (TEAMS[0] || {}).team || "";
+  Object.values(PICK).forEach(p => p.show());
 }
 async function loadTimeline() {
-  LEDGER = await api(`/api/ledger?team=${$("#tlTeam").value}`);
+  if (!PICK.timeline.value) return;
+  LEDGER = await api(`/api/ledger?team=${PICK.timeline.value}`);
   const types = ["all", "decision", "number", "proposal", "objection", "action_item", "report_back"];
   $("#tlFilters").innerHTML = types.map(t => `<button class="chip ${t === FILTER ? "on" : ""}" data-f="${t}">${t.replace("_", " ")}</button>`).join("");
   $("#tlRoles").textContent = Object.entries(LEDGER.roles).map(([s, r]) => `Speaker ${s}: ${r}`).join("  ·  ");
   renderTimeline();
 }
 function renderTimeline() {
-  $("#tlCols").innerHTML = LEDGER.letters.map(L => {
+  // One column per meeting in the series, so a meeting missing from the record shows as a gap, not silence.
+  const last = LEDGER.letters[LEDGER.letters.length - 1] || "a";
+  const series = Array.from({length: meetingNo(last)}, (_, i) => String.fromCharCode(97 + i));
+  $("#tlCols").innerHTML = series.map(L => {
+    const head = `<h3 class="display">Meeting ${meetingNo(L)} <small>of ${series.length} · ${esc(LEDGER.team + L)}</small></h3>`;
+    if (!LEDGER.letters.includes(L)) return `<div class="col">${head}<p class="muted">No transcript for this meeting.</p></div>`;
     const evs = LEDGER.events.filter(e => e.letter === L && (FILTER === "all" || e.type === FILTER));
-    return `<div class="col"><h3 class="display">Meeting ${L}</h3>${evs.map(e => `
+    return `<div class="col">${head}${evs.map(e => `
       <div class="ev ${e.status || ""}" data-m="${e.meeting_id}" data-i="${e.turn_idx}">
         <div class="meta"><span class="t">${e.type.replace("_", " ")}</span>${e.status ? `<span class="t s-${e.status}">${e.status}</span>` : ""}</div>
         <div><span class="topic">${esc(e.topic.replaceAll("_", " "))}</span> · <span class="sum">${esc(e.summary)}</span></div>
       </div>`).join("") || `<p class="muted">Nothing extracted yet.</p>`}</div>`;
   }).join("");
 }
-$("#tlTeam").onchange = loadTimeline;
 $("#tlFilters").onclick = e => { if (e.target.dataset.f) { FILTER = e.target.dataset.f; loadTimeline(); } };
 
 $("#brBtn").onclick = async () => {
   $("#brBtn").disabled = true;
   $("#brOut").innerHTML = `<div class="card"><span class="spin"></span> &nbsp;Grouping the ledger and writing…</div>`;
   try {
-    const r = await api("/api/brief", {team: $("#brTeam").value, upto: $("#brUpto").value});
+    if (!PICK.brief.value) throw new Error("Pick a project first.");
+    const r = await api("/api/brief", {team: PICK.brief.value, upto: $("#brUpto").value});
     let html = "", inList = false;
     for (const line of r.brief.split("\n")) {
       if (!line.trim()) continue;
@@ -376,6 +471,25 @@ $("#brBtn").onclick = async () => {
     $("#brOut").innerHTML = `<div class="card" style="border-color:var(--red)">Error: ${esc(err.message)}</div>`;
   }
   $("#brBtn").disabled = false;
+};
+
+// Uploads with lines that read like instructions to a model wait here until a person decides.
+async function loadHeld() {
+  const {held} = await api("/api/held");
+  $("#heldOut").innerHTML = !held.length ? "" : `<div class="card"><p class="kicker">Held for review (${held.length})</p>
+    <p class="muted">These files contain lines that read like instructions to an AI model, which could plant false decisions in the memory.
+    Check each line. Approve only if it is genuine meeting speech.</p>
+    ${held.map(h => `<div class="held"><b>${esc(h.meeting_id)}</b>
+      ${h.flags.map(f => `<code>${esc(f)}</code>`).join("")}
+      <div class="row" style="margin-top:6px;gap:16px">
+        <button class="link" data-held="${esc(h.meeting_id)}" data-act="approve">Approve and add</button>
+        <button class="link" data-held="${esc(h.meeting_id)}" data-act="discard">Discard</button></div></div>`).join("")}</div>`;
+}
+$("#heldOut").onclick = async e => {
+  const b = e.target.closest("[data-held]");
+  if (!b) return;
+  await api("/api/held", {meeting: b.dataset.held, action: b.dataset.act});
+  loadHeld();
 };
 
 async function loadHealth() {
@@ -398,6 +512,7 @@ $("#refreshBtn").onclick = async () => {
       await api("/api/upload", {filename: f.name, content: await f.text()});
     }
     const r = await api("/api/refresh", {});
+    loadHeld();
     const list = a => a.length ? `<ul>${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<p class="muted">None.</p>`;
     out.innerHTML = `<div class="card"><p class="kicker">Files</p>
       <p>${r.ingest.new} new, ${r.ingest.changed} changed, ${r.ingest.unchanged} unchanged. ${r.embedded_chunks} chunks embedded.</p>
