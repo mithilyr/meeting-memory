@@ -31,7 +31,7 @@ PROMPT = """Write the brief team {team} reads before their next meeting (meeting
 It covers meetings {first_letter} to {last_letter} only.
 
 Below are the facts, already grouped by code. Each line starts with a ledger event id.
-For each section, write 3 to 7 short points in plain English. Merge related events into one point.
+For each section, write 3 to 6 short points (under 30 words each) in plain English. Merge related events into one point.
 Name people by speaker letter and role (roles are under SPEAKERS). Mention the meeting where it matters.
 Every point must list the event ids it is based on (1 to 2 ids). Use only ids from the lines below.
 Under "changed", include only real changes, where a different option replaced an earlier one (show
@@ -135,7 +135,7 @@ def write_brief(team: str, *, conn: sqlite3.Connection | None = None, upto_lette
                 dropped += 1
                 continue
             cites = "; ".join(f'{by_id[i]["meeting_id"]}: "{by_id[i]["quote"]}"' for i in ids)
-            text = str(p.get("text", "")).strip()
+            text = grounding.by_letter(conn, team, str(p.get("text", "")).strip())  # letters, not names
             evidence = [{"meeting_id": by_id[i]["meeting_id"], "quote": by_id[i]["quote"]} for i in ids]
             if grounding.check(conn, text, evidence):
                 # the point names people or figures its events do not show: use the events' own words (D-033)

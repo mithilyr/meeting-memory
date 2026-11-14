@@ -44,16 +44,22 @@ be fooled (`eval/results/summary.md`).
 
 | Run | Right (hand check) | All quotes verified | Cited 2+ meetings |
 |---|---|---|---|
+| Hosted, with truth checks | 8/10 | 10/10 | 7/10 |
 | Hosted, Groq | 7/10 | 10/10 | 10/10 |
 | Local qwen3:4b (since removed) | 5/10 | 10/10 | 5/10 |
 
-The three wrong answers on the hosted run, with causes checked in the ledger (`docs/failures.md`):
-- E03: the prompt budget dropped the microphone events, because the question never mentions a microphone.
-- E04: the final meeting's "it's hard rubber" was never extracted, so the answer used an earlier mention.
+The wrong answers, with causes checked in the ledger (`docs/failures.md`):
+- E03: incomplete, not invented. It names the LCD but not the microphone; the meaning-ranked ledger now
+  shows the model 2 of the 13 microphone events, and it still leaves them out.
 - E08: the evidence was there, but the model named the wrong dropped feature.
 
-On the 25 graded questions every citation passes the word-for-word check and 23 of 25 cite two or
-more meetings (Q15 and Q20 cite one, even after two repair rounds). `out/run_log.json` has each answer's full trace.
+Saying no is tested too: 7 questions about things never discussed, meetings that don't exist, or a false
+premise ("why did TS3008 include an LCD?" when they skipped it) all got a plain no or a correction (7/7).
+Code also audits the stored ledger against the transcripts: 16 figures nobody said and 1 wrong currency
+are flagged out of 7,199 events, and no prompt repeats them as fact.
+
+On the 25 graded questions every citation passes the word-for-word check and all 25 cite two or more
+meetings. `out/run_log.json` has each answer's full trace and status.
 
 ## Cost and time for 1,000 meetings
 Measured on the real run: about 10.6K input and 4.3K output tokens per meeting.

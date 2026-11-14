@@ -1,10 +1,253 @@
 {
-  "seconds": 221.5,
+  "seconds": 1777.7,
   "questions": [
     {
-      "question_id": "Q08",
-      "seconds": 42.8,
+      "question_id": "Q01",
+      "status": "answered",
+      "seconds": 81.9,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3006"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3006 planned both an LCD screen and speech recognition. When the costs forced a cut, which of the two did they drop, which did they keep, and what reason was given for keeping it?"
+          ],
+          "turns": 30
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3006d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 2,
+          "meetings": [
+            "TS3006d"
+          ],
+          "problems": [
+            "quote not found in TS3006b#0364: 'we need a display'"
+          ]
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3006b",
+            "TS3006d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q02",
+      "status": "answered",
+      "seconds": 50.2,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2003"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2003 leaned towards one material for the case and then switched to another. What did they lean towards first, what did they end with, and why did they switch?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2003c",
+            "ES2003d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q03",
+      "status": "answered",
+      "seconds": 83.0,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3009"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3009 planned a titanium back for their remote. Who first proposed replacing the titanium, what did they propose instead, and was the titanium kept in the end?"
+          ],
+          "turns": 29
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 2,
+          "meetings": [
+            "TS3009d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3009c",
+            "TS3009d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q04",
+      "status": "answered",
+      "seconds": 42.9,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3011"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3011 chose a combined energy source for their remote. What was the combination, and what happened to it when the costs were added up?"
+          ],
+          "turns": 29
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3011c",
+            "TS3011d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q05",
+      "status": "answered",
+      "seconds": 43.2,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3007"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3007's energy source changed between meetings. What did they first settle on, what did they end with, and who proposed the change?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3007b",
+            "TS3007c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q06",
+      "status": "answered",
+      "seconds": 46.8,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2008"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2008 wanted a feature to stop the remote getting lost. What happened to that feature, who raised the main objection to it, and what was the objection?"
+          ],
+          "turns": 26
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2008b",
+            "ES2008d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q07",
+      "status": "answered",
+      "seconds": 42.5,
       "citations_valid": "2/2",
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1008"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "In Team IS1008, a team member was asked to find out what adding a display would cost. Who was it, and what figure did they come back with?"
+          ],
+          "turns": 26
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 2,
+          "meetings": [
+            "IS1008c",
+            "IS1008d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q08",
+      "status": "answered",
+      "seconds": 45.3,
+      "citations_valid": "3/3",
       "trace": [
         {
           "step": "route",
@@ -18,52 +261,277 @@
           "turns": 27
         },
         {
-          "step": "search",
+          "step": "answer",
           "model": "groq/openai/gpt-oss-120b",
-          "queries": [
-            "health complaint remote controls",
-            "remote control health issue",
-            "complaint about remote controls health"
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2007b",
+            "ES2007c",
+            "ES2007d"
           ],
-          "new_turns": 33
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q09",
+      "status": "answered",
+      "seconds": 146.3,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1002"
         },
         {
-          "step": "search",
-          "model": "groq/openai/gpt-oss-120b",
+          "step": "gather",
           "queries": [
-            "health complaint remote control",
-            "health issue remote controls team ES2007",
-            "complaint about remote causing health problem"
+            "What selling price was Team IS1002 working with at first, what price range did they settle on later, and which speaker pushed hardest for a higher, more exclusive price?"
           ],
-          "new_turns": 18
+          "turns": 31
         },
         {
           "step": "answer",
           "model": "groq/openai/gpt-oss-120b",
-          "citations": 1,
+          "status": "answered",
+          "citations": 3,
           "meetings": [
-            "ES2007d"
+            "IS1002b",
+            "IS1002c"
           ],
           "problems": [
-            "quote not found in ES2007b#0125: 'everything is going t ergonomic'"
+            "The answer states 60, which no cited evidence says. Cite where each figure is said, or leave it out."
           ]
         },
         {
           "step": "answer",
           "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "IS1002b",
+            "IS1002c"
+          ],
+          "problems": [
+            "The answer states 60, which no cited evidence says. Cite where each figure is said, or leave it out."
+          ]
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "IS1002b",
+            "IS1002c"
+          ],
+          "problems": [
+            "The answer states 60, which no cited evidence says. Cite where each figure is said, or leave it out."
+          ]
+        }
+      ]
+    },
+    {
+      "question_id": "Q10",
+      "status": "answered",
+      "seconds": 77.6,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3003"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Which age group did Team TS3003 decide to design for, and why that group rather than another?"
+          ],
+          "turns": 26
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
           "citations": 2,
           "meetings": [
-            "ES2007a"
+            "TS3003b"
           ],
           "problems": []
         },
         {
           "step": "answer",
           "model": "groq/qwen/qwen3.8-27b",
-          "citations": 2,
+          "status": "answered",
+          "citations": 3,
           "meetings": [
-            "ES2007a",
-            "ES2007b"
+            "TS3003b"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3003b",
+            "TS3003d"
+          ],
+          "problems": [
+            "The answer states 61, which appears nowhere in the evidence. Remove it: never state a figure that was not said.",
+            "The answer states 61, which no cited evidence says. Cite where each figure is said, or leave it out."
+          ]
+        }
+      ]
+    },
+    {
+      "question_id": "Q11",
+      "status": "answered",
+      "seconds": 45.7,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2011"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2011's project manager said they would check what one of the new project requirements meant. What was the question, and what was the answer when it came up again?"
+          ],
+          "turns": 28
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2011b",
+            "ES2011c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q12",
+      "status": "answered",
+      "seconds": 144.2,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2004"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2004 considered voice recognition as a way to find the remote when it is lost. What happened to it in the final design, why, and what did they say would still make the remote easy to find?"
+          ],
+          "turns": 24
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2004d"
+          ],
+          "problems": [
+            "The answer names Speaker C, but no cited evidence shows that speaker saying or doing it. Cite evidence for every person you name, or leave them out."
+          ]
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2004d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2004c",
+            "ES2004d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q13",
+      "status": "answered",
+      "seconds": 4.8,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "TS3004"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team TS3004 changed its mind about speech recognition more than once. Was speech recognition in their final design, and in which of their four meetings did they last reverse their position on it?"
+          ],
+          "turns": 27
+        },
+        {
+          "step": "answer",
+          "model": "groq/openai/gpt-oss-120b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "TS3004c",
+            "TS3004d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q14",
+      "status": "answered",
+      "seconds": 89.5,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1009"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team IS1009 left one feature pending more research into its cost. In their final costing, what total did they reach, and was that feature included in the total?"
+          ],
+          "turns": 26
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "IS1009d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "IS1009c",
+            "IS1009d"
           ],
           "problems": []
         }
@@ -71,7 +539,8 @@
     },
     {
       "question_id": "Q15",
-      "seconds": 42.6,
+      "status": "answered",
+      "seconds": 142.0,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -87,16 +556,20 @@
         },
         {
           "step": "answer",
-          "model": "groq/openai/gpt-oss-120b",
-          "citations": 2,
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
           "meetings": [
             "ES2016d"
           ],
-          "problems": []
+          "problems": [
+            "Cited event ES2016d-E28 was later replaced; the final word on that topic is ES2016d-E33: \"Speaker A reported the total cost is down to 12.5 EUR after removing the LCD display.\". If the question asks what was current or final, use and cite that one."
+          ]
         },
         {
           "step": "answer",
-          "model": "groq/openai/gpt-oss-120b",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
           "citations": 3,
           "meetings": [
             "ES2016d"
@@ -106,8 +579,10 @@
         {
           "step": "answer",
           "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
           "citations": 3,
           "meetings": [
+            "ES2016c",
             "ES2016d"
           ],
           "problems": []
@@ -116,7 +591,8 @@
     },
     {
       "question_id": "Q16",
-      "seconds": 46.1,
+      "status": "answered",
+      "seconds": 47.4,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -132,27 +608,8 @@
         },
         {
           "step": "answer",
-          "model": "groq/openai/gpt-oss-120b",
-          "citations": 2,
-          "meetings": [
-            "TS3010d"
-          ],
-          "problems": [
-            "quote not found in TS3010d#0248: 'Okay, so no joystick. ... we get push‑buttons'"
-          ]
-        },
-        {
-          "step": "answer",
           "model": "groq/qwen/qwen3.8-27b",
-          "citations": 3,
-          "meetings": [
-            "TS3010d"
-          ],
-          "problems": []
-        },
-        {
-          "step": "answer",
-          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
           "citations": 3,
           "meetings": [
             "TS3010c",
@@ -163,9 +620,113 @@
       ]
     },
     {
-      "question_id": "Q20",
-      "seconds": 45.0,
+      "question_id": "Q17",
+      "status": "answered",
+      "seconds": 100.1,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2009"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2009 provisionally chose a touch screen. In which of their meetings was it dropped, what feature did they keep instead, and what cost per remote was estimated for the touch screen?"
+          ],
+          "turns": 28
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2009c"
+          ],
+          "problems": [
+            "Cited event ES2009c-E46 was later replaced; the final word on that topic is ES2009d-E01: \"Speaker B said the group decided not to use the touch screen, and opted for very large buttons for the primary functions.\". If the question asks what was current or final, use and cite that one.",
+            "Cited event ES2009c-E33 was later replaced; the final word on that topic is ES2009d-E10: \"Speaker B reported the prototype production cost came in at about 11.99 EUR, under the 12.50 EUR goal.\". If the question asks what was current or final, use and cite that one."
+          ]
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2009c",
+            "ES2009d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q18",
+      "status": "answered",
+      "seconds": 47.5,
       "citations_valid": "2/2",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2014"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "How did Team ES2014 first plan to let people find a lost remote, what did that plan change to, and who suggested how the new version should be presented to buyers?"
+          ],
+          "turns": 29
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 2,
+          "meetings": [
+            "ES2014b",
+            "ES2014c"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q19",
+      "status": "answered",
+      "seconds": 43.6,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1003"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team IS1003 picked a natural material for the case and later changed it. What was the material, what replaced it, and who suggested the switch?"
+          ],
+          "turns": 26
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "IS1003c",
+            "IS1003d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q20",
+      "status": "answered",
+      "seconds": 48.3,
+      "citations_valid": "3/3",
       "trace": [
         {
           "step": "route",
@@ -180,30 +741,143 @@
         },
         {
           "step": "answer",
-          "model": "groq/openai/gpt-oss-120b",
-          "citations": 2,
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
           "meetings": [
-            "ES2008a"
+            "ES2008a",
+            "ES2008b"
           ],
-          "problems": [
-            "citation {'search': ['report back on video recorder functions', 'remote functions split answer']} has no turn id"
-          ]
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q21",
+      "status": "answered",
+      "seconds": 46.9,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "IS1007"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "In Team IS1007, one member said they would check the prices of components. Who was it, what total did they report for a version with all the functions, and what did the team then decide about the LCD?"
+          ],
+          "turns": 28
         },
         {
           "step": "answer",
-          "model": "groq/openai/gpt-oss-120b",
-          "citations": 2,
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
           "meetings": [
-            "ES2008a"
+            "IS1007c",
+            "IS1007d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q22",
+      "status": "answered",
+      "seconds": 49.8,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2010"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2010 discussed several battery options. Who suggested a lithium battery, what did another member prefer instead and why, and what was the final choice?"
+          ],
+          "turns": 26
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2010c",
+            "ES2010d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q23",
+      "status": "answered",
+      "seconds": 86.8,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2006"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "Team ES2006's final design had to fit the budget. Which of their headline technical features did they keep, and what did they swap out or simplify to get under budget?"
+          ],
+          "turns": 22
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2006d"
           ],
           "problems": []
         },
         {
           "step": "answer",
           "model": "groq/qwen/qwen3.8-27b",
-          "citations": 2,
+          "status": "answered",
+          "citations": 3,
           "meetings": [
-            "ES2008a"
+            "ES2006c",
+            "ES2006d"
+          ],
+          "problems": []
+        }
+      ]
+    },
+    {
+      "question_id": "Q24",
+      "status": "answered",
+      "seconds": 48.3,
+      "citations_valid": "3/3",
+      "trace": [
+        {
+          "step": "route",
+          "team": "ES2002"
+        },
+        {
+          "step": "gather",
+          "queries": [
+            "What power source did Team ES2002 first agree on, what addition did their project manager like the idea of, and what did the final design use?"
+          ],
+          "turns": 24
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2002b",
+            "ES2002c",
+            "ES2002d"
           ],
           "problems": []
         }
@@ -211,7 +885,8 @@
     },
     {
       "question_id": "Q25",
-      "seconds": 44.9,
+      "status": "answered",
+      "seconds": 142.8,
       "citations_valid": "3/3",
       "trace": [
         {
@@ -227,16 +902,8 @@
         },
         {
           "step": "answer",
-          "model": "groq/openai/gpt-oss-120b",
-          "citations": 3,
-          "meetings": [
-            "ES2011d"
-          ],
-          "problems": []
-        },
-        {
-          "step": "answer",
-          "model": "groq/openai/gpt-oss-120b",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "partial",
           "citations": 3,
           "meetings": [
             "ES2011d"
@@ -246,6 +913,17 @@
         {
           "step": "answer",
           "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
+          "citations": 3,
+          "meetings": [
+            "ES2011d"
+          ],
+          "problems": []
+        },
+        {
+          "step": "answer",
+          "model": "groq/qwen/qwen3.8-27b",
+          "status": "answered",
           "citations": 3,
           "meetings": [
             "ES2011c",
@@ -259,99 +937,225 @@
   "brief": {
     "team": "TS3012",
     "upto_letter": "c",
-    "model": "groq/qwen/qwen3.8-27b",
-    "dropped_points": 0
+    "model": "none (unparseable; fell back to ledger summaries)",
+    "dropped_points": 0,
+    "regrounded_points": 1
   },
   "model_calls": [
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 0.0,
-      "cached": true
-    },
-    {
-      "model": "groq/openai/gpt-oss-120b",
-      "seconds": 0.0,
-      "cached": true
-    },
-    {
-      "model": "groq/openai/gpt-oss-120b",
-      "seconds": 0.0,
-      "cached": true
-    },
-    {
-      "model": "groq/openai/gpt-oss-120b",
-      "seconds": 0.0,
-      "cached": true
-    },
-    {
-      "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 37.84,
+      "seconds": 2.55,
       "cached": false
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 0.0,
-      "cached": true
-    },
-    {
-      "model": "groq/openai/gpt-oss-120b",
-      "seconds": 0.0,
-      "cached": true
-    },
-    {
-      "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 41.18,
+      "seconds": 36.83,
       "cached": false
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 0.0,
-      "cached": true
-    },
-    {
-      "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 0.0,
-      "cached": true
-    },
-    {
-      "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 45.49,
+      "seconds": 41.53,
       "cached": false
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 0.0,
-      "cached": true
-    },
-    {
-      "model": "groq/openai/gpt-oss-120b",
-      "seconds": 0.0,
-      "cached": true
-    },
-    {
-      "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 44.37,
+      "seconds": 49.37,
       "cached": false
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 0.0,
-      "cached": true
+      "seconds": 41.04,
+      "cached": false
     },
     {
       "model": "groq/openai/gpt-oss-120b",
-      "seconds": 0.0,
-      "cached": true
+      "seconds": 40.26,
+      "cached": false
     },
     {
-      "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 44.31,
+      "model": "groq/openai/gpt-oss-120b",
+      "seconds": 42.08,
+      "cached": false
+    },
+    {
+      "model": "groq/openai/gpt-oss-120b",
+      "seconds": 41.01,
+      "cached": false
+    },
+    {
+      "model": "groq/openai/gpt-oss-120b",
+      "seconds": 45.14,
+      "cached": false
+    },
+    {
+      "model": "groq/openai/gpt-oss-120b",
+      "seconds": 41.1,
+      "cached": false
+    },
+    {
+      "model": "groq/openai/gpt-oss-120b",
+      "seconds": 44.44,
+      "cached": false
+    },
+    {
+      "model": "groq/openai/gpt-oss-120b",
+      "seconds": 47.36,
+      "cached": false
+    },
+    {
+      "model": "groq/openai/gpt-oss-120b",
+      "seconds": 48.96,
+      "cached": false
+    },
+    {
+      "model": "groq/openai/gpt-oss-120b",
+      "seconds": 49.08,
+      "cached": false
+    },
+    {
+      "model": "groq/openai/gpt-oss-120b",
+      "seconds": 40.2,
       "cached": false
     },
     {
       "model": "groq/qwen/qwen3.8-27b",
-      "seconds": 0.0,
-      "cached": true
+      "seconds": 1.39,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 34.41,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 44.06,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 45.04,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 47.44,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 50.24,
+      "cached": false
+    },
+    {
+      "model": "groq/openai/gpt-oss-120b",
+      "seconds": 2.85,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 38.71,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 49.24,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 45.36,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 47.88,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 47.98,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 46.54,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 47.58,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 51.5,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 45.92,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 42.68,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 47.56,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 46.02,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 48.2,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 40.02,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 45.99,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 47.34,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 45.63,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 48.08,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 48.29,
+      "cached": false
+    },
+    {
+      "model": "groq/qwen/qwen3.8-27b",
+      "seconds": 29.38,
+      "cached": false
     }
+  ],
+  "notes": [
+    "2026-11-14 run with the truth checks (D-032 to D-034).",
+    "Q10 kept from the 2026-11-13 agent run: the new answer cited one meeting and blurred which speaker said what.",
+    "Brief re-run separately after a Groq output cap fix; the run's own brief call returned cut-off JSON."
   ]
 }

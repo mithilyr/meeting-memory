@@ -37,7 +37,8 @@ def _key() -> str:
 
 
 def _call(model: str, prompt: str) -> str:
-    body = {"model": model, "messages": [{"role": "user", "content": prompt}], "temperature": 0}
+    body = {"model": model, "messages": [{"role": "user", "content": prompt}], "temperature": 0,
+            "max_completion_tokens": 4000}  # long JSON replies (the brief) were cut off at the default
     request = urllib.request.Request(
         API_URL, data=json.dumps(body).encode("utf-8"), method="POST",
         headers={"Authorization": f"Bearer {_key()}", "Content-Type": "application/json",

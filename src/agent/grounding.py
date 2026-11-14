@@ -80,6 +80,23 @@ def check(conn: sqlite3.Connection, answer: str, citations: list[dict]) -> list[
     return problems
 
 
+def by_letter(conn: sqlite3.Connection, team: str, text: str) -> str:
+    """The output names people by speaker letter (with the role), not by the names said in meetings.
+    "Project Manager Mark" becomes "Speaker A, the Project Manager"; "Dirk" becomes "Speaker D"."""
+    rows = conn.execute("SELECT DISTINCT s.speaker, s.role, s.name FROM speakers s JOIN meetings m USING (meeting_id) "
+                        "WHERE m.team = ? AND s.name IS NOT NULL", (team,)).fetchall()
+    for r in rows:
+        first = r["name"].split()[0]
+        names = sorted({r["name"], first}, key=len, reverse=True)
+        for name in names:
+            if r["role"]:
+                text = re.sub(rf"\b(?:the\s+)?{re.escape(r['role'])}\s*,?\s*{re.escape(name)}\b",
+                              f"Speaker {r['speaker']}, the {r['role']},", text, flags=re.I)
+            text = re.sub(rf"\b{re.escape(name)}\b(?:\s*\(Speaker {r['speaker']}\))?", f"Speaker {r['speaker']}", text)
+    text = re.sub(r",\s*([.;:)\]])", r"\1", text)  # "the Project Manager, ." left by the role form
+    return re.sub(r",,", ",", text)
+
+
 def pick(conn: sqlite3.Connection, answer: str, citations: list[dict], k: int = 3) -> list[dict]:
     """Choose the k citations that back the most of the answer's people and figures, spreading across
     meetings on ties. The output format allows 3 citations; the model may offer more to choose from."""

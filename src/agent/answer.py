@@ -233,7 +233,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
         status = status if status in STATUSES else "answered"
         notify({"step": "verifying", "citations": len(reply.get("citations") or [])})
         offered, problems = _resolve_citations(conn, reply.get("citations", []), team, upto_letter)
-        text = clean_answer(str(reply.get("answer", "")).strip())
+        text = grounding.by_letter(conn, team, clean_answer(str(reply.get("answer", "")).strip()))
         citations = grounding.pick(conn, text, offered, MAX_CITATIONS)
         meetings = {c["meeting_id"] for c in citations}
         # Hard check: a figure found nowhere in the evidence given cannot have come from the meetings.

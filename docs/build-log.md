@@ -46,4 +46,10 @@ Append one entry per session: what changed, what was measured. For the video and
   meetings, two-project questions, duplicate uploads refused.
 - Ledger ranked by meaning when over budget (D-034, fix for F-008). 7,199 events embedded in 2.5 minutes.
 - New eval: `eval/abstain_questions.json`, 7/7 declined or corrected. Tests: 14 pass.
+- Re-ran the 25 graded questions with the checks: every citation valid, 25/25 cite 2+ meetings (was 23/25),
+  all 25 status "answered", typographic spaces gone from the text. Q10 kept from the earlier agent run
+  (the new answer cited one meeting). The brief was re-run after raising Groq's output cap (its JSON was
+  cut off) and now names speakers by letter, as the output contract asks; 2 points were replaced by
+  their events' own summaries by the grounding check.
+- Tests: 15 pass, including one that a new meeting's import runs the audit.
 
