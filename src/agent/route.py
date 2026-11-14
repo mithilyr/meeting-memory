@@ -115,6 +115,16 @@ def _by_ledger(conn: sqlite3.Connection, question: str) -> tuple[list[str], dict
     return ranked, {t: per_team[t][0][1] for t in per_team}
 
 
+def similar_ids(conn: sqlite3.Connection, team: str, k: int = 3) -> list[dict]:
+    """Project IDs spelled like one that does not exist: TS3099 gives TS3009, TS3008... (a typo, usually)."""
+    import difflib
+
+    teams = [r[0] for r in conn.execute("SELECT DISTINCT team FROM meetings")]
+    named = names.names(conn)
+    return [{"team": t, "name": named.get(t), "match": None, "reason": f"Project ID spelled like {team}"}
+            for t in difflib.get_close_matches(team, teams, n=k, cutoff=0.6)]
+
+
 def suggest(question: str, conn: sqlite3.Connection | None = None, k: int = 3) -> list[dict]:
     conn = conn or connect()
     conn.execute(SCHEMA)

@@ -147,11 +147,18 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
     notify = on_step or (lambda step: None)
     team = retrieve.team_from_question(question) or team  # a team named in the question beats the picker
     if team is None or conn.execute("SELECT 1 FROM meetings WHERE team = ?", (team,)).fetchone() is None:
-        from src.agent.route import suggest  # no project named: offer the closest ones, never guess (D-029)
+        # No project, or one that does not exist: offer the closest ones, never guess (D-029, D-030)
+        from src.agent.route import similar_ids, suggest
         suggestions = suggest(question, conn=conn, k=5)
-        return {"answer": "No project was named. Pick one of these, or name its ID in the question.",
-                "citations": [], "suggestions": suggestions, "seconds": round(time.time() - started, 1),
-                "trace": [{"step": "route", "result": "no team", "suggested": [s["team"] for s in suggestions]}]}
+        if team is None:
+            message = "No project was named. Pick one of these, or name its ID in the question."
+        else:
+            close = [s for s in similar_ids(conn, team) if s["team"] not in {x["team"] for x in suggestions}]
+            suggestions = (close + suggestions)[:5]
+            message = f"There is no project {team} in the memory. Did you mean one of these?"
+        return {"answer": message, "citations": [], "suggestions": suggestions, "seconds": round(time.time() - started, 1),
+                "trace": [{"step": "route", "result": f"no project {team or ''}".strip(),
+                           "suggested": [s["team"] for s in suggestions]}]}
     trace.append({"step": "route", "team": team})
 
     queries = [question]
@@ -160,7 +167,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
     ledger_text = retrieve.ledger_text(conn, team, upto_letter, query=question)
     speakers = retrieve.speakers(conn, team, upto_letter)
 
-    feedback, result, best, rounds, repairs = "", None, None, 0, 0
+    feedback, result, best, rounds, repairs, no_model = "", None, None, 0, 0, False
     for _ in range(MAX_SEARCH_ROUNDS + MAX_REPAIRS + 2):
         prompt = PROMPT.format(question=question, team=team, rounds_left=MAX_SEARCH_ROUNDS - rounds,
                                ledger=fence(ledger_text) or "(empty)", speakers=fence(speakers) or "(unknown)",
@@ -170,6 +177,7 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
             text, model = complete(prompt)
         except Exception as error:  # noqa: BLE001 - every backend down: report, don't crash the run
             trace.append({"step": "ask", "result": f"no model available: {str(error)[:200]}"})
+            no_model = True
             break
         try:
             reply = parse_json(text)
@@ -214,6 +222,17 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
                     " Prefer citing ledger events by id. Reply with corrected JSON.")
     result = best[1] if best else {"answer": "The agent could not produce an answer.", "citations": []}
     result["answer"] = clean_answer(result["answer"])
+    if not result["citations"]:
+        # Dead end avoided (D-030): show what search found, word for word, and other projects to try.
+        # Both are code and one embedding; no model call.
+        from src.agent.route import suggest
+        result["fallback"] = "no_model" if no_model and best is None else "no_evidence"
+        if result["fallback"] == "no_model":
+            result["answer"] = ("The AI models are not available right now (free daily limits). "
+                                "Below is what the search found, word for word.")
+        result["passages"] = [{"meeting_id": t["meeting_id"], "idx": t["idx"], "speaker": t["speaker"],
+                               "text": t["text"][:400]} for t in list(turns.values())[:5]]
+        result["suggestions"] = [s for s in suggest(question, conn=conn, k=4) if s["team"] != team][:3]
     result["trace"] = list(trace)
     result["seconds"] = round(time.time() - started, 1)
     return result

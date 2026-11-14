@@ -8,6 +8,7 @@ Endpoints (JSON):
   GET  /api/turns?meeting=X&idx=N      the turn and its neighbours, for "show in transcript"
   GET  /api/transcript?meeting=X       every turn of the meeting, for "whole meeting"
   GET  /api/raw?meeting=X              the original .txt file, unchanged, as a download
+  GET  /api/suggest?q=...               projects whose meetings discuss the words (picker fallback, no model)
   GET  /api/held                       uploads held for review because they read like instructions to a model
   GET  /api/health                     which model backends this machine can use
   POST /api/ask     {"question", "team"} the question agent (answer.py), streamed as one JSON line per
@@ -30,6 +31,7 @@ from urllib.parse import parse_qs, urlparse
 
 from src.agent.answer import answer
 from src.agent.brief import write_brief
+from src.agent.route import suggest
 from src.ingest import screen
 from src.ingest.parse import MEETING_ID, TURN_HEADER
 from src.memory import ledger, names
@@ -208,6 +210,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(turns_around(q["meeting"], int(q.get("idx", -1)), q.get("quote")))
             elif url.path == "/api/held":
                 self._json({"held": screen.held()})
+            elif url.path == "/api/suggest":
+                self._json(suggest(q.get("q", "")[:300], conn=db(), k=5))
             elif url.path == "/api/transcript":
                 self._json(transcript(q["meeting"]))
             elif url.path == "/api/raw":

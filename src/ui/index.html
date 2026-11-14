@@ -225,17 +225,29 @@ class Picker {
   }
   open(query) {
     this.items = this.matches(query); this.active = 0;
+    clearTimeout(this.timer);
+    const option = (t, i, sub) => `<li role="option" data-v="${t.team}" id="${this.el.id}o${i}"><b>${esc(shortName(t))}</b>
+         <span class="sub">${sub}</span></li>`;
     this.list.innerHTML = this.items.map((t, i) => t.any
       ? `<li role="option" data-v="" id="${this.el.id}o${i}"><b>${esc(this.anyText)}</b></li>`
-      : `<li role="option" data-v="${t.team}" id="${this.el.id}o${i}"><b>${esc(shortName(t))}</b>
-         <span class="sub">${t.team} · ${t.meetings} meetings · last: meeting ${meetingNo(t.last)}</span></li>`).join("")
-      || `<li class="none">No project matches "${esc(query)}"</li>`;
+      : option(t, i, `${t.team} · ${t.meetings} meetings · last: meeting ${meetingNo(t.last)}`)).join("")
+      || `<li class="none">No project name matches "${esc(query)}". Searching what was said in meetings…</li>`;
     this.list.hidden = false; this.input.setAttribute("aria-expanded", "true"); this.highlight();
+    // No name matches: search the meetings themselves (one embedding, no model), after typing pauses (D-030)
+    if (!this.items.length && query.trim().length >= 3) this.timer = setTimeout(async () => {
+      const found = await api(`/api/suggest?q=${encodeURIComponent(query)}`).catch(() => []);
+      if (this.input.value !== query || this.list.hidden) return;
+      this.items = found.map(s => TEAMS.find(x => x.team === s.team) || {team: s.team, name: s.name});
+      this.list.innerHTML = `<li class="none">No project name matches "${esc(query)}". These projects discussed it:</li>` +
+        found.map((s, i) => option(this.items[i], i, `${s.team}${s.match ? ` · meeting ${meetingNo(s.match.meeting_id.slice(-1))}: ${esc(s.match.text.slice(0, 90))}…` : ""}`)).join("");
+      this.active = 0; this.highlight();
+    }, 450);
   }
   close() { this.list.hidden = true; this.input.setAttribute("aria-expanded", "false"); this.show(); }
   highlight() {
-    [...this.list.children].forEach((li, i) => li.classList.toggle("active", i === this.active));
-    const li = this.list.children[this.active];
+    const options = [...this.list.querySelectorAll('li[role="option"]')];  // skips the "no match" header line
+    options.forEach((li, i) => li.classList.toggle("active", i === this.active));
+    const li = options[this.active];
     if (li) { li.scrollIntoView({block: "nearest"}); this.input.setAttribute("aria-activedescendant", li.id); }
   }
   key(e) {
@@ -316,7 +328,9 @@ class Progress {
   }
   update(step) {
     if (step.step === "route" && !step.team) {
-      this.set("route", "done", "No project named: listing the closest matches instead");
+      const missing = (step.result || "").replace("no project", "").trim();
+      this.set("route", "done", missing ? `There is no project ${missing}: listing the closest matches`
+                                        : "No project named: listing the closest matches instead");
     } else if (step.step === "route" && step.team) {
       const t = TEAMS.find(x => x.team === step.team);
       this.set("route", "done", t ? projectLabel(t) : step.team);
@@ -358,7 +372,18 @@ async function ask() {
   try {
     const r = await askStream(question, step => progress.update(step));
     progress.stop();
-    if (r.suggestions) { showSuggestions(r.suggestions); $("#askBtn").disabled = false; return; }
+    renderAnswer(r);
+  } catch (err) {
+    progress.stop();
+    $("#result").innerHTML = `<div class="card" style="border-color:var(--red)">Error: ${esc(err.message)}</div>`;
+  }
+  $("#askBtn").disabled = false;
+}
+function renderAnswer(r) {
+    if (r.suggestions && !r.fallback) {  // no project, or one that does not exist
+      showSuggestions(r.suggestions, "Which project do you mean?", r.answer + " These projects talk about it most.");
+      return;
+    }
     const cites = r.citations.map(c => `
       <div class="cite">
         <div class="who"><span class="badge" title="${esc(c.meeting_id)}">Meeting ${c.number} of ${c.of}</span>
@@ -372,36 +397,52 @@ async function ask() {
         .map(([k, v]) => `${k}: ${esc(Array.isArray(v) ? v.join(", ") : v)}`).join(" · ");
       return `<span class="step"><b>${esc(s.step)}</b> ${bits}</span>`;
     }).join("");
-    $("#result").innerHTML = `<div class="card"><p class="kicker">Answer</p><p class="answer">${esc(r.answer)}</p>
-      <p class="kicker">Evidence (checked word for word)</p>${cites}
+    // No verified evidence: never a dead end. Show what search found and other projects to try (D-030).
+    const passages = (r.passages || []).map(p => `
+      <div class="cite"><div class="who"><span class="badge" title="${esc(p.meeting_id)}">Meeting ${meetingNo(p.meeting_id.slice(-1))}</span>
+        <span>Speaker ${esc(p.speaker)}</span>
+        <button class="link" data-m="${esc(p.meeting_id)}" data-i="${p.idx}">show in transcript</button></div>
+        <q>${esc(p.text)}</q></div>`).join("");
+    const fallback = !r.fallback ? "" : `
+      ${passages ? `<p class="kicker">What the search found (exact words from the transcripts)</p>${passages}` : ""}
+      ${r.fallback === "no_model" ? `<div class="row" style="margin:10px 0"><button class="btn" id="retryBtn">Try again</button></div>` : ""}
+      ${(r.suggestions || []).length ? `<p class="kicker" style="margin-top:18px">Wrong project? These also discuss it</p>${suggestionItems(r.suggestions)}` : ""}`;
+    const main = r.fallback === "no_model"
+      ? `<p class="kicker">Search only, no AI model</p><p class="answer">${esc(r.answer)}</p>`
+      : `<p class="kicker">Answer</p><p class="answer">${esc(r.answer)}</p>
+         <p class="kicker">Evidence (checked word for word)</p>${cites}`;
+    $("#result").innerHTML = `<div class="card">${main}${fallback}
       <details class="how"><summary>How this answer was made (${esc(r.seconds)} s)</summary>
       <div class="trace">${steps}</div></details></div>`;
-  } catch (err) {
-    progress.stop();
-    $("#result").innerHTML = `<div class="card" style="border-color:var(--red)">Error: ${esc(err.message)}</div>`;
-  }
-  $("#askBtn").disabled = false;
 }
 // No project named: show the closest projects with the line that matched. Found by search, not a model.
-function showSuggestions(list) {
-  $("#result").innerHTML = `<div class="card"><p class="kicker">Which project do you mean?</p>
-    <p class="muted">The question names no project, so nothing was answered yet. These projects talk about it most.</p>
-    ${list.map(s => {
+function showSuggestions(list, title, note) {
+  $("#result").innerHTML = `<div class="card"><p class="kicker">${esc(title)}</p>
+    <p class="muted">${esc(note)}</p>${suggestionItems(list)}</div>`;
+}
+function suggestionItems(list) {
+  return list.map(s => {
       const t = TEAMS.find(x => x.team === s.team) || {team: s.team, name: s.name};
       const m = s.match;
       return `<div class="cite">
         <div class="who"><b>${esc(shortName(t))}</b><span class="muted">${esc(s.team)}</span></div>
+        ${s.reason ? `<span class="before">${esc(s.reason)}</span>` : ""}
         ${!m ? "" : m.kind === "summary"
           ? `<span class="before">Meeting ${meetingNo(m.meeting_id.slice(-1))}: ${esc(m.text)}</span>`
           : `<span class="before">Meeting ${meetingNo(m.meeting_id.slice(-1))}, Speaker ${esc(m.speaker)}: “${esc(m.text)}”</span>`}
         <div class="row" style="gap:16px;margin-top:6px">
           <button class="link" data-ask-team="${esc(s.team)}">Ask this project</button>
           <button class="link" data-open-team="${esc(s.team)}">Open project timeline</button></div></div>`;
-    }).join("")}</div>`;
+    }).join("");
 }
 $("#result").addEventListener("click", e => {
   const askTeam = e.target.closest("[data-ask-team]"), openTeam = e.target.closest("[data-open-team]");
-  if (askTeam) { PICK.ask.pick(askTeam.dataset.askTeam); ask(); }
+  if (askTeam) {  // an ID in the question beats the picker, so swap a wrong ID for the chosen one
+    const team = askTeam.dataset.askTeam;
+    $("#q").value = $("#q").value.replace(/\b[A-Z]{2}\d{4}\b/g, team);
+    PICK.ask.pick(team); ask();
+  }
+  if (e.target.closest("#retryBtn")) ask();
   if (openTeam) { PICK.timeline.value = openTeam.dataset.openTeam; PICK.timeline.show();
                   $('nav button[data-tab="timeline"]').click(); loadTimeline(); }
 });

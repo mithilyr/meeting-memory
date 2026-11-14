@@ -269,3 +269,18 @@ fit several projects. A wrong guess gives a confident answer about the wrong pro
 memory holds for it, meeting by meeting. A fuller wiki (pages per topic and per person, linked to
 each other) is possible from the same ledger without model calls, and is listed as later work.
 
+## D-030: No dead ends: every failed path offers the next step (2026-11-14)
+**Decision:** the D-029 pattern (show the closest options with the line that matched, never guess)
+now covers every place the Ask page used to stop:
+| Situation | Before | Now |
+|---|---|---|
+| No project named | "Name the team" | 5 closest projects (D-029) |
+| Project ID that does not exist ("TS3099") | same dead end | "There is no project TS3099", IDs spelled like it (TS3009, TS3011), then projects that discuss the question |
+| Picker search with no name match ("teletext") | "No project matches" | after typing pauses, projects whose meetings discuss the word, with the line that matched |
+| AI models unavailable (free daily limits) | "The agent could not produce an answer" | the 5 best passages from search, word for word with "show in transcript", a Try again button, and other projects |
+| Model answered but no quote passed the check | "No citation could be verified" | the same passages and other projects under the answer |
+"Ask this project" swaps a wrong ID in the question for the chosen one, because an ID in the question
+beats the picker. Every fallback is code plus at most one Voyage embedding: no model call, about 1 s.
+**Why:** each of these used to leave a person with nothing to do next. The passages are exact transcript
+lines, so even with no model the page shows evidence, never an unchecked summary.
+
