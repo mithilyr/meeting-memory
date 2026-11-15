@@ -58,3 +58,8 @@ Append one entry per session: what changed, what was measured. For the video and
 - Write-up cut to one page (829 words). Decision index with statuses added to docs/decisions.md.
 - Video plan written (docs/video-plan.md).
 
+## 2026-11-15: Hosted demo live
+- https://meeting-memory-orox.onrender.com built and running (D-037). Live checks: 35 projects, original
+  transcript download, uploads refused (read-only), a demo question answered in 3 s, project suggestions
+  for a question with no project, the TS3012 brief.
+

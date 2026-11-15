@@ -52,6 +52,7 @@ It must be designed as if there were 10,000 meetings and new ones arrived every 
 
 ### Deliverables the PDF asks for (track progress here)
 - [x] Code + README with run instructions
+- [x] Hosted read-only demo: https://meeting-memory-orox.onrender.com (Render free tier, D-037)
 - [x] `out/answers.json` produced by the agent, not by hand
 - [x] 10+ own questions with hand-checked answers in `eval/own_questions.json`, scored by the agent
 - [x] 3 questions the agent got wrong, with reasons (`docs/failures.md`)
