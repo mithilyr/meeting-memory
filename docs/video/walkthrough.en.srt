@@ -1,0 +1,287 @@
+1
+00:00:05,740 --> 00:00:08,050
+A founder records every meeting.
+
+2
+00:00:08,040 --> 00:00:11,030
+After a few months, there are hundreds of hours of transcripts,
+
+3
+00:00:11,100 --> 00:00:13,930
+and nobody can find the decision they need when it matters.
+
+4
+00:00:14,740 --> 00:00:16,750
+I built Meeting Memory to fix that.
+
+5
+00:00:17,080 --> 00:00:20,350
+It turns meeting transcripts into memory you can question,
+
+6
+00:00:20,200 --> 00:00:23,270
+and it proves every answer with the speaker's exact words.
+
+7
+00:00:26,160 --> 00:00:31,850
+Each meeting is read once, in order, and turned into a ledger: decisions, proposals,
+
+8
+00:00:31,700 --> 00:00:33,810
+actions, figures and objections.
+
+9
+00:00:34,140 --> 00:00:37,570
+Every entry points back to the exact line it came from.
+
+10
+00:00:37,720 --> 00:00:40,370
+The transcripts stay the source of truth,
+
+11
+00:00:40,240 --> 00:00:43,650
+stored in SQLite with a keyword index and vector search.
+
+12
+00:00:44,300 --> 00:00:48,510
+When a question comes in, the agent works on one project only.
+
+13
+00:00:48,440 --> 00:00:52,550
+It searches that project's ledger and transcripts, writes an answer,
+
+14
+00:00:52,400 --> 00:00:54,310
+and code checks it before you see it.
+
+15
+00:00:54,620 --> 00:00:59,190
+Because each question touches one project, the cost stays flat,
+
+16
+00:00:59,040 --> 00:01:00,670
+whether there are a hundred meetings or ten thousand.
+
+17
+00:01:04,260 --> 00:01:07,090
+The hard part is memory over time.
+
+18
+00:01:07,100 --> 00:01:10,819
+A decision in the third meeting can replace one from the first.
+
+19
+00:01:10,669 --> 00:01:12,479
+That isn't left to the model.
+
+20
+00:01:12,329 --> 00:01:14,579
+Code orders every decision by meeting,
+
+21
+00:01:14,429 --> 00:01:17,839
+and marks the latest one on each topic as current.
+
+22
+00:01:17,689 --> 00:01:21,979
+This team planned a titanium back, argued about it across two meetings,
+
+23
+00:01:21,829 --> 00:01:24,659
+and finally dropped it to meet the cost target.
+
+24
+00:01:24,509 --> 00:01:26,879
+The earlier decisions are struck through as replaced,
+
+25
+00:01:26,729 --> 00:01:29,719
+and the final one is marked current.
+
+26
+00:01:29,569 --> 00:01:32,219
+And when someone refers back to "the other one",
+
+27
+00:01:32,069 --> 00:01:34,239
+the extractor links it to the earlier option,
+
+28
+00:01:34,089 --> 00:01:39,899
+because it reads each meeting with the ledger so far.
+
+29
+00:01:39,749 --> 00:01:41,819
+Let's ask a question.
+
+30
+00:01:41,669 --> 00:01:46,339
+While it runs, the page shows the agent's real steps: find the project,
+
+31
+00:01:46,229 --> 00:01:50,499
+search its meetings, read and write, then check every quote.
+
+32
+00:01:50,349 --> 00:01:54,559
+The answer comes back in a sentence or two, with up to three quotes.
+
+33
+00:01:54,409 --> 00:01:57,119
+Each quote has been checked word for word against the transcript,
+
+34
+00:01:57,509 --> 00:02:00,059
+so it can't be paraphrased or made up.
+
+35
+00:01:59,909 --> 00:02:04,119
+If you want more proof, open it in the transcript, read the whole meeting,
+
+36
+00:02:03,969 --> 00:02:05,499
+or download the original file.
+
+37
+00:02:08,489 --> 00:02:11,399
+Saying no matters as much as answering.
+
+38
+00:02:11,249 --> 00:02:15,469
+Ask what the designers were paid, and it tells you the meetings never discussed it,
+
+39
+00:02:15,319 --> 00:02:16,469
+instead of guessing.
+
+40
+00:02:16,319 --> 00:02:21,389
+Ask why a team chose an LCD screen when they actually rejected it,
+
+41
+00:02:21,239 --> 00:02:22,829
+and it corrects the question.
+
+42
+00:02:22,679 --> 00:02:27,649
+Ask without naming a project, and it lists the projects that discuss it most,
+
+43
+00:02:27,499 --> 00:02:30,169
+with the line that matched, and lets you choose.
+
+44
+00:02:33,139 --> 00:02:38,709
+Before a team's final meeting, it writes a brief: what was decided, what changed,
+
+45
+00:02:38,559 --> 00:02:42,429
+open actions and who owns them, and disagreements still open.
+
+46
+00:02:42,599 --> 00:02:45,409
+It only reads the meetings that have already happened.
+
+47
+00:02:45,559 --> 00:02:49,789
+That cutoff is enforced in code, so the final meeting can't leak in.
+
+48
+00:02:49,699 --> 00:02:51,189
+Every point cites its source.
+
+49
+00:02:54,039 --> 00:02:57,469
+Where the model stops and code starts was a deliberate choice.
+
+50
+00:02:57,399 --> 00:03:03,409
+Anything with one right answer is plain code: parsing, ordering, what is current,
+
+51
+00:03:03,259 --> 00:03:06,009
+quote checks, and the output format.
+
+52
+00:03:05,859 --> 00:03:10,549
+The model only does what rules can't: reading messy speech,
+
+53
+00:03:10,399 --> 00:03:12,089
+and writing clear answers.
+
+54
+00:03:11,939 --> 00:03:15,029
+Code even audits the model's own notes.
+
+55
+00:03:14,879 --> 00:03:18,298
+It found sixteen figures that nobody actually said,
+
+56
+00:03:18,148 --> 00:03:21,598
+and one price stored in Euros that was spoken in Francs.
+
+57
+00:03:21,448 --> 00:03:27,798
+Those are flagged, and never repeated as fact.
+
+58
+00:03:27,648 --> 00:03:29,178
+Does it work?
+
+59
+00:03:29,028 --> 00:03:33,398
+On ten questions of my own, checked by hand against the transcripts,
+
+60
+00:03:33,248 --> 00:03:34,178
+it got eight right.
+
+61
+00:03:34,028 --> 00:03:38,038
+On seven questions that should get a no, it said no all seven times.
+
+62
+00:03:38,708 --> 00:03:43,098
+All twenty-five graded answers pass the word-for-word quote check.
+
+63
+00:03:43,248 --> 00:03:46,358
+Three answers it got wrong are written up, with their causes.
+
+64
+00:03:47,268 --> 00:03:51,918
+Ingesting a thousand meetings costs about one dollar sixty with Claude Haiku on the Batch API,
+
+65
+00:03:51,768 --> 00:03:53,818
+and takes under four hours.
+
+66
+00:03:54,568 --> 00:03:58,618
+The free tiers I built on broke at this size: fifty requests a day,
+
+67
+00:03:58,468 --> 00:04:00,998
+and an eight-thousand-token cap per request.
+
+68
+00:04:03,948 --> 00:04:07,818
+Every design decision is logged, with what I rejected and why.
+
+69
+00:04:07,988 --> 00:04:11,558
+For production, it would need paid models, Postgres,
+
+70
+00:04:11,408 --> 00:04:13,698
+and a login with review for uploaded meetings.
+
+71
+00:04:14,528 --> 00:04:17,678
+The code, the write-up and the answers are all in the repository.
+
+72
+00:04:18,508 --> 00:04:19,658
+Thank you.
