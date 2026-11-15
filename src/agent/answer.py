@@ -24,7 +24,7 @@ from collections.abc import Callable
 from src.agent import retrieve
 from src.clients.llm import complete, parse_json
 from src.ingest.extract import _snap
-from src.ingest.screen import fence
+from src.ingest.screen import fence, flags
 from src.agent import grounding, route
 from src.memory import audit
 from src.memory.store import connect
@@ -33,7 +33,15 @@ MAX_SEARCH_ROUNDS = 2
 MAX_REPAIRS = 2
 MAX_CITATIONS = 3  # the output format allows 1 to 3
 MAX_OFFERED = 5    # the model may offer up to 5; code keeps the 3 that back the most of the answer
-STATUSES = ("answered", "partial", "not_discussed", "conflicting", "premise_wrong")
+STATUSES = ("answered", "partial", "not_discussed", "conflicting", "premise_wrong", "off_topic")
+MAX_QUESTION_CHARS = 500
+MIN_OVERLAP = 0.15
+OFF_TOPIC = ("This tool only answers questions about what was said in the recorded meetings, "
+             "with quotes from the transcripts.")
+
+
+def too_many(text: str) -> bool:
+    return len(re.findall(r"[.!?](?:\s|$)", text)) > 2
 
 PROMPT = """You answer questions about a team's recorded meetings, using ONLY the evidence below.
 
@@ -73,6 +81,8 @@ ANSWER RULES
                    Saying no is better than guessing.
   "conflicting"    the meetings disagree and nothing settles it
   "premise_wrong"  the question assumes something the evidence contradicts; say what actually happened
+  "off_topic"      the question is not about what was said in these meetings (general knowledge, writing,
+                   coding, advice, opinions, anything else): do not answer it; leave answer empty
 
 Reply with JSON only: {{"status": "...", "answer": "...", "citations": [...]}}  or  {{"search": [...]}}
 
@@ -168,6 +178,13 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
 
     trace: list[dict] = Trace()
     notify = on_step or (lambda step: None)
+    # Input guard (D-038), code only: an over-long question or one written as instructions to the model is
+    # turned away before any search or model call.
+    if len(question) > MAX_QUESTION_CHARS or flags(question):
+        reason = ("Please ask a shorter question (up to 500 characters)." if len(question) > MAX_QUESTION_CHARS
+                  else OFF_TOPIC + " Instructions to the AI are not followed.")
+        return {"answer": reason, "citations": [], "status": "off_topic", "seconds": round(time.time() - started, 1),
+                "trace": [{"step": "guard", "result": "question refused before any model call"}]}
     named = list(dict.fromkeys(retrieve.TEAM_PATTERN.findall(question)))
     if len(named) > 1:
         # Two projects in one question: answering from one alone would silently drop the other (D-033).
@@ -242,12 +259,18 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
         ungrounded = ([f"The answer states {', '.join(f'{n:g}' for n in invented)}, which appears nowhere in the "
                        "evidence. Remove it: never state a figure that was not said."] if invented else [])
         ungrounded += grounding.check(conn, text, citations)
+        # Off-topic guard (D-038): an answer that shares almost no words with the quotes it cites is not
+        # about them (a poem, general knowledge, code). Real answers share 24% or more; a poem shares 0%.
+        unrelated = bool(citations) and grounding.overlap(conn, text, citations) < MIN_OVERLAP
+        if unrelated:
+            ungrounded.append("The answer is not about the cited evidence. Answer only from what was said in "
+                              "the meetings, or use status off_topic or not_discussed.")
         stale_notes = [] if stale_asked or status not in ("answered", "partial") else grounding.stale(conn, citations)
         trace.append({"step": "answer", "model": model, "status": status, "citations": len(citations),
                       "meetings": sorted(meetings), "problems": problems + ungrounded + stale_notes})
         result = {"answer": text, "citations": citations, "status": status}
 
-        if status == "not_discussed":
+        if status in ("not_discussed", "off_topic"):
             # Check the "no" before accepting it: if the ledger has events on the question's topic,
             # show them to the model once. A considered "no" after that is accepted (D-033).
             matches = [] if no_checked else route.team_matches(conn, team, question, upto_letter)
@@ -260,14 +283,20 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
                             "answer it, keep status not_discussed. Reply with JSON.")
                 continue
             result["citations"] = []  # a "no" stands on its own; nothing is cited for it
+            # The wording of a "no" is fixed by code unless it is a short, plain "The meetings do not ...":
+            # a refusal is not a place for the model to slip in anything else (D-038).
+            if status == "off_topic":
+                result["answer"] = OFF_TOPIC
+            elif not re.match(r"the meetings (do not|don't|never)", text, re.I) or len(text) > 300 or too_many(text):
+                result["answer"] = "The meetings do not record an answer to this."
             if best is None or not best[0][0] or not best[1]["citations"]:
                 best = ((True, True, True, True, 0, 0), result)
             break
 
         grounded = not ungrounded
-        too_long = len(re.findall(r"[.!?](?:\s|$)", text)) > 2  # the PDF asks for "a sentence or two"
+        too_long = too_many(text)  # the PDF asks for "a sentence or two"
         echoed = question.lower()[:60] in text.lower()  # seen in testing (E01)
-        score = (not invented, not echoed, not too_long, grounded, len(meetings), len(citations))
+        score = (not (invented or unrelated), not echoed, not too_long, grounded, len(meetings), len(citations))
         if best is None or score > best[0]:
             best = (score, result)  # a repair can make things worse; keep the best attempt
         if citations and grounded and not stale_notes and len(meetings) >= 2 and not too_long and not echoed:
@@ -295,12 +324,12 @@ def answer(question: str, *, conn: sqlite3.Connection | None = None, team: str |
         # Saying no beats making things up: a draft that keeps a figure nobody said, after being told,
         # is not shown. Its verified quotes stay, as the closest checked evidence (D-033).
         trace.append({"step": "refused", "draft": result["answer"][:400]})
-        result = {"answer": "The meetings do not clearly support an answer: the draft stated a figure that is not "
-                            "in the transcripts, so it is withheld. The checked quotes are below.",
+        result = {"answer": "The meetings do not clearly support an answer: the draft went beyond what the "
+                            "transcripts say, so it is withheld. The checked quotes are below.",
                   "citations": result["citations"], "status": "unconfirmed"}
-    elif result["status"] != "not_discussed" and not result["citations"]:
+    elif result["status"] not in ("not_discussed", "off_topic") and not result["citations"]:
         result["status"] = "not_found"
-    if not result["citations"]:
+    if not result["citations"] and result["status"] != "off_topic":
         # Dead end avoided (D-030): show what search found, word for word, and other projects to try.
         from src.agent.route import suggest
         result["fallback"] = "no_model" if no_model and best is None else "no_evidence"

@@ -425,6 +425,7 @@ function renderAnswer(r) {
       conflicting: ["The meetings disagree", "Nothing later settles it.", "s-conflict"],
       premise_wrong: ["The question's assumption does not match the record", "", "s-open"],
       unconfirmed: ["Not confirmed", "The draft went beyond its evidence, so it is not shown.", "s-conflict"],
+      off_topic: ["Outside the meetings", "This tool only answers questions about what was said in them.", "s-superseded"],
     }[r.status];
     const badge = STATUS ? `<p style="margin:0 0 10px"><span class="t ${STATUS[2]}">${esc(STATUS[0])}</span>
       <span class="muted">${esc(STATUS[1])}</span></p>` : "";

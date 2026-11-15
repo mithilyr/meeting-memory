@@ -119,6 +119,15 @@ def pick(conn: sqlite3.Connection, answer: str, citations: list[dict], k: int = 
     return sorted(chosen, key=lambda c: c["meeting_id"])
 
 
+def overlap(conn: sqlite3.Connection, answer: str, citations: list[dict]) -> float:
+    """Share of the answer's content words that appear in its cited evidence (D-038). Speaker labels don't count."""
+    from src.agent.retrieve import _words
+
+    said = _words(" ".join(f["text"] for f in evidence(conn, citations)))
+    claimed = _words(re.sub(r"\bSpeakers?\s+[A-D]\b", " ", answer))
+    return len(claimed & said) / max(len(claimed), 1)
+
+
 def invented_figures(answer: str, shown: str) -> list[float]:
     """Figures in the answer that appear nowhere in the evidence the model was given. These cannot have
     come from the meetings, so an answer that keeps them after repair is withheld."""

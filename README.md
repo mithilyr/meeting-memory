@@ -12,6 +12,8 @@ Built for the Catalist Agentic AI Intern build test, on 138 AMI meetings (676,74
 - [Design decisions, D-001 onward](docs/decisions.md)
 - [Where it fails](docs/failures.md)
 - [The submission: out/answers.json](out/answers.json)
+- [Walkthrough video (4 min 20 s)](https://youtu.be/dZCnKklGncs)
+- [Live read-only demo](https://meeting-memory-orox.onrender.com)
 
 ## Try it hosted
 A read-only copy runs at https://meeting-memory-orox.onrender.com (Render free tier; the first visit after a quiet
@@ -53,7 +55,7 @@ python -m src.agent.brief TS3012                          # brief before TS3012'
 python run.py                                             # regenerates out/answers.json
 python -m eval.run_eval                                   # scores the agent on our 10 hand-checked questions
 python -m eval.route_check                                # project suggestions for questions that name no project
-python -m eval.run_abstain                                # questions it must decline or correct (should be 7/7)
+python -m eval.run_abstain                                # questions it must decline or correct (11/11)
 python -m src.memory.audit                                # truth checks on every stored event
 python -m pytest -q
 ```

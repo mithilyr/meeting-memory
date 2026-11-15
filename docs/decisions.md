@@ -44,6 +44,7 @@ This file feeds the write-up and the video. The index below says which decisions
 | D-035 | Answers are a sentence or two, as the brief requires | Active |
 | D-036 | Video built by script: headless Edge recording + ffmpeg, not Remotion | Active |
 | D-037 | Hosted read-only demo (Render free tier; data from a Hugging Face dataset) | Active |
+| D-038 | Guardrails: only questions about the meetings are answered | Active |
 
 ## D-001: Event ledger + retrieval, not a knowledge graph (2026-11-13)
 **Decision:** Store raw turns as the source of truth. Extract typed events (decision, proposal,
@@ -442,4 +443,21 @@ so the first visit after a pause takes about a minute.
 The full 98 MB store also failed to upload to Hugging Face (connection resets), so the bundle was cut to
 8 MB by leaving out the vectors; the Render build re-embeds them with Voyage (about 5 minutes per deploy,
 inside the free allowance). Service: https://meeting-memory-orox.onrender.com (Render, Singapore, free).
+
+## D-038: Guardrails: only questions about the meetings are answered (2026-11-15)
+**Asked by the user:** anything that isn't about what was said in the meetings should not be answered.
+**Decision:** four layers, three of them code:
+1. Input guard (code, before any search or model call): questions over 500 characters, or written as
+   instructions to the AI (the same screen as uploads, D-027), get a fixed refusal.
+2. A new status, off_topic, for general knowledge, writing, coding, advice and opinions. Like "not
+   discussed", it is challenged once if the project's ledger has events on the question's words.
+3. Fixed wording for every refusal (code): an off_topic reply always shows the same sentence, and a "not
+   discussed" reply is kept only if it is a short "The meetings do not ..."; anything else is replaced. A
+   refusal is not a place for the model to slip in other text.
+4. Relevance check (code): an answer must share at least 15% of its content words with the quotes it
+   cites. The 25 graded answers share 24% to 60%; a poem shares 0%. Below the line it is repaired, then
+   withheld.
+A question with no project named still gets project suggestions (search only, no model), never an answer.
+**Measured:** `eval.run_abstain` now has 11 cases: the 7 "no" questions plus a poem, general knowledge,
+code and a prompt-injection attempt. 11/11. Real questions still answer (two checked live).
 

@@ -41,7 +41,8 @@ any matching ledger events before it is accepted.
 ## Proof it works
 Ten questions of our own on 7 teams not in questions.json, checked by hand against the transcripts
 (`eval/results/summary.md`): **8/10 right**, every quote verified. Seven more questions that should get
-a no (never discussed, a meeting that doesn't exist, a false premise): **7/7** declined or corrected.
+a no (never discussed, a meeting that doesn't exist, a false premise): **7/7** declined or corrected,
+and 4 requests outside the meetings (a poem, general knowledge, code, instructions to the AI) all refused.
 On the 25 graded questions every citation passes the word-for-word check and all 25 cite two or more
 meetings.
 

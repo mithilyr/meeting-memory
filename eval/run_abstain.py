@@ -22,7 +22,7 @@ def main() -> int:
     conn, rows, passed = connect(), [], 0
     for case in cases:
         r = answer(case["question"], conn=conn)
-        ok = r.get("status") in case["expect"] and not (r.get("status") == "not_discussed" and r["citations"])
+        ok = r.get("status") in case["expect"] and not (r.get("status") in ("not_discussed", "off_topic") and r["citations"])
         passed += ok
         rows.append({"id": case["id"], "question": case["question"], "expect": case["expect"], "status": r.get("status"),
                      "answer": r["answer"], "citations": r["citations"], "pass": ok})
